@@ -8,6 +8,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
     "vue": "^3.0.0",
     "vue-router": "^4.5.1"
   },
