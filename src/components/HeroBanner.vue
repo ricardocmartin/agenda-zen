@@ -7,7 +7,7 @@
             <p class="text-gray-600 text-lg mb-6">Perfeita para psicólogos, terapeutas, dentistas, cabeleireiros e mais</p>
             <div class="space-x-4">
               <a href="#" class="bg-white border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-100">Entrar</a>
-              <a href="#" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Criar conta</a>
+              <a href="/#/cadastro" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Criar conta</a>
             </div>
           </div>
           <div>
