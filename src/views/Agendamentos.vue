@@ -52,6 +52,11 @@
             </li>
           </ul>
         </div>
+
+        <div class="mt-8">
+          <h3 class="text-lg font-medium mb-4">Calendário</h3>
+          <CalendarView :appointments="appointments" :getClientName="getClientName" />
+        </div>
       </section>
     </main>
   </div>
@@ -61,11 +66,12 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
+import CalendarView from '../components/CalendarView.vue'
 import { supabase } from '../supabase'
 
 export default {
   name: 'Agendamentos',
-  components: { Sidebar, HeaderUser, Modal },
+  components: { Sidebar, HeaderUser, Modal, CalendarView },
   data() {
     return {
       userId: null,
