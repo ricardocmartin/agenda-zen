@@ -6,8 +6,8 @@
             <h1 class="text-4xl font-bold text-blue-800 mb-4">Sua agenda digital simples e profissional</h1>
             <p class="text-gray-600 text-lg mb-6">Perfeita para psicólogos, terapeutas, dentistas, cabeleireiros e mais</p>
             <div class="space-x-4">
-              <a href="#" class="bg-white border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-100">Entrar</a>
-              <a href="/#/cadastro" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Criar conta</a>
+                <router-link to="/login" class="bg-white border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-100">Entrar</router-link>
+                <router-link to="/cadastro" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Criar conta</router-link>
             </div>
           </div>
           <div>
