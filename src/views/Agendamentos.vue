@@ -4,7 +4,21 @@
     <main class="flex-1 p-8">
       <HeaderUser title="Agendamentos" />
       <section>
-        <button @click="openModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
+        <div class="flex items-center space-x-2 mb-4">
+          <button @click="openModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
+          <div class="ml-auto flex space-x-2">
+            <button
+              @click="viewMode = 'list'"
+              :class="viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+              class="px-4 py-2 rounded"
+            >Lista</button>
+            <button
+              @click="viewMode = 'calendar'"
+              :class="viewMode === 'calendar' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+              class="px-4 py-2 rounded"
+            >Calendário</button>
+          </div>
+        </div>
 
         <Modal v-if="showModal" @close="closeModal">
           <h3 class="text-lg font-semibold mb-4">{{ editingId ? 'Editar Agendamento' : 'Adicionar Agendamento' }}</h3>
@@ -35,7 +49,7 @@
           </form>
         </Modal>
 
-        <div class="mt-8">
+        <div class="mt-8" v-show="viewMode === 'list'">
           <h3 class="text-lg font-medium mb-4">Agendamentos</h3>
           <ul class="space-y-2">
             <li v-for="appointment in appointments" :key="appointment.id" class="p-3 bg-white shadow rounded">
@@ -53,7 +67,7 @@
           </ul>
         </div>
 
-        <div class="mt-8">
+        <div class="mt-8" v-show="viewMode === 'calendar'">
           <h3 class="text-lg font-medium mb-4">Calendário</h3>
           <CalendarView :appointments="appointments" :getClientName="getClientName" />
         </div>
@@ -77,6 +91,7 @@ export default {
       userId: null,
       showModal: false,
       editingId: null,
+      viewMode: 'list',
       form: {
         date: '',
         time: '',
