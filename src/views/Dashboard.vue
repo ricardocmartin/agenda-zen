@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex bg-gray-100">
+  <div class="min-h-screen flex bg-gray-50">
     <Sidebar />
 
     <main class="flex-1 p-8 space-y-8">
@@ -7,15 +7,15 @@
 
       <!-- Indicadores -->
       <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-4 rounded shadow text-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
           <p class="text-sm text-gray-500">Agendamentos na semana</p>
           <p class="text-2xl font-bold">{{ stats.week }}</p>
         </div>
-        <div class="bg-white p-4 rounded shadow text-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
           <p class="text-sm text-gray-500">Agendamentos no mês</p>
           <p class="text-2xl font-bold">{{ stats.month }}</p>
         </div>
-        <div class="bg-white p-4 rounded shadow text-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
           <p class="text-sm text-gray-500">Clientes cadastrados</p>
           <p class="text-2xl font-bold">{{ stats.clients }}</p>
         </div>
@@ -24,9 +24,12 @@
       <section class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div class="md:col-span-8">
           <!-- Próximos agendamentos -->
-          <h3 class="text-lg font-medium mb-8">Próximos agendamentos</h3>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium">Próximos agendamentos</h3>
+            <button @click="showAppointmentModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
+          </div>
           <ul class="space-y-2">
-            <li v-for="ap in upcomingAppointments" :key="ap.id" class="p-3 bg-white shadow rounded">
+            <li v-for="ap in upcomingAppointments" :key="ap.id" class="p-4 bg-white rounded-lg shadow">
               <strong>{{ ap.date }} {{ ap.time }}</strong> -
               {{ getClientName(ap.client_id) }} - {{ ap.description }}
             </li>
@@ -37,26 +40,60 @@
         </div>
         <div class="md:col-span-4">
           <!-- Cadastro rápido de clientes -->
-          <h3 class="text-lg font-medium mb-4">Cadastro rápido de cliente</h3>
-          <form @submit.prevent="handleAddClient" class="space-y-4 max-w-md">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Nome</label>
-              <input type="text" v-model="clientForm.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">E-mail</label>
-              <input type="email" v-model="clientForm.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Telefone</label>
-              <input type="text" v-model="clientForm.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
-            </div>
-            <div class="flex justify-end">
-              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
-            </div>
-          </form>
+          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full mb-4">Novo Cliente</button>
         </div>
       </section>
+
+      <Modal v-if="showClientModal" @close="showClientModal = false">
+        <h3 class="text-lg font-semibold mb-4">Adicionar Cliente</h3>
+        <form @submit.prevent="handleAddClient" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Nome</label>
+            <input type="text" v-model="clientForm.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">E-mail</label>
+            <input type="email" v-model="clientForm.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Telefone</label>
+            <input type="text" v-model="clientForm.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button type="button" @click="showClientModal = false" class="px-4 py-2 rounded border">Cancelar</button>
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Salvar</button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal v-if="showAppointmentModal" @close="showAppointmentModal = false">
+        <h3 class="text-lg font-semibold mb-4">Adicionar Agendamento</h3>
+        <form @submit.prevent="handleAddAppointment" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Data</label>
+            <input type="date" v-model="appointmentForm.date" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Hora</label>
+            <input type="time" v-model="appointmentForm.time" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Cliente</label>
+            <select v-model="appointmentForm.clientId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione um cliente</option>
+              <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Descrição</label>
+            <textarea v-model="appointmentForm.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button type="button" @click="showAppointmentModal = false" class="px-4 py-2 rounded border">Cancelar</button>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+          </div>
+        </form>
+      </Modal>
     </main>
   </div>
 </template>
@@ -64,11 +101,12 @@
 <script>
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
+import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
 
 export default {
   name: 'Dashboard',
-  components: { Sidebar, HeaderUser },
+  components: { Sidebar, HeaderUser, Modal },
   data() {
     return {
       userId: null,
@@ -79,10 +117,18 @@ export default {
       },
       upcomingAppointments: [],
       clients: [],
+      showClientModal: false,
+      showAppointmentModal: false,
       clientForm: {
         name: '',
         email: '',
         phone: ''
+      },
+      appointmentForm: {
+        date: '',
+        time: '',
+        clientId: '',
+        description: ''
       }
     }
   },
@@ -169,6 +215,29 @@ export default {
         this.clientForm = { name: '', email: '', phone: '' }
         this.stats.clients += 1
         alert('Cliente cadastrado!')
+      }
+    },
+    async handleAddAppointment() {
+      const { data, error } = await supabase
+        .from('appointments')
+        .insert({
+          date: this.appointmentForm.date,
+          time: this.appointmentForm.time,
+          client_id: this.appointmentForm.clientId,
+          description: this.appointmentForm.description,
+          user_id: this.userId
+        })
+        .select()
+        .single()
+
+      if (error) {
+        alert('Erro ao salvar agendamento: ' + error.message)
+      } else {
+        this.upcomingAppointments.push(data)
+        this.showAppointmentModal = false
+        this.appointmentForm = { date: '', time: '', clientId: '', description: '' }
+        this.stats.week += 1
+        this.stats.month += 1
       }
     }
   },
