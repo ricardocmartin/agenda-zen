@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Configuracao from '../views/Configuracao.vue'
 import Clientes from '../views/Clientes.vue'
+import Agendamentos from '../views/Agendamentos.vue'
 import PublicPage from '../views/PublicPage.vue'
 
 
@@ -15,6 +16,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/configuracao', name: 'Configuracao', component: Configuracao },
   { path: '/clientes', name: 'Clientes', component: Clientes },
+  { path: '/agendamentos', name: 'Agendamentos', component: Agendamentos },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 
