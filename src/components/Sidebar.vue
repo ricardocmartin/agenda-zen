@@ -4,10 +4,11 @@
       <nav class="space-y-4">
         <router-link to="/dashboard" class="block text-gray-700 hover:text-blue-600">Início</router-link>
         <router-link to="/configuracao" class="block text-gray-700 hover:text-blue-600">Configurações</router-link>
+        <router-link to="/clientes" class="block text-gray-700 hover:text-blue-600">Clientes</router-link>
       </nav>
     </aside>
   </template>
-  
+
   <script>
   export default {
     name: 'Sidebar'

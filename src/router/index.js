@@ -4,8 +4,8 @@ import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Configuracao from '../views/Configuracao.vue'
+import ClientesList from '../views/ClientesList.vue'
 import PublicPage from '../views/PublicPage.vue'
-
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -13,6 +13,7 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/configuracao', name: 'Configuracao', component: Configuracao },
+  { path: '/clientes', name: 'ClientesList', component: ClientesList },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 
