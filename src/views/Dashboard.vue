@@ -1,23 +1,186 @@
 <template>
-    <div class="min-h-screen flex bg-gray-100">
-      <Sidebar />
-  
-      <main class="flex-1 p-8">
-        <HeaderUser title="Dashboard" />
-  
-        <section>
-          <p class="text-gray-700 text-lg">Bem-vindo ao painel do Agenda Zen! Aqui você poderá gerenciar seus serviços, agendamentos e personalizações.</p>
-        </section>
-      </main>
-    </div>
-  </template>
-  
-  <script>
-  import Sidebar from '../components/Sidebar.vue'
-  import HeaderUser from '../components/HeaderUser.vue'
-  
-  export default {
-    name: 'Dashboard',
-    components: { Sidebar, HeaderUser }
+  <div class="min-h-screen flex bg-gray-100">
+    <Sidebar />
+
+    <main class="flex-1 p-8 space-y-8">
+      <HeaderUser title="Dashboard" />
+
+      <!-- Indicadores -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-4 rounded shadow text-center">
+          <p class="text-sm text-gray-500">Agendamentos na semana</p>
+          <p class="text-2xl font-bold">{{ stats.week }}</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow text-center">
+          <p class="text-sm text-gray-500">Agendamentos no mês</p>
+          <p class="text-2xl font-bold">{{ stats.month }}</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow text-center">
+          <p class="text-sm text-gray-500">Clientes cadastrados</p>
+          <p class="text-2xl font-bold">{{ stats.clients }}</p>
+        </div>
+      </section>
+
+      <!-- Próximos agendamentos -->
+      <section>
+        <h3 class="text-lg font-medium mb-4">Próximos agendamentos</h3>
+        <ul class="space-y-2">
+          <li v-for="ap in upcomingAppointments" :key="ap.id" class="p-3 bg-white shadow rounded">
+            <strong>{{ ap.date }} {{ ap.time }}</strong> -
+            {{ getClientName(ap.client_id) }} - {{ ap.description }}
+          </li>
+          <li v-if="upcomingAppointments.length === 0" class="text-gray-500">
+            Nenhum agendamento
+          </li>
+        </ul>
+      </section>
+
+      <!-- Cadastro rápido de clientes -->
+      <section>
+        <h3 class="text-lg font-medium mb-4">Cadastro rápido de cliente</h3>
+        <form @submit.prevent="handleAddClient" class="space-y-4 max-w-md">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Nome</label>
+            <input type="text" v-model="clientForm.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">E-mail</label>
+            <input type="email" v-model="clientForm.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Telefone</label>
+            <input type="text" v-model="clientForm.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</template>
+
+<script>
+import Sidebar from '../components/Sidebar.vue'
+import HeaderUser from '../components/HeaderUser.vue'
+import { supabase } from '../supabase'
+
+export default {
+  name: 'Dashboard',
+  components: { Sidebar, HeaderUser },
+  data() {
+    return {
+      userId: null,
+      stats: {
+        week: 0,
+        month: 0,
+        clients: 0
+      },
+      upcomingAppointments: [],
+      clients: [],
+      clientForm: {
+        name: '',
+        email: '',
+        phone: ''
+      }
+    }
+  },
+  methods: {
+    async fetchStats() {
+      const today = new Date()
+      const dayOfWeek = today.getDay()
+      const startOfWeek = new Date(today)
+      startOfWeek.setDate(today.getDate() - dayOfWeek)
+      startOfWeek.setHours(0, 0, 0, 0)
+      const endOfWeek = new Date(today)
+      endOfWeek.setDate(today.getDate() + (6 - dayOfWeek))
+      endOfWeek.setHours(23, 59, 59, 999)
+
+      const startWeek = startOfWeek.toISOString().split('T')[0]
+      const endWeek = endOfWeek.toISOString().split('T')[0]
+
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+      const startMonth = startOfMonth.toISOString().split('T')[0]
+      const endMonth = endOfMonth.toISOString().split('T')[0]
+
+      const { data: weekData } = await supabase
+        .from('appointments')
+        .select()
+        .eq('user_id', this.userId)
+        .gte('date', startWeek)
+        .lte('date', endWeek)
+
+      this.stats.week = weekData ? weekData.length : 0
+
+      const { data: monthData } = await supabase
+        .from('appointments')
+        .select()
+        .eq('user_id', this.userId)
+        .gte('date', startMonth)
+        .lte('date', endMonth)
+
+      this.stats.month = monthData ? monthData.length : 0
+
+      const { data: clientData } = await supabase
+        .from('clients')
+        .select()
+        .eq('user_id', this.userId)
+
+      if (clientData) {
+        this.stats.clients = clientData.length
+        this.clients = clientData
+      }
+    },
+    async fetchUpcomingAppointments() {
+      const today = new Date().toISOString().split('T')[0]
+      const { data } = await supabase
+        .from('appointments')
+        .select()
+        .eq('user_id', this.userId)
+        .gte('date', today)
+        .order('date', { ascending: true })
+        .order('time', { ascending: true })
+        .limit(5)
+
+      this.upcomingAppointments = data || []
+    },
+    getClientName(clientId) {
+      const client = this.clients.find(c => c.id === clientId)
+      return client ? client.name : ''
+    },
+    async handleAddClient() {
+      const { data, error } = await supabase
+        .from('clients')
+        .insert({
+          name: this.clientForm.name,
+          email: this.clientForm.email,
+          phone: this.clientForm.phone,
+          user_id: this.userId
+        })
+        .select()
+        .single()
+
+      if (error) {
+        alert('Erro ao salvar cliente: ' + error.message)
+      } else {
+        this.clients.push(data)
+        this.clientForm = { name: '', email: '', phone: '' }
+        this.stats.clients += 1
+        alert('Cliente cadastrado!')
+      }
+    }
+  },
+  async mounted() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      this.$router.push('/login')
+      return
+    }
+    this.userId = user.id
+
+    await this.fetchStats()
+    await this.fetchUpcomingAppointments()
   }
-  </script>
+}
+</script>
