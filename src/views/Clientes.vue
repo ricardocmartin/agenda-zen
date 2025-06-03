@@ -1,45 +1,87 @@
 <template>
   <div class="min-h-screen flex bg-gray-100">
     <Sidebar />
-    <main class="flex-1 p-8">
+    <main class="flex-1 p-8 space-y-6">
       <HeaderUser title="Clientes" />
-      <section>
-        <button @click="openModal" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Cliente</button>
 
-        <Modal v-if="showModal" @close="closeModal">
-          <h3 class="text-lg font-semibold mb-4">Adicionar Cliente</h3>
-          <form @submit.prevent="handleAddClient" class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Nome</label>
-              <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">E-mail</label>
-              <input type="email" v-model="form.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Telefone</label>
-              <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
-            </div>
-            <div class="flex justify-end space-x-2">
-              <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
-            </div>
-          </form>
-        </Modal>
+      <section class="bg-white p-6 rounded-lg shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium">Clientes cadastrados</h3>
+          <div class="flex items-center space-x-3">
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Buscar..."
+              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              @click="openModal"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Novo Cliente
+            </button>
+          </div>
+        </div>
 
-        <div class="mt-8">
-          <h3 class="text-lg font-medium mb-4">Clientes cadastrados</h3>
-          <ul class="space-y-2">
-            <li v-for="client in clients" :key="client.id" class="p-3 bg-white shadow rounded flex justify-between items-center">
-              <span>
-                <strong>{{ client.name }}</strong> - {{ client.email }} - {{ client.phone }}
-              </span>
-              <button @click="handleDeleteClient(client.id)" class="text-red-600 hover:underline">Excluir</button>
-            </li>
-          </ul>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-left">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 font-medium text-gray-700">Nome</th>
+                <th class="px-4 py-2 font-medium text-gray-700">E-mail</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Telefone</th>
+                <th class="px-4 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="client in filteredClients"
+                :key="client.id"
+                class="border-b last:border-b-0"
+              >
+                <td class="px-4 py-2">{{ client.name }}</td>
+                <td class="px-4 py-2">{{ client.email }}</td>
+                <td class="px-4 py-2">{{ client.phone }}</td>
+                <td class="px-4 py-2 text-right">
+                  <button
+                    @click="handleDeleteClient(client.id)"
+                    class="text-red-600 hover:underline"
+                  >
+                    Excluir
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="filteredClients.length === 0">
+                <td colspan="4" class="px-4 py-6 text-center text-gray-500">
+                  Nenhum cliente encontrado
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
+
+      <Modal v-if="showModal" @close="closeModal">
+        <h3 class="text-lg font-semibold mb-4">Adicionar Cliente</h3>
+        <form @submit.prevent="handleAddClient" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Nome</label>
+            <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">E-mail</label>
+            <input type="email" v-model="form.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Telefone</label>
+            <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+          </div>
+        </form>
+      </Modal>
     </main>
   </div>
 </template>
@@ -57,6 +99,7 @@ export default {
     return {
       userId: null,
       showModal: false,
+      search: '',
       form: {
         name: '',
         email: '',
@@ -103,6 +146,17 @@ export default {
       } else {
         this.clients = this.clients.filter(c => c.id !== id)
       }
+    }
+  },
+  computed: {
+    filteredClients() {
+      const term = this.search.toLowerCase()
+      return this.clients.filter(
+        c =>
+          c.name.toLowerCase().includes(term) ||
+          c.email.toLowerCase().includes(term) ||
+          c.phone.toLowerCase().includes(term)
+      )
     }
   },
   async mounted() {
