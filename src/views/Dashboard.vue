@@ -21,40 +21,41 @@
         </div>
       </section>
 
-      <!-- Próximos agendamentos -->
-      <section>
-        <h3 class="text-lg font-medium mb-4">Próximos agendamentos</h3>
-        <ul class="space-y-2">
-          <li v-for="ap in upcomingAppointments" :key="ap.id" class="p-3 bg-white shadow rounded">
-            <strong>{{ ap.date }} {{ ap.time }}</strong> -
-            {{ getClientName(ap.client_id) }} - {{ ap.description }}
-          </li>
-          <li v-if="upcomingAppointments.length === 0" class="text-gray-500">
-            Nenhum agendamento
-          </li>
-        </ul>
-      </section>
-
-      <!-- Cadastro rápido de clientes -->
-      <section>
-        <h3 class="text-lg font-medium mb-4">Cadastro rápido de cliente</h3>
-        <form @submit.prevent="handleAddClient" class="space-y-4 max-w-md">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Nome</label>
-            <input type="text" v-model="clientForm.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">E-mail</label>
-            <input type="email" v-model="clientForm.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Telefone</label>
-            <input type="text" v-model="clientForm.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
-          <div class="flex justify-end">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
-          </div>
-        </form>
+      <section class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-8">
+          <!-- Próximos agendamentos -->
+          <h3 class="text-lg font-medium mb-8">Próximos agendamentos</h3>
+          <ul class="space-y-2">
+            <li v-for="ap in upcomingAppointments" :key="ap.id" class="p-3 bg-white shadow rounded">
+              <strong>{{ ap.date }} {{ ap.time }}</strong> -
+              {{ getClientName(ap.client_id) }} - {{ ap.description }}
+            </li>
+            <li v-if="upcomingAppointments.length === 0" class="text-gray-500">
+              Nenhum agendamento
+            </li>
+          </ul>
+        </div>
+        <div class="md:col-span-4">
+          <!-- Cadastro rápido de clientes -->
+          <h3 class="text-lg font-medium mb-4">Cadastro rápido de cliente</h3>
+          <form @submit.prevent="handleAddClient" class="space-y-4 max-w-md">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Nome</label>
+              <input type="text" v-model="clientForm.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">E-mail</label>
+              <input type="email" v-model="clientForm.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Telefone</label>
+              <input type="text" v-model="clientForm.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            </div>
+            <div class="flex justify-end">
+              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            </div>
+          </form>
+        </div>
       </section>
     </main>
   </div>
