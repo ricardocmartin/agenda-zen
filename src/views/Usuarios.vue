@@ -39,6 +39,7 @@ export default {
         email: '',
         password: ''
       },
+      userId: null,
       successMessage: '',
       errorMessage: ''
     }
@@ -47,14 +48,48 @@ export default {
     async handleAddUser() {
       this.successMessage = ''
       this.errorMessage = ''
-      const { error } = await supabase.auth.signUp({
+
+      const { data: { user: currentUser } } = await supabase.auth.getUser()
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+
+      let profileData = null
+      if (currentUser) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single()
+        profileData = data
+      }
+
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email: this.form.email,
         password: this.form.password
       })
 
+      if (currentSession) {
+        await supabase.auth.setSession(currentSession)
+      }
+
       if (error) {
         this.errorMessage = 'Erro ao cadastrar usuário: ' + error.message
       } else {
+        if (signUpData?.user && profileData) {
+          await supabase.from('profiles').insert({
+            id: signUpData.user.id,
+            business_name: profileData.business_name,
+            description: profileData.description,
+            phone: profileData.phone,
+            whatsapp: profileData.whatsapp,
+            email: profileData.email,
+            address: profileData.address,
+            instagram: profileData.instagram,
+            facebook: profileData.facebook,
+            youtube: profileData.youtube,
+            x: profileData.x,
+            slug: profileData.slug
+          })
+        }
         this.successMessage = 'Usuário cadastrado! Verifique o e-mail para ativar a conta.'
         this.form = { email: '', password: '' }
       }
@@ -64,7 +99,9 @@ export default {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       this.$router.push('/login')
+      return
     }
+    this.userId = user.id
   }
 }
 </script>
