@@ -6,7 +6,7 @@
       <HeaderUser title="Dashboard" />
 
       <!-- Indicadores -->
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white p-6 rounded-lg shadow-lg text-center">
           <p class="text-sm text-gray-500">Agendamentos na semana</p>
           <p class="text-2xl font-bold">{{ stats.week }}</p>
@@ -19,6 +19,10 @@
           <p class="text-sm text-gray-500">Clientes cadastrados</p>
           <p class="text-2xl font-bold">{{ stats.clients }}</p>
         </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+          <p class="text-sm text-gray-500">Novos clientes no mês</p>
+          <p class="text-2xl font-bold">{{ stats.newClients }}</p>
+        </div>
       </section>
 
       <section class="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -28,19 +32,29 @@
             <h3 class="text-lg font-medium">Próximos agendamentos</h3>
             <button @click="showAppointmentModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
           </div>
-          <ul class="space-y-2">
-            <li v-for="ap in upcomingAppointments" :key="ap.id" class="p-4 bg-white rounded-lg shadow">
-              <strong>{{ ap.date }} {{ ap.time }}</strong> -
-              {{ getClientName(ap.client_id) }} - {{ ap.description }}
-            </li>
-            <li v-if="upcomingAppointments.length === 0" class="text-gray-500">
-              Nenhum agendamento
-            </li>
-          </ul>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div v-for="ap in upcomingAppointments" :key="ap.id" class="p-4 bg-white rounded-lg shadow">
+              <strong>{{ ap.date }} {{ ap.time }}</strong>
+              <div>{{ getClientName(ap.client_id) }}</div>
+              <div class="text-sm text-gray-600">{{ ap.description }}</div>
+            </div>
+            <p v-if="upcomingAppointments.length === 0" class="text-gray-500 col-span-full">Nenhum agendamento</p>
+          </div>
         </div>
-        <div class="md:col-span-4">
+        <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
-          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full mb-4">Novo Cliente</button>
+          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full">Novo Cliente</button>
+
+          <div class="bg-white p-4 rounded-lg shadow">
+            <h4 class="font-medium mb-2">Clientes com mais agendamentos</h4>
+            <ul class="space-y-1">
+              <li v-for="c in topClients" :key="c.id" class="flex justify-between">
+                <span>{{ c.name }}</span>
+                <span>{{ c.count }}</span>
+              </li>
+              <li v-if="topClients.length === 0" class="text-gray-500 text-sm">Nenhum dado</li>
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -113,10 +127,12 @@ export default {
       stats: {
         week: 0,
         month: 0,
-        clients: 0
+        clients: 0,
+        newClients: 0
       },
       upcomingAppointments: [],
       clients: [],
+      topClients: [],
       showClientModal: false,
       showAppointmentModal: false,
       clientForm: {
@@ -148,6 +164,7 @@ export default {
 
       const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
       const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+      endOfMonth.setHours(23, 59, 59, 999)
       const startMonth = startOfMonth.toISOString().split('T')[0]
       const endMonth = endOfMonth.toISOString().split('T')[0]
 
@@ -177,9 +194,14 @@ export default {
       if (clientData) {
         this.stats.clients = clientData.length
         this.clients = clientData
+        this.stats.newClients = clientData.filter(c => {
+          const created = new Date(c.created_at)
+          return created >= startOfMonth && created <= endOfMonth
+        }).length
       }
+      await this.fetchTopClients()
     },
-    async fetchUpcomingAppointments() {
+  async fetchUpcomingAppointments() {
       const today = new Date().toISOString().split('T')[0]
       const { data } = await supabase
         .from('appointments')
@@ -191,6 +213,25 @@ export default {
         .limit(5)
 
       this.upcomingAppointments = data || []
+    },
+    async fetchTopClients() {
+      const { data } = await supabase
+        .from('appointments')
+        .select('client_id')
+        .eq('user_id', this.userId)
+
+      const counts = {}
+      if (data) {
+        data.forEach(a => {
+          counts[a.client_id] = (counts[a.client_id] || 0) + 1
+        })
+      }
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5)
+      this.topClients = sorted.map(([id, count]) => ({
+        id,
+        count,
+        name: this.getClientName(id)
+      }))
     },
     getClientName(clientId) {
       const client = this.clients.find(c => c.id === clientId)
@@ -214,6 +255,14 @@ export default {
         this.clients.push(data)
         this.clientForm = { name: '', email: '', phone: '' }
         this.stats.clients += 1
+        const now = new Date(data.created_at)
+        const startMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+        const endMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+        endMonth.setHours(23, 59, 59, 999)
+        if (now >= startMonth && now <= endMonth) {
+          this.stats.newClients += 1
+        }
+        await this.fetchTopClients()
         alert('Cliente cadastrado!')
       }
     },
@@ -238,6 +287,7 @@ export default {
         this.appointmentForm = { date: '', time: '', clientId: '', description: '' }
         this.stats.week += 1
         this.stats.month += 1
+        await this.fetchTopClients()
       }
     }
   },
