@@ -92,13 +92,9 @@
             <table class="min-w-full text-left">
               <thead class="bg-gray-50">
                 <tr>
-                  <th @click="sortBy('date')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
-                    Data
-                    <span v-if="sortColumn === 'date'">{{ sortAsc ? '▲' : '▼' }}</span>
-                  </th>
-                  <th @click="sortBy('time')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
-                    Hora
-                    <span v-if="sortColumn === 'time'">{{ sortAsc ? '▲' : '▼' }}</span>
+                  <th @click="sortBy('datetime')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                    Data/Hora
+                    <span v-if="sortColumn === 'datetime'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
                   <th @click="sortBy('client')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
                     Cliente
@@ -121,8 +117,7 @@
               </thead>
               <tbody>
                 <tr v-for="appointment in processedAppointments" :key="appointment.id" class="border-b last:border-b-0">
-                  <td class="px-4 py-2">{{ appointment.date }}</td>
-                  <td class="px-4 py-2">{{ appointment.time }}</td>
+                  <td class="px-4 py-2">{{ appointment.date }} {{ appointment.time }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
                   <td class="px-4 py-2">{{ appointment.duration }}</td>
@@ -133,7 +128,7 @@
                   </td>
                 </tr>
                 <tr v-if="processedAppointments.length === 0">
-                  <td colspan="7" class="px-4 py-6 text-center text-gray-500">Nenhum agendamento encontrado</td>
+                  <td colspan="6" class="px-4 py-6 text-center text-gray-500">Nenhum agendamento encontrado</td>
                 </tr>
               </tbody>
             </table>
@@ -216,6 +211,10 @@ export default {
             case 'service':
               valA = this.getServiceName(a.service_id)
               valB = this.getServiceName(b.service_id)
+              break
+            case 'datetime':
+              valA = a.date + ' ' + a.time
+              valB = b.date + ' ' + b.time
               break
             default:
               valA = a[this.sortColumn]
