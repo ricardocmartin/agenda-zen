@@ -10,6 +10,7 @@ create table if not exists profiles (
   facebook text,
   youtube text,
   x text,
+  image_url text,
   created_at timestamp with time zone default now()
 );
 
@@ -20,3 +21,4 @@ create policy "Users can manage own profile"
   using (auth.uid() = id);
 
 alter table profiles add column if not exists slug text;
+alter table profiles add column if not exists image_url text;
