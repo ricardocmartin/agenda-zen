@@ -15,6 +15,7 @@
             <input v-model="password" type="password" id="password" placeholder="********" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
           <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-200">Entrar</button>
+          <button type="button" @click="handleGoogleLogin" class="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition duration-200">Entrar com Google</button>
         </form>
         <p class="mt-6 text-center text-sm text-gray-500">
           Ainda não tem conta? <router-link to="/cadastro" class="text-blue-600 hover:underline">Criar agora</router-link>
@@ -40,11 +41,17 @@
           email: this.email,
           password: this.password
         })
-  
+
         if (error) {
             alert('Erro ao entrar: ' + error.message)
         } else {
             this.$router.push('/dashboard')
+        }
+      },
+      async handleGoogleLogin() {
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/#/dashboard' } })
+        if (error) {
+          alert('Erro ao entrar com Google: ' + error.message)
         }
       }
     }
