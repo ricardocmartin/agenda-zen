@@ -41,28 +41,35 @@
               <input type="text" v-model="form.address" class="w-full mt-1 px-4 py-2 border rounded-md">
             </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Instagram</label>
-              <input type="text" v-model="form.instagram" class="w-full mt-1 px-4 py-2 border rounded-md">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Facebook</label>
-              <input type="text" v-model="form.facebook" class="w-full mt-1 px-4 py-2 border rounded-md">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">YouTube</label>
-              <input type="text" v-model="form.youtube" class="w-full mt-1 px-4 py-2 border rounded-md">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">X (Twitter)</label>
-              <input type="text" v-model="form.x" class="w-full mt-1 px-4 py-2 border rounded-md">
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Instagram</label>
+            <input type="text" v-model="form.instagram" class="w-full mt-1 px-4 py-2 border rounded-md">
           </div>
           <div>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            <label class="block text-sm font-medium text-gray-700">Facebook</label>
+            <input type="text" v-model="form.facebook" class="w-full mt-1 px-4 py-2 border rounded-md">
           </div>
-        </form>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">YouTube</label>
+            <input type="text" v-model="form.youtube" class="w-full mt-1 px-4 py-2 border rounded-md">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">X (Twitter)</label>
+            <input type="text" v-model="form.x" class="w-full mt-1 px-4 py-2 border rounded-md">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Imagem do Estabelecimento</label>
+          <input type="file" accept="image/*" @change="handleImageUpload" class="mt-1" />
+          <div v-if="form.imageUrl" class="mt-2">
+            <img :src="form.imageUrl" alt="Imagem do estabelecimento" class="h-24 rounded-md" />
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+        </div>
+      </form>
       </main>
     </div>
   </template>
@@ -90,7 +97,8 @@
           instagram: '',
           facebook: '',
           youtube: '',
-          x: ''
+          x: '',
+          imageUrl: ''
         }
       }
     },
@@ -116,7 +124,8 @@
           instagram: this.form.instagram,
           facebook: this.form.facebook,
           youtube: this.form.youtube,
-          x: this.form.x
+          x: this.form.x,
+          image_url: this.form.imageUrl
         }
         const { error } = await supabase
           .from('profiles')
@@ -127,6 +136,24 @@
         } else {
           alert('Dados salvos com sucesso!')
         }
+      }
+      async handleImageUpload(event) {
+        const file = event.target.files[0]
+        if (!file) return
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${this.userId}.${fileExt}`
+        const { error } = await supabase
+          .storage
+          .from('profile-images')
+          .upload(fileName, file, { upsert: true })
+        if (error) {
+          alert('Erro ao enviar imagem: ' + error.message)
+          return
+        }
+        const {
+          data: { publicUrl }
+        } = supabase.storage.from('profile-images').getPublicUrl(fileName)
+        this.form.imageUrl = publicUrl
       }
     },
     async mounted() {
@@ -154,7 +181,8 @@
           instagram: data.instagram || '',
           facebook: data.facebook || '',
           youtube: data.youtube || '',
-          x: data.x || ''
+          x: data.x || '',
+          imageUrl: data.image_url || ''
         }
         this.updateSlug()
       }
