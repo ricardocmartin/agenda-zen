@@ -1,22 +1,29 @@
 <template>
-  <div class="min-h-screen flex bg-gray-100">
-    <Sidebar />
-    <main class="flex-1 p-8 space-y-6">
+  <div class="min-h-screen flex bg-gray-100 relative">
+    <Sidebar :is-open="sidebarOpen" @close="sidebarOpen = false" />
+    <main class="flex-1 p-4 md:p-8 space-y-6">
+      <div class="md:hidden flex items-center mb-4">
+        <button @click="sidebarOpen = true" class="text-gray-600 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
       <HeaderUser title="Serviços" />
 
       <section class="bg-white p-6 rounded-lg shadow">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-4 sm:space-y-0">
           <h3 class="text-lg font-medium">Serviços cadastrados</h3>
-          <div class="flex items-center space-x-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-3">
             <input
               v-model="search"
               type="text"
               placeholder="Buscar..."
-              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
             />
             <button
               @click="openModal"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
             >
               Novo Serviço
             </button>
@@ -100,6 +107,7 @@ export default {
       userId: null,
       showModal: false,
       search: '',
+      sidebarOpen: false,
       form: {
         name: '',
         description: '',
