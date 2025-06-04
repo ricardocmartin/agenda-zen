@@ -31,13 +31,20 @@
               <label class="block text-sm font-medium text-gray-700">Hora</label>
               <input type="time" v-model="form.time" class="w-full mt-1 px-4 py-2 border rounded-md" />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Cliente</label>
-              <select v-model="form.clientId" class="w-full mt-1 px-4 py-2 border rounded-md">
-                <option disabled value="">Selecione um cliente</option>
-                <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}</option>
-              </select>
-            </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Cliente</label>
+            <select v-model="form.clientId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione um cliente</option>
+              <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Serviço</label>
+            <select v-model="form.serviceId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione um serviço</option>
+              <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
+            </select>
+          </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Descrição</label>
               <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
@@ -56,7 +63,7 @@
               <div class="flex justify-between items-center">
                 <span>
                   <strong>{{ appointment.date }} {{ appointment.time }}</strong> -
-                  {{ getClientName(appointment.client_id) }} - {{ appointment.description }}
+                  {{ getClientName(appointment.client_id) }} - {{ getServiceName(appointment.service_id) }} - {{ appointment.description }}
                 </span>
                 <div class="space-x-2">
                   <button @click="openModal(appointment)" class="text-blue-600 hover:underline">Editar</button>
@@ -96,9 +103,11 @@ export default {
         date: '',
         time: '',
         clientId: '',
+        serviceId: '',
         description: ''
       },
       clients: [],
+      services: [],
       appointments: []
     }
   },
@@ -110,17 +119,18 @@ export default {
           date: appointment.date,
           time: appointment.time,
           clientId: appointment.client_id,
+          serviceId: appointment.service_id,
           description: appointment.description
         }
       } else {
         this.editingId = null
-        this.form = { date: '', time: '', clientId: '', description: '' }
+        this.form = { date: '', time: '', clientId: '', serviceId: '', description: '' }
       }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { date: '', time: '', clientId: '', description: '' }
+      this.form = { date: '', time: '', clientId: '', serviceId: '', description: '' }
       this.editingId = null
     },
     async handleSaveAppointment() {
@@ -131,6 +141,7 @@ export default {
             date: this.form.date,
             time: this.form.time,
             client_id: this.form.clientId,
+            service_id: this.form.serviceId,
             description: this.form.description
           })
           .eq('id', this.editingId)
@@ -151,6 +162,7 @@ export default {
             date: this.form.date,
             time: this.form.time,
             client_id: this.form.clientId,
+            service_id: this.form.serviceId,
             description: this.form.description,
             user_id: this.userId
           })
@@ -180,6 +192,10 @@ export default {
     getClientName(clientId) {
       const client = this.clients.find(c => c.id === clientId)
       return client ? client.name : ''
+    },
+    getServiceName(serviceId) {
+      const service = this.services.find(s => s.id === serviceId)
+      return service ? service.name : ''
     }
   },
   async mounted() {
@@ -197,6 +213,15 @@ export default {
 
     if (clientData) {
       this.clients = clientData
+    }
+
+    const { data: serviceData } = await supabase
+      .from('services')
+      .select()
+      .eq('user_id', this.userId)
+
+    if (serviceData) {
+      this.services = serviceData
     }
 
     const { data: appointmentData } = await supabase
