@@ -281,6 +281,11 @@ export default {
       }
     },
     async handleDeleteAppointment(id) {
+      const confirmed = confirm(
+        'Tem certeza que deseja excluir este agendamento?'
+      )
+      if (!confirmed) return
+
       const { error } = await supabase
         .from('appointments')
         .delete()

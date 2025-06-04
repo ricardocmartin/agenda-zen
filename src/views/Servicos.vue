@@ -136,6 +136,9 @@ export default {
       }
     },
     async handleDeleteService(id) {
+      const confirmed = confirm('Tem certeza que deseja excluir este serviço?')
+      if (!confirmed) return
+
       const { error } = await supabase
         .from('services')
         .delete()
