@@ -5,6 +5,7 @@ create table if not exists appointments (
   service_id uuid references services(id) on delete set null,
   date date not null,
   time time not null,
+  duration text,
   description text,
   created_at timestamp with time zone default now()
 );
