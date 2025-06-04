@@ -1,15 +1,22 @@
 <template>
-  <div class="min-h-screen flex bg-gray-100">
-    <Sidebar />
-    <main class="flex-1 p-8">
+  <div class="min-h-screen flex bg-gray-100 relative">
+    <Sidebar :is-open="sidebarOpen" @close="sidebarOpen = false" />
+    <main class="flex-1 p-4 md:p-8">
+      <div class="md:hidden flex items-center mb-4">
+        <button @click="sidebarOpen = true" class="text-gray-600 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
       <HeaderUser title="Agendamentos" />
       <section>
-        <div class="flex items-center mb-4 space-x-2">
+        <div class="flex flex-col sm:flex-row sm:items-center mb-4 gap-2">
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Buscar..."
-            class="border px-3 py-2 rounded flex-grow max-w-xs"
+            class="border px-3 py-2 rounded flex-grow sm:max-w-xs"
           />
           <input
             v-model="filterStartDate"
@@ -42,7 +49,7 @@
           </div>
           <button
             @click="openModal()"
-            class="ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
           >Novo Agendamento</button>
         </div>
 
@@ -176,7 +183,8 @@ export default {
       searchQuery: '',
       sortColumn: '',
       sortAsc: true,
-      showViewDropdown: false
+      showViewDropdown: false,
+      sidebarOpen: false
     }
   },
   computed: {
