@@ -42,7 +42,15 @@
                 <td class="px-4 py-2">{{ client.name }}</td>
                 <td class="px-4 py-2">{{ client.email }}</td>
                 <td class="px-4 py-2">{{ client.phone }}</td>
-                <td class="px-4 py-2 text-right">
+                <td class="px-4 py-2 text-right space-x-2">
+                  <a
+                    :href="whatsappLink(client.phone)"
+                    target="_blank"
+                    rel="noopener"
+                    class="text-green-600 hover:underline"
+                  >
+                    WhatsApp
+                  </a>
                   <button
                     @click="handleDeleteClient(client.id)"
                     class="text-red-600 hover:underline"
@@ -115,6 +123,13 @@ export default {
     closeModal() {
       this.showModal = false
       this.form = { name: '', email: '', phone: '' }
+    },
+    formatPhone(phone) {
+      return phone.replace(/[^\d]/g, '')
+    },
+    whatsappLink(phone) {
+      const formatted = this.formatPhone(phone)
+      return `https://wa.me/${formatted}`
     },
     async handleAddClient() {
       const { data, error } = await supabase
