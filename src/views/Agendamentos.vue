@@ -4,20 +4,36 @@
     <main class="flex-1 p-8">
       <HeaderUser title="Agendamentos" />
       <section>
-        <div class="flex items-center space-x-2 mb-4">
-          <button @click="openModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
-          <div class="ml-auto flex space-x-2">
+        <div class="flex items-center mb-4 space-x-2">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Buscar..."
+            class="border px-3 py-2 rounded flex-grow max-w-xs"
+          />
+          <div class="relative">
             <button
-              @click="viewMode = 'list'"
-              :class="viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
-              class="px-4 py-2 rounded"
-            >Lista</button>
-            <button
-              @click="viewMode = 'calendar'"
-              :class="viewMode === 'calendar' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
-              class="px-4 py-2 rounded"
-            >Calendário</button>
+              @click="showViewDropdown = !showViewDropdown"
+              class="px-4 py-2 bg-gray-200 rounded"
+            >{{ viewMode === 'list' ? 'Lista' : 'Calendário' }}</button>
+            <div
+              v-if="showViewDropdown"
+              class="absolute right-0 mt-2 w-32 bg-white border rounded shadow"
+            >
+              <button
+                @click="setViewMode('list')"
+                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >Lista</button>
+              <button
+                @click="setViewMode('calendar')"
+                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >Calendário</button>
+            </div>
           </div>
+          <button
+            @click="openModal()"
+            class="ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >Novo Agendamento</button>
         </div>
 
         <Modal v-if="showModal" @close="closeModal">
@@ -66,17 +82,35 @@
             <table class="min-w-full text-left">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-4 py-2 font-medium text-gray-700">Data</th>
-                  <th class="px-4 py-2 font-medium text-gray-700">Hora</th>
-                  <th class="px-4 py-2 font-medium text-gray-700">Cliente</th>
-                  <th class="px-4 py-2 font-medium text-gray-700">Serviço</th>
-                  <th class="px-4 py-2 font-medium text-gray-700">Duração</th>
-                  <th class="px-4 py-2 font-medium text-gray-700">Descrição</th>
+                  <th @click="sortBy('date')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                    Data
+                    <span v-if="sortColumn === 'date'">{{ sortAsc ? '▲' : '▼' }}</span>
+                  </th>
+                  <th @click="sortBy('time')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                    Hora
+                    <span v-if="sortColumn === 'time'">{{ sortAsc ? '▲' : '▼' }}</span>
+                  </th>
+                  <th @click="sortBy('client')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                    Cliente
+                    <span v-if="sortColumn === 'client'">{{ sortAsc ? '▲' : '▼' }}</span>
+                  </th>
+                  <th @click="sortBy('service')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                    Serviço
+                    <span v-if="sortColumn === 'service'">{{ sortAsc ? '▲' : '▼' }}</span>
+                  </th>
+                  <th @click="sortBy('duration')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                    Duração
+                    <span v-if="sortColumn === 'duration'">{{ sortAsc ? '▲' : '▼' }}</span>
+                  </th>
+                  <th @click="sortBy('description')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                    Descrição
+                    <span v-if="sortColumn === 'description'">{{ sortAsc ? '▲' : '▼' }}</span>
+                  </th>
                   <th class="px-4 py-2"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="appointment in appointments" :key="appointment.id" class="border-b last:border-b-0">
+                <tr v-for="appointment in processedAppointments" :key="appointment.id" class="border-b last:border-b-0">
                   <td class="px-4 py-2">{{ appointment.date }}</td>
                   <td class="px-4 py-2">{{ appointment.time }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
@@ -88,7 +122,7 @@
                     <button @click="handleDeleteAppointment(appointment.id)" class="text-red-600 hover:underline ml-2">Excluir</button>
                   </td>
                 </tr>
-                <tr v-if="appointments.length === 0">
+                <tr v-if="processedAppointments.length === 0">
                   <td colspan="7" class="px-4 py-6 text-center text-gray-500">Nenhum agendamento encontrado</td>
                 </tr>
               </tbody>
@@ -131,7 +165,50 @@ export default {
       },
       clients: [],
       services: [],
-      appointments: []
+      appointments: [],
+      searchQuery: '',
+      sortColumn: '',
+      sortAsc: true,
+      showViewDropdown: false
+    }
+  },
+  computed: {
+    processedAppointments() {
+      let result = this.appointments.slice()
+      if (this.searchQuery) {
+        const q = this.searchQuery.toLowerCase()
+        result = result.filter(a => {
+          return (
+            a.date.toLowerCase().includes(q) ||
+            a.time.toLowerCase().includes(q) ||
+            this.getClientName(a.client_id).toLowerCase().includes(q) ||
+            this.getServiceName(a.service_id).toLowerCase().includes(q) ||
+            (a.description && a.description.toLowerCase().includes(q))
+          )
+        })
+      }
+      if (this.sortColumn) {
+        result.sort((a, b) => {
+          let valA, valB
+          switch (this.sortColumn) {
+            case 'client':
+              valA = this.getClientName(a.client_id)
+              valB = this.getClientName(b.client_id)
+              break
+            case 'service':
+              valA = this.getServiceName(a.service_id)
+              valB = this.getServiceName(b.service_id)
+              break
+            default:
+              valA = a[this.sortColumn]
+              valB = b[this.sortColumn]
+          }
+          if (valA < valB) return this.sortAsc ? -1 : 1
+          if (valA > valB) return this.sortAsc ? 1 : -1
+          return 0
+        })
+      }
+      return result
     }
   },
   methods: {
@@ -222,6 +299,18 @@ export default {
     getServiceName(serviceId) {
       const service = this.services.find(s => s.id === serviceId)
       return service ? service.name : ''
+    },
+    sortBy(column) {
+      if (this.sortColumn === column) {
+        this.sortAsc = !this.sortAsc
+      } else {
+        this.sortColumn = column
+        this.sortAsc = true
+      }
+    },
+    setViewMode(mode) {
+      this.viewMode = mode
+      this.showViewDropdown = false
     }
   },
   watch: {
