@@ -33,6 +33,11 @@
         </div>
       </section>
 
+      <section class="bg-white p-6 rounded-lg shadow-lg h-64">
+        <h3 class="text-lg font-medium mb-4">Agendamentos na semana</h3>
+        <canvas ref="weekChartCanvas" class="w-full h-full"></canvas>
+      </section>
+
       <section class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div class="md:col-span-8">
           <!-- Próximos agendamentos -->
@@ -125,6 +130,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
+import { Chart } from 'chart.js/auto'
 
 export default {
   name: 'Dashboard',
@@ -144,6 +150,8 @@ export default {
       sidebarOpen: false,
       showClientModal: false,
       showAppointmentModal: false,
+      weekChart: null,
+      weekCounts: [0, 0, 0, 0, 0, 0, 0],
       clientForm: {
         name: '',
         email: '',
@@ -185,6 +193,14 @@ export default {
         .lte('date', endWeek)
 
       this.stats.week = weekData ? weekData.length : 0
+      const counts = [0, 0, 0, 0, 0, 0, 0]
+      if (weekData) {
+        weekData.forEach(a => {
+          const d = new Date(a.date)
+          counts[d.getDay()]++
+        })
+      }
+      this.weekCounts = counts
 
       const { data: monthData } = await supabase
         .from('appointments')
@@ -209,6 +225,7 @@ export default {
         }).length
       }
       await this.fetchTopClients()
+      this.$nextTick(() => this.renderWeekChart())
     },
   async fetchUpcomingAppointments() {
       const today = new Date().toISOString().split('T')[0]
@@ -241,11 +258,35 @@ export default {
         count,
         name: this.getClientName(id)
       }))
-    },
-    getClientName(clientId) {
-      const client = this.clients.find(c => c.id === clientId)
-      return client ? client.name : ''
-    },
+      },
+      renderWeekChart() {
+        const ctx = this.$refs.weekChartCanvas.getContext('2d')
+        if (this.weekChart) {
+          this.weekChart.destroy()
+        }
+        this.weekChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+            datasets: [{
+              label: 'Agendamentos',
+              data: this.weekCounts,
+              backgroundColor: '#3b82f6'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+        })
+      },
+      getClientName(clientId) {
+        const client = this.clients.find(c => c.id === clientId)
+        return client ? client.name : ''
+      },
     async handleAddClient() {
       const { data, error } = await supabase
         .from('clients')
@@ -296,7 +337,10 @@ export default {
         this.appointmentForm = { date: '', time: '', clientId: '', description: '' }
         this.stats.week += 1
         this.stats.month += 1
+        const d = new Date(data.date)
+        this.weekCounts[d.getDay()]++
         await this.fetchTopClients()
+        this.renderWeekChart()
       }
     }
   },
