@@ -151,6 +151,9 @@ export default {
       }
     },
     async handleDeleteClient(id) {
+      const confirmed = confirm('Tem certeza que deseja excluir este cliente?')
+      if (!confirmed) return
+
       const { error } = await supabase
         .from('clients')
         .delete()
