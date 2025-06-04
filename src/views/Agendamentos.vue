@@ -11,6 +11,16 @@
             placeholder="Buscar..."
             class="border px-3 py-2 rounded flex-grow max-w-xs"
           />
+          <input
+            v-model="filterStartDate"
+            type="date"
+            class="border px-3 py-2 rounded"
+          />
+          <input
+            v-model="filterEndDate"
+            type="date"
+            class="border px-3 py-2 rounded"
+          />
           <div class="relative">
             <button
               @click="showViewDropdown = !showViewDropdown"
@@ -166,6 +176,8 @@ export default {
       clients: [],
       services: [],
       appointments: [],
+      filterStartDate: '',
+      filterEndDate: '',
       searchQuery: '',
       sortColumn: '',
       sortAsc: true,
@@ -186,6 +198,12 @@ export default {
             (a.description && a.description.toLowerCase().includes(q))
           )
         })
+      }
+      if (this.filterStartDate) {
+        result = result.filter(a => a.date >= this.filterStartDate)
+      }
+      if (this.filterEndDate) {
+        result = result.filter(a => a.date <= this.filterEndDate)
       }
       if (this.sortColumn) {
         result.sort((a, b) => {
