@@ -56,7 +56,7 @@
         </div>
         <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
-          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full">Novo Cliente</button>
+          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Novo Cliente</button>
 
           <div class="bg-white p-4 rounded-lg shadow">
             <h4 class="font-medium mb-2">Clientes com mais agendamentos</h4>
@@ -228,15 +228,26 @@ export default {
       this.$nextTick(() => this.renderWeekChart())
     },
   async fetchUpcomingAppointments() {
-      const today = new Date().toISOString().split('T')[0]
+      const today = new Date()
+      const dayOfWeek = today.getDay()
+      const startOfWeek = new Date(today)
+      startOfWeek.setDate(today.getDate() - dayOfWeek)
+      startOfWeek.setHours(0, 0, 0, 0)
+      const endOfWeek = new Date(today)
+      endOfWeek.setDate(today.getDate() + (6 - dayOfWeek))
+      endOfWeek.setHours(23, 59, 59, 999)
+
+      const startWeek = startOfWeek.toISOString().split('T')[0]
+      const endWeek = endOfWeek.toISOString().split('T')[0]
+
       const { data } = await supabase
         .from('appointments')
         .select()
         .eq('user_id', this.userId)
-        .gte('date', today)
+        .gte('date', startWeek)
+        .lte('date', endWeek)
         .order('date', { ascending: true })
         .order('time', { ascending: true })
-        .limit(5)
 
       this.upcomingAppointments = data || []
     },
