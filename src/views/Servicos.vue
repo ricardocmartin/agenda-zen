@@ -2,11 +2,11 @@
   <div class="min-h-screen flex bg-gray-100">
     <Sidebar />
     <main class="flex-1 p-8 space-y-6">
-      <HeaderUser title="Servi\u00e7os" />
+      <HeaderUser title="Serviços" />
 
       <section class="bg-white p-6 rounded-lg shadow">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-medium">Servi\u00e7os cadastrados</h3>
+          <h3 class="text-lg font-medium">Serviços cadastrados</h3>
           <div class="flex items-center space-x-3">
             <input
               v-model="search"
@@ -18,7 +18,7 @@
               @click="openModal"
               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              Novo Servi\u00e7o
+              Novo Serviço
             </button>
           </div>
         </div>
@@ -28,8 +28,8 @@
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-4 py-2 font-medium text-gray-700">Nome</th>
-                <th class="px-4 py-2 font-medium text-gray-700">Descri\u00e7\u00e3o</th>
-                <th class="px-4 py-2 font-medium text-gray-700">Dura\u00e7\u00e3o</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Descrição</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Duração</th>
                 <th class="px-4 py-2"></th>
               </tr>
             </thead>
@@ -53,7 +53,7 @@
               </tr>
               <tr v-if="filteredServices.length === 0">
                 <td colspan="4" class="px-4 py-6 text-center text-gray-500">
-                  Nenhum servi\u00e7o encontrado
+                  Nenhum serviço encontrado
                 </td>
               </tr>
             </tbody>
@@ -62,18 +62,18 @@
       </section>
 
       <Modal v-if="showModal" @close="closeModal">
-        <h3 class="text-lg font-semibold mb-4">Adicionar Servi\u00e7o</h3>
+        <h3 class="text-lg font-semibold mb-4">Adicionar Serviço</h3>
         <form @submit.prevent="handleAddService" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
             <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Descri\u00e7\u00e3o</label>
+            <label class="block text-sm font-medium text-gray-700">Descrição</label>
             <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Tempo de dura\u00e7\u00e3o</label>
+            <label class="block text-sm font-medium text-gray-700">Tempo de duração</label>
             <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end space-x-2">
@@ -129,7 +129,7 @@ export default {
         .single()
 
       if (error) {
-        alert('Erro ao salvar servi\u00e7o: ' + error.message)
+        alert('Erro ao salvar serviço: ' + error.message)
       } else {
         this.services.push(data)
         this.closeModal()
@@ -142,7 +142,7 @@ export default {
         .eq('id', id)
 
       if (error) {
-        alert('Erro ao excluir servi\u00e7o: ' + error.message)
+        alert('Erro ao excluir serviço: ' + error.message)
       } else {
         this.services = this.services.filter(s => s.id !== id)
       }
