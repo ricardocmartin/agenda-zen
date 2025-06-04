@@ -45,6 +45,10 @@
               <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
             </select>
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Duração (minutos)</label>
+            <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Descrição</label>
               <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
@@ -58,20 +62,38 @@
 
         <div class="mt-8" v-show="viewMode === 'list'">
           <h3 class="text-lg font-medium mb-4">Agendamentos</h3>
-          <ul class="space-y-2">
-            <li v-for="appointment in appointments" :key="appointment.id" class="p-3 bg-white shadow rounded">
-              <div class="flex justify-between items-center">
-                <span>
-                  <strong>{{ appointment.date }} {{ appointment.time }}</strong> -
-                  {{ getClientName(appointment.client_id) }} - {{ getServiceName(appointment.service_id) }} - {{ appointment.description }}
-                </span>
-                <div class="space-x-2">
-                  <button @click="openModal(appointment)" class="text-blue-600 hover:underline">Editar</button>
-                  <button @click="handleDeleteAppointment(appointment.id)" class="text-red-600 hover:underline">Excluir</button>
-                </div>
-              </div>
-            </li>
-          </ul>
+          <div class="bg-white p-6 rounded-lg shadow overflow-x-auto">
+            <table class="min-w-full text-left">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2 font-medium text-gray-700">Data</th>
+                  <th class="px-4 py-2 font-medium text-gray-700">Hora</th>
+                  <th class="px-4 py-2 font-medium text-gray-700">Cliente</th>
+                  <th class="px-4 py-2 font-medium text-gray-700">Serviço</th>
+                  <th class="px-4 py-2 font-medium text-gray-700">Duração</th>
+                  <th class="px-4 py-2 font-medium text-gray-700">Descrição</th>
+                  <th class="px-4 py-2"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="appointment in appointments" :key="appointment.id" class="border-b last:border-b-0">
+                  <td class="px-4 py-2">{{ appointment.date }}</td>
+                  <td class="px-4 py-2">{{ appointment.time }}</td>
+                  <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
+                  <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
+                  <td class="px-4 py-2">{{ appointment.duration }}</td>
+                  <td class="px-4 py-2">{{ appointment.description }}</td>
+                  <td class="px-4 py-2 text-right">
+                    <button @click="openModal(appointment)" class="text-blue-600 hover:underline">Editar</button>
+                    <button @click="handleDeleteAppointment(appointment.id)" class="text-red-600 hover:underline ml-2">Excluir</button>
+                  </td>
+                </tr>
+                <tr v-if="appointments.length === 0">
+                  <td colspan="7" class="px-4 py-6 text-center text-gray-500">Nenhum agendamento encontrado</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="mt-8" v-show="viewMode === 'calendar'">
@@ -104,6 +126,7 @@ export default {
         time: '',
         clientId: '',
         serviceId: '',
+        duration: '',
         description: ''
       },
       clients: [],
@@ -120,17 +143,18 @@ export default {
           time: appointment.time,
           clientId: appointment.client_id,
           serviceId: appointment.service_id,
+          duration: appointment.duration,
           description: appointment.description
         }
       } else {
         this.editingId = null
-        this.form = { date: '', time: '', clientId: '', serviceId: '', description: '' }
+        this.form = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
       }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { date: '', time: '', clientId: '', serviceId: '', description: '' }
+      this.form = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
       this.editingId = null
     },
     async handleSaveAppointment() {
@@ -142,6 +166,7 @@ export default {
             time: this.form.time,
             client_id: this.form.clientId,
             service_id: this.form.serviceId,
+            duration: this.form.duration,
             description: this.form.description
           })
           .eq('id', this.editingId)
@@ -163,6 +188,7 @@ export default {
             time: this.form.time,
             client_id: this.form.clientId,
             service_id: this.form.serviceId,
+            duration: this.form.duration,
             description: this.form.description,
             user_id: this.userId
           })
@@ -196,6 +222,16 @@ export default {
     getServiceName(serviceId) {
       const service = this.services.find(s => s.id === serviceId)
       return service ? service.name : ''
+    }
+  },
+  watch: {
+    'form.serviceId'(val) {
+      const service = this.services.find(s => s.id === val)
+      if (service) {
+        if (!this.editingId || this.form.duration === '') {
+          this.form.duration = service.duration
+        }
+      }
     }
   },
   async mounted() {
