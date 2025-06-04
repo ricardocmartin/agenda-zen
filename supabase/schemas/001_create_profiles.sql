@@ -8,10 +8,12 @@ create table if not exists profiles (
   address text,
   instagram text,
   facebook text,
-  youtube text,
-  x text,
-  created_at timestamp with time zone default now()
-);
+    youtube text,
+    x text,
+    color text,
+    avatar_url text,
+    created_at timestamp with time zone default now()
+  );
 
 alter table profiles enable row level security;
 
