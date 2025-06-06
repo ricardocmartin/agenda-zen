@@ -32,7 +32,9 @@
             <button
               @click="showViewDropdown = !showViewDropdown"
               class="px-4 py-2 bg-gray-200 rounded"
-            >{{ viewMode === 'list' ? 'Lista' : 'Calendário' }}</button>
+            >
+              {{ viewMode === 'list' ? 'Lista' : viewMode === 'calendar' ? 'Calendário' : 'Semana' }}
+            </button>
             <div
               v-if="showViewDropdown"
               class="absolute right-0 mt-2 w-32 bg-white border rounded shadow"
@@ -45,6 +47,10 @@
                 @click="setViewMode('calendar')"
                 class="block w-full text-left px-4 py-2 hover:bg-gray-100"
               >Calendário</button>
+              <button
+                @click="setViewMode('week')"
+                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >Semana</button>
             </div>
           </div>
           <button
@@ -150,6 +156,11 @@
           <h3 class="text-lg font-medium mb-4">Calendário</h3>
           <CalendarView :appointments="appointments" :getClientName="getClientName" />
         </div>
+
+        <div class="mt-8" v-show="viewMode === 'week'">
+          <h3 class="text-lg font-medium mb-4">Semana</h3>
+          <WeekView :appointments="appointments" :getClientName="getClientName" />
+        </div>
       </section>
     </main>
   </div>
@@ -160,11 +171,12 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import CalendarView from '../components/CalendarView.vue'
+import WeekView from '../components/WeekView.vue'
 import { supabase } from '../supabase'
 
 export default {
   name: 'Agendamentos',
-  components: { Sidebar, HeaderUser, Modal, CalendarView },
+  components: { Sidebar, HeaderUser, Modal, CalendarView, WeekView },
   data() {
     return {
       userId: null,
