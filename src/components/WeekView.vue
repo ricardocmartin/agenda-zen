@@ -71,10 +71,14 @@ export default {
         .sort((a, b) => a.time.localeCompare(b.time))
     },
     prevWeek() {
-      this.weekStart.setDate(this.weekStart.getDate() - 7)
+      const d = new Date(this.weekStart)
+      d.setDate(d.getDate() - 7)
+      this.weekStart = d
     },
     nextWeek() {
-      this.weekStart.setDate(this.weekStart.getDate() + 7)
+      const d = new Date(this.weekStart)
+      d.setDate(d.getDate() + 7)
+      this.weekStart = d
     }
   }
 }
