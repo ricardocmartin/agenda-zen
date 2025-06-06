@@ -10,9 +10,22 @@
             </svg>
           </button>
         </div>
-        <HeaderUser title="Configurações do Perfil" />
-  
-        <form @submit.prevent="handleSave" class="space-y-6 max-w-3xl">
+        <HeaderUser title="Configurações" />
+
+        <nav class="mb-6 space-x-2">
+          <button
+            @click="activeTab = 'perfil'"
+            :class="activeTab === 'perfil' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
+            class="px-4 py-2 rounded-l"
+          >Perfil</button>
+          <button
+            @click="activeTab = 'agenda'"
+            :class="activeTab === 'agenda' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
+            class="px-4 py-2 rounded-r"
+          >Agenda</button>
+        </nav>
+
+        <form v-if="activeTab === 'perfil'" @submit.prevent="handleSave" class="space-y-6 max-w-3xl">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome Comercial</label>
             <input type="text" v-model="form.businessName" @input="updateSlug" class="w-full mt-1 px-4 py-2 border rounded-md">
@@ -92,6 +105,33 @@
           <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
         </div>
       </form>
+
+      <form v-if="activeTab === 'agenda'" @submit.prevent="handleSaveAgenda" class="space-y-6 max-w-3xl">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Início dos atendimentos</label>
+          <input type="time" v-model="agenda.startTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Final dos atendimentos</label>
+          <input type="time" v-model="agenda.endTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Dias da semana dos atendimentos</label>
+          <select multiple v-model="agenda.daysOfWeek" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <option value="0">Domingo</option>
+            <option value="1">Segunda</option>
+            <option value="2">Terça</option>
+            <option value="3">Quarta</option>
+            <option value="4">Quinta</option>
+            <option value="5">Sexta</option>
+            <option value="6">Sábado</option>
+          </select>
+        </div>
+        <div>
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+        </div>
+      </form>
+
       </main>
     </div>
   </template>
@@ -110,6 +150,7 @@
         userId: null,
         sidebarOpen: true,
         slug: '',
+        activeTab: 'perfil',
         form: {
           businessName: '',
           description: '',
@@ -123,6 +164,11 @@
           youtube: '',
           x: '',
           imageUrl: ''
+        },
+        agenda: {
+          startTime: '',
+          endTime: '',
+          daysOfWeek: []
         }
       }
     },
@@ -179,6 +225,23 @@
           data: { publicUrl }
         } = supabase.storage.from('profile-images').getPublicUrl(fileName)
         this.form.imageUrl = publicUrl
+      },
+      async handleSaveAgenda() {
+        const updates = {
+          id: this.userId,
+          start_time: this.agenda.startTime,
+          end_time: this.agenda.endTime,
+          week_days: this.agenda.daysOfWeek.join(',')
+        }
+        const { error } = await supabase
+          .from('profiles')
+          .upsert(updates, { onConflict: ['id'] })
+
+        if (error) {
+          alert('Erro ao salvar dados: ' + error.message)
+        } else {
+          alert('Dados salvos com sucesso!')
+        }
       }
     },
     async mounted() {
@@ -209,6 +272,11 @@
           youtube: data.youtube || '',
           x: data.x || '',
           imageUrl: data.image_url || ''
+        }
+        this.agenda = {
+          startTime: data.start_time || '',
+          endTime: data.end_time || '',
+          daysOfWeek: data.week_days ? data.week_days.split(',') : []
         }
         this.updateSlug()
       }
