@@ -17,6 +17,7 @@
           class="bg-white p-4 rounded-md shadow"
         >
           <h2 class="text-xl font-semibold text-blue-600">{{ profile.business_name }}</h2>
+          <p v-if="profile.area_atuacao" class="text-sm text-gray-500">{{ profile.area_atuacao }}</p>
           <p class="text-gray-700 mb-2">{{ profile.description }}</p>
           <router-link
             :to="'/' + profile.slug"
@@ -58,7 +59,7 @@ export default {
   async mounted() {
     const { data } = await supabase
       .from('profiles')
-      .select('id, business_name, description, slug')
+      .select('id, business_name, description, slug, area_atuacao')
 
     if (data) {
       this.profiles = data
