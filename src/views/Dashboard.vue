@@ -3,7 +3,7 @@
     <Sidebar :is-open="sidebarOpen" @close="sidebarOpen = false" />
 
     <main class="flex-1 p-4 md:p-8 space-y-8">
-      <div class="md:hidden flex items-center mb-4">
+      <div v-if="!sidebarOpen" class="flex items-center mb-4">
         <button @click="sidebarOpen = true" class="text-gray-600 focus:outline-none">
           <!-- simple hamburger icon -->
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -147,7 +147,7 @@ export default {
       upcomingAppointments: [],
       clients: [],
       topClients: [],
-      sidebarOpen: false,
+      sidebarOpen: true,
       showClientModal: false,
       showAppointmentModal: false,
       weekChart: null,

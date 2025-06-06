@@ -6,9 +6,17 @@
       @click="$emit('close')"
     ></div>
     <aside
-      class="fixed inset-y-0 left-0 transform bg-white shadow-md w-64 h-screen p-6 transition-transform duration-200 z-50 md:relative md:translate-x-0"
-      :class="{ '-translate-x-full md:translate-x-0': !isOpen }"
-    >
+      class="fixed inset-y-0 left-0 transform bg-white shadow-md w-64 h-screen p-6 transition-transform duration-200 z-50 md:relative"
+      :class="{ '-translate-x-full': !isOpen }"
+      >
+      <button
+        class="absolute top-4 right-4 text-gray-600 focus:outline-none"
+        @click="$emit('close')"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
       <h2 class="text-2xl font-bold text-blue-600 mb-6">Agenda Zen</h2>
       <nav class="space-y-4">
         <router-link to="/dashboard" class="block text-gray-700 hover:text-blue-600">Início</router-link>
