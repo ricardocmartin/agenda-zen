@@ -24,6 +24,7 @@
         <router-link to="/servicos" class="block text-gray-700 hover:text-blue-600">Serviços</router-link>
         <router-link to="/salas" class="block text-gray-700 hover:text-blue-600">Salas</router-link>
         <router-link to="/agendamentos" class="block text-gray-700 hover:text-blue-600">Agendamentos</router-link>
+        <router-link to="/comprovantes" class="block text-gray-700 hover:text-blue-600">Comprovantes</router-link>
         <router-link to="/usuarios" class="block text-gray-700 hover:text-blue-600">Usuários</router-link>
         <router-link to="/configuracao" class="block text-gray-700 hover:text-blue-600">Configurações</router-link>
       </nav>
