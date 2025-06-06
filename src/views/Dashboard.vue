@@ -112,6 +112,17 @@
             </select>
           </div>
           <div>
+            <label class="block text-sm font-medium text-gray-700">Serviço</label>
+            <select v-model="appointmentForm.serviceId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione um serviço</option>
+              <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Duração (minutos)</label>
+            <input type="text" v-model="appointmentForm.duration" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
             <label class="block text-sm font-medium text-gray-700">Descrição</label>
             <textarea v-model="appointmentForm.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
           </div>
@@ -146,6 +157,7 @@ export default {
       },
       upcomingAppointments: [],
       clients: [],
+      services: [],
       topClients: [],
       sidebarOpen: true,
       showClientModal: false,
@@ -161,6 +173,8 @@ export default {
         date: '',
         time: '',
         clientId: '',
+        serviceId: '',
+        duration: '',
         description: ''
       }
     }
@@ -334,6 +348,8 @@ export default {
           date: this.appointmentForm.date,
           time: this.appointmentForm.time,
           client_id: this.appointmentForm.clientId,
+          service_id: this.appointmentForm.serviceId,
+          duration: this.appointmentForm.duration,
           description: this.appointmentForm.description,
           user_id: this.userId
         })
@@ -345,13 +361,23 @@ export default {
       } else {
         this.upcomingAppointments.push(data)
         this.showAppointmentModal = false
-        this.appointmentForm = { date: '', time: '', clientId: '', description: '' }
+        this.appointmentForm = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
         this.stats.week += 1
         this.stats.month += 1
         const d = new Date(data.date)
         this.weekCounts[d.getDay()]++
         await this.fetchTopClients()
         this.renderWeekChart()
+      }
+    }
+  },
+  watch: {
+    'appointmentForm.serviceId'(val) {
+      const service = this.services.find(s => s.id === val)
+      if (service) {
+        if (this.appointmentForm.duration === '') {
+          this.appointmentForm.duration = service.duration
+        }
       }
     }
   },
@@ -365,6 +391,14 @@ export default {
 
     await this.fetchStats()
     await this.fetchUpcomingAppointments()
+    const { data: serviceData } = await supabase
+      .from('services')
+      .select()
+      .eq('user_id', this.userId)
+
+    if (serviceData) {
+      this.services = serviceData
+    }
   }
 }
 </script>
