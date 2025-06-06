@@ -42,7 +42,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="client in filteredClients"
+                v-for="client in paginatedClients"
                 :key="client.id"
                 class="border-b last:border-b-0"
               >
@@ -71,9 +71,26 @@
                   Nenhum cliente encontrado
                 </td>
               </tr>
-            </tbody>
-          </table>
+          </tbody>
+        </table>
+        <div class="mt-4 flex justify-between items-center">
+          <button
+            class="px-3 py-1 border rounded"
+            @click="prevPage"
+            :disabled="page === 1"
+          >
+            Anterior
+          </button>
+          <span class="text-sm">Página {{ page }} de {{ totalPages }}</span>
+          <button
+            class="px-3 py-1 border rounded"
+            @click="nextPage"
+            :disabled="page === totalPages"
+          >
+            Próxima
+          </button>
         </div>
+      </div>
       </section>
 
       <Modal v-if="showModal" @close="closeModal">
@@ -121,7 +138,9 @@ export default {
         phone: ''
       },
       clients: [],
-      sidebarOpen: true
+      sidebarOpen: true,
+      page: 1,
+      pageSize: 10
     }
   },
   methods: {
@@ -172,6 +191,12 @@ export default {
       } else {
         this.clients = this.clients.filter(c => c.id !== id)
       }
+    },
+    nextPage() {
+      if (this.page < this.totalPages) this.page++
+    },
+    prevPage() {
+      if (this.page > 1) this.page--
     }
   },
   computed: {
@@ -183,6 +208,18 @@ export default {
           c.email.toLowerCase().includes(term) ||
           c.phone.toLowerCase().includes(term)
       )
+    },
+    paginatedClients() {
+      const start = (this.page - 1) * this.pageSize
+      return this.filteredClients.slice(start, start + this.pageSize)
+    },
+    totalPages() {
+      return Math.max(1, Math.ceil(this.filteredClients.length / this.pageSize))
+    }
+  },
+  watch: {
+    search() {
+      this.page = 1
     }
   },
   async mounted() {

@@ -42,7 +42,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="service in filteredServices"
+                v-for="service in paginatedServices"
                 :key="service.id"
                 class="border-b last:border-b-0"
               >
@@ -71,6 +71,23 @@
               </tr>
             </tbody>
           </table>
+          <div class="mt-4 flex justify-between items-center">
+            <button
+              class="px-3 py-1 border rounded"
+              @click="prevPage"
+              :disabled="page === 1"
+            >
+              Anterior
+            </button>
+            <span class="text-sm">Página {{ page }} de {{ totalPages }}</span>
+            <button
+              class="px-3 py-1 border rounded"
+              @click="nextPage"
+              :disabled="page === totalPages"
+            >
+              Próxima
+            </button>
+          </div>
         </div>
       </section>
 
@@ -120,7 +137,9 @@ export default {
         description: '',
         duration: ''
       },
-      services: []
+      services: [],
+      page: 1,
+      pageSize: 10
     }
   },
   methods: {
@@ -195,6 +214,12 @@ export default {
       } else {
         this.services = this.services.filter(s => s.id !== id)
       }
+    },
+    nextPage() {
+      if (this.page < this.totalPages) this.page++
+    },
+    prevPage() {
+      if (this.page > 1) this.page--
     }
   },
   computed: {
@@ -206,6 +231,18 @@ export default {
           (s.description || '').toLowerCase().includes(term) ||
           (s.duration || '').toLowerCase().includes(term)
       )
+    },
+    paginatedServices() {
+      const start = (this.page - 1) * this.pageSize
+      return this.filteredServices.slice(start, start + this.pageSize)
+    },
+    totalPages() {
+      return Math.max(1, Math.ceil(this.filteredServices.length / this.pageSize))
+    }
+  },
+  watch: {
+    search() {
+      this.page = 1
     }
   },
   async mounted() {

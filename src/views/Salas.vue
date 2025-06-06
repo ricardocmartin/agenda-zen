@@ -40,7 +40,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="room in filteredRooms"
+                v-for="room in paginatedRooms"
                 :key="room.id"
                 class="border-b last:border-b-0"
               >
@@ -61,6 +61,23 @@
               </tr>
             </tbody>
           </table>
+          <div class="mt-4 flex justify-between items-center">
+            <button
+              class="px-3 py-1 border rounded"
+              @click="prevPage"
+              :disabled="page === 1"
+            >
+              Anterior
+            </button>
+            <span class="text-sm">Página {{ page }} de {{ totalPages }}</span>
+            <button
+              class="px-3 py-1 border rounded"
+              @click="nextPage"
+              :disabled="page === totalPages"
+            >
+              Próxima
+            </button>
+          </div>
         </div>
       </section>
 
@@ -99,7 +116,9 @@ export default {
         name: ''
       },
       rooms: [],
-      sidebarOpen: true
+      sidebarOpen: true,
+      page: 1,
+      pageSize: 10
     }
   },
   methods: {
@@ -141,12 +160,30 @@ export default {
       } else {
         this.rooms = this.rooms.filter(r => r.id !== id)
       }
+    },
+    nextPage() {
+      if (this.page < this.totalPages) this.page++
+    },
+    prevPage() {
+      if (this.page > 1) this.page--
     }
   },
   computed: {
     filteredRooms() {
       const term = this.search.toLowerCase()
       return this.rooms.filter(r => r.name.toLowerCase().includes(term))
+    },
+    paginatedRooms() {
+      const start = (this.page - 1) * this.pageSize
+      return this.filteredRooms.slice(start, start + this.pageSize)
+    },
+    totalPages() {
+      return Math.max(1, Math.ceil(this.filteredRooms.length / this.pageSize))
+    }
+  },
+  watch: {
+    search() {
+      this.page = 1
     }
   },
   async mounted() {
