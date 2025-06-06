@@ -22,6 +22,7 @@
         <router-link to="/dashboard" class="block text-gray-700 hover:text-blue-600">Início</router-link>
         <router-link to="/clientes" class="block text-gray-700 hover:text-blue-600">Clientes</router-link>
         <router-link to="/servicos" class="block text-gray-700 hover:text-blue-600">Serviços</router-link>
+        <router-link to="/salas" class="block text-gray-700 hover:text-blue-600">Salas</router-link>
         <router-link to="/agendamentos" class="block text-gray-700 hover:text-blue-600">Agendamentos</router-link>
         <router-link to="/usuarios" class="block text-gray-700 hover:text-blue-600">Usuários</router-link>
         <router-link to="/configuracao" class="block text-gray-700 hover:text-blue-600">Configurações</router-link>
