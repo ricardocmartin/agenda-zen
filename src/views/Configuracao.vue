@@ -117,15 +117,12 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Dias da semana dos atendimentos</label>
-          <select multiple v-model="agenda.daysOfWeek" class="w-full mt-1 px-4 py-2 border rounded-md">
-            <option value="0">Domingo</option>
-            <option value="1">Segunda</option>
-            <option value="2">Terça</option>
-            <option value="3">Quarta</option>
-            <option value="4">Quinta</option>
-            <option value="5">Sexta</option>
-            <option value="6">Sábado</option>
-          </select>
+          <div class="mt-1 space-y-1">
+            <label v-for="day in daysOfWeekOptions" :key="day.value" class="flex items-center space-x-2">
+              <input type="checkbox" :value="day.value" v-model="agenda.daysOfWeek" />
+              <span>{{ day.label }}</span>
+            </label>
+          </div>
         </div>
         <div>
           <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
@@ -169,7 +166,16 @@
           startTime: '',
           endTime: '',
           daysOfWeek: []
-        }
+        },
+        daysOfWeekOptions: [
+          { value: '0', label: 'Domingo' },
+          { value: '1', label: 'Segunda' },
+          { value: '2', label: 'Terça' },
+          { value: '3', label: 'Quarta' },
+          { value: '4', label: 'Quinta' },
+          { value: '5', label: 'Sexta' },
+          { value: '6', label: 'Sábado' }
+        ]
       }
     },
     methods: {
