@@ -82,8 +82,7 @@ export default {
       successMessage: '',
       errorMessage: '',
       users: [],
-      search: '',
-      sidebarOpen: false
+      search: ''
     }
   },
   methods: {

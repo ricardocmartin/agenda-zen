@@ -6,9 +6,9 @@
       @click="$emit('close')"
     ></div>
     <aside
-      class="fixed inset-y-0 left-0 transform bg-white shadow-md w-64 h-screen p-6 transition-transform duration-200 z-50 md:relative"
-      :class="{ '-translate-x-full': !isOpen }"
-      >
+      class="fixed inset-y-0 left-0 transform bg-white shadow-md h-screen transition-all duration-200 z-50 md:relative overflow-hidden"
+      :class="isOpen ? 'w-64 p-6 translate-x-0' : 'w-0 p-0 -translate-x-full'"
+    >
       <button
         class="absolute top-4 right-4 text-gray-600 focus:outline-none"
         @click="$emit('close')"
