@@ -77,7 +77,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Conteúdo</label>
             <textarea v-model="templateForm.content" class="w-full mt-1 px-4 py-2 border rounded-md" rows="4"></textarea>
-            <p class="text-sm text-gray-500 mt-1">Use {{'{{client_name}}'}} e {{'{{appointments}}'}}</p>
+            <p class="text-sm text-gray-500 mt-1" v-pre>Use {{client_name}} e {{appointments}}</p>
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeTemplateModal" class="px-4 py-2 rounded border">Cancelar</button>
