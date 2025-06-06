@@ -12,6 +12,7 @@ import SearchProfiles from '../views/SearchProfiles.vue'
 import PublicPage from '../views/PublicPage.vue'
 import Planos from '../views/Planos.vue'
 import Salas from '../views/Salas.vue'
+import Comprovantes from '../views/Comprovantes.vue'
 
 
 const routes = [
@@ -24,6 +25,7 @@ const routes = [
   { path: '/servicos', name: 'Servicos', component: Servicos },
   { path: '/salas', name: 'Salas', component: Salas },
   { path: '/agendamentos', name: 'Agendamentos', component: Agendamentos },
+  { path: '/comprovantes', name: 'Comprovantes', component: Comprovantes },
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
   { path: '/buscar', name: 'SearchProfiles', component: SearchProfiles },
   { path: '/planos', name: 'Planos', component: Planos },
