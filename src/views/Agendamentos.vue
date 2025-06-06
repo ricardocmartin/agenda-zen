@@ -51,6 +51,10 @@
             @click="openModal()"
             class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
           >Novo Agendamento</button>
+          <button
+            @click="exportCSV"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full sm:w-auto"
+          >Exportar CSV</button>
         </div>
 
         <Modal v-if="showModal" @close="closeModal">
@@ -341,6 +345,27 @@ export default {
     setViewMode(mode) {
       this.viewMode = mode
       this.showViewDropdown = false
+    },
+    exportCSV() {
+      const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Duração', 'Descrição']
+      const rows = this.appointments.map(a => [
+        a.date,
+        a.time,
+        this.getClientName(a.client_id),
+        this.getServiceName(a.service_id),
+        a.duration,
+        (a.description || '').replace(/(\r\n|\n|\r)/g, ' ')
+      ])
+      const csv = [headers.join(','),
+        ...rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+      ].join('\n')
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.setAttribute('download', 'agendamentos.csv')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
   },
   watch: {
