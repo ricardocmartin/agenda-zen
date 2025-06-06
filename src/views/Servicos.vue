@@ -22,7 +22,7 @@
               class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
             />
             <button
-              @click="openModal"
+              @click="openModal()"
               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
             >
               Novo Serviço
@@ -49,7 +49,13 @@
                 <td class="px-4 py-2">{{ service.name }}</td>
                 <td class="px-4 py-2">{{ service.description }}</td>
                 <td class="px-4 py-2">{{ service.duration }}</td>
-                <td class="px-4 py-2 text-right">
+                <td class="px-4 py-2 text-right space-x-2">
+                  <button
+                    @click="openModal(service)"
+                    class="text-blue-600 hover:underline"
+                  >
+                    Editar
+                  </button>
                   <button
                     @click="handleDeleteService(service.id)"
                     class="text-red-600 hover:underline"
@@ -69,8 +75,8 @@
       </section>
 
       <Modal v-if="showModal" @close="closeModal">
-        <h3 class="text-lg font-semibold mb-4">Adicionar Serviço</h3>
-        <form @submit.prevent="handleAddService" class="space-y-6">
+        <h3 class="text-lg font-semibold mb-4">{{ editingId ? 'Editar Serviço' : 'Adicionar Serviço' }}</h3>
+        <form @submit.prevent="handleSaveService" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
             <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
@@ -106,6 +112,7 @@ export default {
     return {
       userId: null,
       showModal: false,
+      editingId: null,
       search: '',
       sidebarOpen: true,
       form: {
@@ -117,29 +124,60 @@ export default {
     }
   },
   methods: {
-    openModal() {
+    openModal(service) {
+      if (service) {
+        this.editingId = service.id
+        this.form = {
+          name: service.name,
+          description: service.description,
+          duration: service.duration
+        }
+      } else {
+        this.editingId = null
+        this.form = { name: '', description: '', duration: '' }
+      }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
       this.form = { name: '', description: '', duration: '' }
+      this.editingId = null
     },
-    async handleAddService() {
-      const { data, error } = await supabase
-        .from('services')
-        .insert({
-          name: this.form.name,
-          description: this.form.description,
-          duration: this.form.duration,
-          user_id: this.userId
-        })
-        .select()
-        .single()
+    async handleSaveService() {
+      let data, error
+      if (this.editingId) {
+        ;({ data, error } = await supabase
+          .from('services')
+          .update({
+            name: this.form.name,
+            description: this.form.description,
+            duration: this.form.duration
+          })
+          .eq('id', this.editingId)
+          .select()
+          .single())
+      } else {
+        ;({ data, error } = await supabase
+          .from('services')
+          .insert({
+            name: this.form.name,
+            description: this.form.description,
+            duration: this.form.duration,
+            user_id: this.userId
+          })
+          .select()
+          .single())
+      }
 
       if (error) {
         alert('Erro ao salvar serviço: ' + error.message)
       } else {
-        this.services.push(data)
+        if (this.editingId) {
+          const index = this.services.findIndex(s => s.id === this.editingId)
+          if (index !== -1) this.services[index] = data
+        } else {
+          this.services.push(data)
+        }
         this.closeModal()
       }
     },
