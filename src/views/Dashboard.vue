@@ -40,19 +40,11 @@
 
       <section class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div class="md:col-span-8">
-          <!-- Próximos agendamentos -->
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-medium">Próximos agendamentos</h3>
+            <h3 class="text-lg font-medium">Agenda da Semana</h3>
             <button @click="showAppointmentModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div v-for="ap in upcomingAppointments" :key="ap.id" class="p-4 bg-white rounded-lg shadow">
-              <strong>{{ ap.date }} {{ ap.time }}</strong>
-              <div>{{ getClientName(ap.client_id) }}</div>
-              <div class="text-sm text-gray-600">{{ ap.description }}</div>
-            </div>
-            <p v-if="upcomingAppointments.length === 0" class="text-gray-500 col-span-full">Nenhum agendamento</p>
-          </div>
+          <WeekView :appointments="upcomingAppointments" :getClientName="getClientName" />
         </div>
         <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
@@ -140,12 +132,13 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
+import WeekView from '../components/WeekView.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
 
 export default {
   name: 'Dashboard',
-  components: { Sidebar, HeaderUser, Modal },
+  components: { Sidebar, HeaderUser, Modal, WeekView },
   data() {
     return {
       userId: null,
