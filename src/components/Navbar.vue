@@ -3,6 +3,7 @@
         <div class="text-xl font-bold text-blue-600">Agenda Zen</div>
         <div class="flex items-center space-x-4">
         <router-link to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
+        <router-link to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
         <router-link to="/login" class="text-blue-600 hover:underline">Login</router-link>
         <router-link to="/cadastro" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cadastre-se</router-link>
         </div>

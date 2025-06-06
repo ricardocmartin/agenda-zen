@@ -10,6 +10,7 @@ import Servicos from '../views/Servicos.vue'
 import Usuarios from '../views/Usuarios.vue'
 import SearchProfiles from '../views/SearchProfiles.vue'
 import PublicPage from '../views/PublicPage.vue'
+import Planos from '../views/Planos.vue'
 
 
 const routes = [
@@ -23,6 +24,7 @@ const routes = [
   { path: '/agendamentos', name: 'Agendamentos', component: Agendamentos },
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
   { path: '/buscar', name: 'SearchProfiles', component: SearchProfiles },
+  { path: '/planos', name: 'Planos', component: Planos },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 
