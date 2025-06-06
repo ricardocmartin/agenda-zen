@@ -34,6 +34,16 @@
       </div>
     </section>
 
+    <a
+      v-if="profile && profile.whatsapp"
+      :href="whatsappLink"
+      target="_blank"
+      rel="noopener"
+      class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg"
+    >
+      <img src="/icons/whatsapp.svg" alt="WhatsApp" class="w-6 h-6" />
+    </a>
+
     <div v-else class="flex-1 flex items-center justify-center text-gray-500">
       <p>Carregando perfil...</p>
     </div>
@@ -61,6 +71,13 @@ export default {
     return {
       profile: null,
       services: []
+    }
+  },
+  computed: {
+    whatsappLink() {
+      const raw = this.profile?.whatsapp || ''
+      const digits = raw.replace(/\D/g, '')
+      return `https://wa.me/${digits}`
     }
   },
   async mounted() {
