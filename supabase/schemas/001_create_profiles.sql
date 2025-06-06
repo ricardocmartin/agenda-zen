@@ -2,6 +2,7 @@ create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   business_name text,
   description text,
+  area_atuacao text,
   phone text,
   whatsapp text,
   email text,
@@ -22,3 +23,4 @@ create policy "Users can manage own profile"
 
 alter table profiles add column if not exists slug text;
 alter table profiles add column if not exists image_url text;
+alter table profiles add column if not exists area_atuacao text;

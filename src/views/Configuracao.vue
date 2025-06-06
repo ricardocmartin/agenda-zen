@@ -30,6 +30,21 @@
             <label class="block text-sm font-medium text-gray-700">Descrição do Estabelecimento</label>
             <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Área de Atuação</label>
+            <select v-model="form.areaAtuacao" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione</option>
+              <option>Psicologia</option>
+              <option>Terapias Gerais</option>
+              <option>Psicopedagogia</option>
+              <option>Medicina</option>
+              <option>Coaching</option>
+              <option>Fonoaudiologia</option>
+              <option>Fisioterapia</option>
+              <option>Nutrição</option>
+              <option>Terapia Ocupacional</option>
+            </select>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700">Telefone de Contato</label>
@@ -98,6 +113,7 @@
         form: {
           businessName: '',
           description: '',
+          areaAtuacao: '',
           phone: '',
           whatsapp: '',
           email: '',
@@ -125,6 +141,7 @@
           business_name: this.form.businessName,
           slug: this.slug,
           description: this.form.description,
+          area_atuacao: this.form.areaAtuacao,
           phone: this.form.phone,
           whatsapp: this.form.whatsapp,
           email: this.form.email,
@@ -182,6 +199,7 @@
         this.form = {
           businessName: data.business_name || '',
           description: data.description || '',
+          areaAtuacao: data.area_atuacao || '',
           phone: data.phone || '',
           whatsapp: data.whatsapp || '',
           email: data.email || '',
