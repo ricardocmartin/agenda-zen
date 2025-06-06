@@ -28,6 +28,37 @@
         <p v-if="successMessage" class="text-green-600 mt-4">{{ successMessage }}</p>
         <p v-if="errorMessage" class="text-red-600 mt-4">{{ errorMessage }}</p>
       </section>
+
+      <section class="bg-white p-6 rounded-lg shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium">Usuários cadastrados</h3>
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Buscar..."
+            class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-left">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 font-medium text-gray-700">ID</th>
+                <th class="px-4 py-2 font-medium text-gray-700">E-mail</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="u in filteredUsers" :key="u.id" class="border-b last:border-b-0">
+                <td class="px-4 py-2">{{ u.id }}</td>
+                <td class="px-4 py-2">{{ u.email }}</td>
+              </tr>
+              <tr v-if="filteredUsers.length === 0">
+                <td colspan="2" class="px-4 py-6 text-center text-gray-500">Nenhum usuário encontrado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </main>
   </div>
 </template>
@@ -49,7 +80,10 @@ export default {
       sidebarOpen: true,
       userId: null,
       successMessage: '',
-      errorMessage: ''
+      errorMessage: '',
+      users: [],
+      search: '',
+      sidebarOpen: false
     }
   },
   methods: {
@@ -100,7 +134,34 @@ export default {
         }
         this.successMessage = 'Usuário cadastrado! Verifique o e-mail para ativar a conta.'
         this.form = { email: '', password: '' }
+        await this.fetchUsers()
       }
+    },
+    async fetchUsers() {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('slug')
+        .eq('id', this.userId)
+        .single()
+
+      if (profile) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .eq('slug', profile.slug)
+
+        this.users = data || []
+      }
+    }
+  },
+  computed: {
+    filteredUsers() {
+      const term = this.search.toLowerCase()
+      return this.users.filter(
+        u =>
+          u.id.toLowerCase().includes(term) ||
+          (u.email || '').toLowerCase().includes(term)
+      )
     }
   },
   async mounted() {
@@ -110,6 +171,7 @@ export default {
       return
     }
     this.userId = user.id
+    await this.fetchUsers()
   }
 }
 </script>
