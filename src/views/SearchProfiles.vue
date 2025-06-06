@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
   <div class="min-h-screen bg-gradient-to-b from-white to-blue-50 py-10">
     <div class="max-w-2xl mx-auto px-4">
       <div class="mb-6 text-center">
@@ -35,13 +36,17 @@
       </ul>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue'
+import Footer from '../components/Footer.vue'
 import { supabase } from '../supabase'
 
 export default {
   name: 'SearchProfiles',
+  components: { Navbar, Footer },
   data() {
     return {
       profiles: [],

@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
   <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
     <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
       <div class="mb-8 text-center">
@@ -21,13 +22,17 @@
       </p>
     </div>
   </section>
+  <Footer />
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue'
+import Footer from '../components/Footer.vue'
 import { supabase } from '../supabase'
 
 export default {
   name: 'Signup',
+  components: { Navbar, Footer },
   data() {
     return {
       email: '',
