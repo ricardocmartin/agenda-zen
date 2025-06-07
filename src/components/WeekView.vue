@@ -10,27 +10,28 @@
         class="grid gap-px text-sm"
         :style="{ gridTemplateColumns: '64px repeat(7, 1fr)' }"
       >
-        <div></div>
+        <div class="bg-gray-100"></div>
         <div
-          v-for="day in daysOfWeek"
+          v-for="(day, idx) in daysOfWeek"
           :key="day"
-          class="font-semibold text-center border px-1"
+          class="font-semibold text-center border px-1 py-1 bg-gray-100"
+          :class="{ 'bg-blue-50': isToday(idx) }"
         >
-          {{ day }}
+          {{ day }} {{ formatDate(getDateOfDay(idx)) }}
         </div>
 
         <template v-for="time in timeSlots" :key="time">
-          <div class="font-semibold text-right pr-1 border">{{ time }}</div>
+          <div class="font-semibold text-right pr-1 border bg-gray-50">{{ time }}</div>
           <div
             v-for="i in 7"
             :key="time + '-' + i"
-            class="border h-16 p-1 overflow-auto"
+            class="border h-16 p-1 overflow-auto bg-white"
           >
             <ul>
               <li
                 v-for="appt in getAppointmentsForSlot(i - 1, time)"
                 :key="appt.id"
-                class="text-xs truncate cursor-pointer"
+                class="text-xs truncate cursor-pointer bg-blue-100 rounded px-1 mb-1"
                 @click="$emit('select', appt)"
               >
                 {{ appt.time }} - {{ getClientName(appt.client_id) }}
@@ -109,6 +110,16 @@ export default {
           a => a.date === day && parseInt(a.time.substring(0, 2)) === slotHour
         )
         .sort((a, b) => a.time.localeCompare(b.time))
+    },
+    isToday(offset) {
+      const today = new Date()
+      const d = new Date(this.weekStart)
+      d.setDate(d.getDate() + offset)
+      return (
+        d.getFullYear() === today.getFullYear() &&
+        d.getMonth() === today.getMonth() &&
+        d.getDate() === today.getDate()
+      )
     },
     prevWeek() {
       const d = new Date(this.weekStart)
