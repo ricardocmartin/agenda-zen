@@ -322,14 +322,21 @@ export default {
             datasets: [{
               label: 'Agendamentos',
               data: this.weekCounts,
-              backgroundColor: '#3b82f6'
+              backgroundColor: '#6366f1',
+              borderColor: '#4f46e5',
+              borderWidth: 1,
+              borderRadius: 4
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
             scales: {
-              y: { beginAtZero: true }
+              x: { grid: { display: false } },
+              y: { beginAtZero: true, grid: { color: '#e5e7eb' } }
             }
           }
         })
