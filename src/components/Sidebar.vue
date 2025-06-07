@@ -55,13 +55,23 @@
           </svg>
           <span>Salas</span>
         </router-link>
-        <router-link to="/comprovantes" class="flex items-center text-gray-700 hover:text-blue-600">
-          <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke-width="2" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v18M15 3v18M3 9h18M3 15h18" />
-          </svg>
-          <span>Comprovantes</span>
-        </router-link>
+        <div class="text-gray-700">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <rect x="4" y="3" width="16" height="18" rx="2" ry="2" stroke-width="2" />
+              <line x1="8" y1="7" x2="16" y2="7" stroke-width="2" />
+              <line x1="8" y1="11" x2="16" y2="11" stroke-width="2" />
+              <line x1="8" y1="15" x2="16" y2="15" stroke-width="2" />
+            </svg>
+            <span>Comprovantes</span>
+          </div>
+          <router-link to="/comprovantes" class="flex items-center ml-6 mt-1 text-gray-700 hover:text-blue-600">
+            <span>Comprovantes</span>
+          </router-link>
+          <router-link to="/templates" class="flex items-center ml-6 text-gray-700 hover:text-blue-600">
+            <span>Templates</span>
+          </router-link>
+        </div>
         <router-link to="/usuarios" class="flex items-center text-gray-700 hover:text-blue-600">
           <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <circle cx="12" cy="8" r="4" stroke-width="2" />
