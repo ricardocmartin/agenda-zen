@@ -44,7 +44,11 @@
             <h3 class="text-lg font-medium">Agenda da Semana</h3>
             <button @click="showAppointmentModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
           </div>
-          <WeekView :appointments="upcomingAppointments" :getClientName="getClientName" />
+          <WeekView
+            :appointments="upcomingAppointments"
+            :getClientName="getClientName"
+            @select="openDetails"
+          />
         </div>
         <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
@@ -124,6 +128,21 @@
           </div>
         </form>
       </Modal>
+
+      <Modal v-if="showDetailsModal" @close="closeDetails">
+        <h3 class="text-lg font-semibold mb-4">Detalhes do Agendamento</h3>
+        <div v-if="selectedAppointment" class="space-y-1">
+          <p><strong>Data:</strong> {{ selectedAppointment.date }}</p>
+          <p><strong>Hora:</strong> {{ selectedAppointment.time }}</p>
+          <p><strong>Cliente:</strong> {{ getClientName(selectedAppointment.client_id) }}</p>
+          <p><strong>Serviço:</strong> {{ getServiceName(selectedAppointment.service_id) }}</p>
+          <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
+          <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
+        </div>
+        <div class="flex justify-end mt-4">
+          <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
+        </div>
+      </Modal>
     </main>
   </div>
 </template>
@@ -155,6 +174,7 @@ export default {
       sidebarOpen: true,
       showClientModal: false,
       showAppointmentModal: false,
+      showDetailsModal: false,
       weekChart: null,
       weekCounts: [0, 0, 0, 0, 0, 0, 0],
       clientForm: {
@@ -169,7 +189,8 @@ export default {
         serviceId: '',
         duration: '',
         description: ''
-      }
+      },
+      selectedAppointment: null
     }
   },
   methods: {
@@ -304,6 +325,18 @@ export default {
       getClientName(clientId) {
         const client = this.clients.find(c => c.id === clientId)
         return client ? client.name : ''
+      },
+      getServiceName(serviceId) {
+        const service = this.services.find(s => s.id === serviceId)
+        return service ? service.name : ''
+      },
+      openDetails(appointment) {
+        this.selectedAppointment = appointment
+        this.showDetailsModal = true
+      },
+      closeDetails() {
+        this.showDetailsModal = false
+        this.selectedAppointment = null
       },
     async handleAddClient() {
       const { data, error } = await supabase
