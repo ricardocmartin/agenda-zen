@@ -12,7 +12,7 @@
       <HeaderUser title="Comprovantes" />
 
 
-      <section class="bg-white p-6 rounded-lg shadow space-y-4">
+      <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="text-lg font-medium">Comprovantes Gerados</h3>
           <button @click="showGenerateModal = true" class="btn">Novo Comprovante</button>

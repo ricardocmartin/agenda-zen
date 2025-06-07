@@ -11,7 +11,7 @@
       </div>
       <HeaderUser title="Templates" />
 
-      <section class="bg-white p-6 rounded-lg shadow space-y-4">
+      <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="text-lg font-medium">Templates</h3>
           <button @click="showTemplateModal = true" class="btn">Novo Template</button>

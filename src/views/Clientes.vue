@@ -11,7 +11,7 @@
       </div>
       <HeaderUser title="Clientes" />
 
-      <section class="bg-white p-6 rounded-lg shadow">
+      <section class="bg-white p-4 rounded-lg shadow">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-medium">Clientes cadastrados</h3>
           <div class="flex items-center space-x-3">
