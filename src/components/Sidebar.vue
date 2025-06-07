@@ -79,6 +79,13 @@
           </svg>
           <span>Usuários</span>
         </router-link>
+        <router-link to="/minha-assinatura" class="flex items-center text-gray-700 hover:text-blue-600">
+          <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke-width="2" />
+            <line x1="3" y1="9" x2="21" y2="9" stroke-width="2" />
+          </svg>
+          <span>Minha Assinatura</span>
+        </router-link>
       </nav>
     </aside>
   </div>
