@@ -127,8 +127,9 @@
 
         <div class="mt-8" v-show="viewMode === 'list'">
           <h3 class="text-lg font-medium mb-4">Agendamentos</h3>
-          <div class="bg-white p-6 rounded-lg shadow overflow-x-auto">
-            <table class="min-w-full text-left">
+          <div class="bg-white p-4 rounded-lg shadow">
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left">
               <thead class="bg-gray-50">
                 <tr>
                   <th @click="sortBy('datetime')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">

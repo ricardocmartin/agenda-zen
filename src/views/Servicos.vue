@@ -11,7 +11,7 @@
       </div>
       <HeaderUser title="Serviços" />
 
-      <section class="bg-white p-6 rounded-lg shadow">
+      <section class="bg-white p-4 rounded-lg shadow">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-4 sm:space-y-0">
           <h3 class="text-lg font-medium">Serviços cadastrados</h3>
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-3">
