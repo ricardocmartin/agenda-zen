@@ -22,7 +22,7 @@
             <input type="password" v-model="form.password" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Cadastrar</button>
+            <button type="submit" class="btn">Cadastrar</button>
           </div>
         </form>
         <p v-if="successMessage" class="text-green-600 mt-4">{{ successMessage }}</p>

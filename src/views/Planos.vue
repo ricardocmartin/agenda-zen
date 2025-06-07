@@ -56,7 +56,7 @@
       </table>
     </div>
     <div class="text-center mt-8">
-      <router-link to="/cadastro" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">
+      <router-link to="/cadastro" class="btn">
         Contratar plano
       </router-link>
     </div>

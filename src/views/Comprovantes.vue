@@ -15,7 +15,7 @@
       <section class="bg-white p-6 rounded-lg shadow space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="text-lg font-medium">Comprovantes Gerados</h3>
-          <button @click="showGenerateModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Comprovante</button>
+          <button @click="showGenerateModal = true" class="btn">Novo Comprovante</button>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full text-left">
@@ -74,7 +74,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeGenerateModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Gerar</button>
+            <button type="submit" class="btn">Gerar</button>
           </div>
         </form>
       </Modal>
