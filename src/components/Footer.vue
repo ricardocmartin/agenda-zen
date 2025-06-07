@@ -6,7 +6,7 @@
       <a href="https://x.com/agenda_zen" target="_blank" class="hover:underline">X</a>
     </div>
     <div class="space-x-2">
-      <a href="#" class="hover:underline">Termos de uso</a> |
+      <router-link to="/termos-de-uso" class="hover:underline">Termos de uso</router-link> |
       <router-link to="/planos" class="hover:underline">Planos</router-link> |
       <router-link to="/contato" class="hover:underline">Contato</router-link> |
       <router-link to="/faq" class="hover:underline">FAQ</router-link> |

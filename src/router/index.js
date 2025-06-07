@@ -20,6 +20,7 @@ import MinhaAssinatura from '../views/MinhaAssinatura.vue'
 import Faturamento from '../views/Faturamento.vue'
 import Faq from '../views/Faq.vue'
 import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
+import TermosDeUso from '../views/TermosDeUso.vue'
 
 
 const routes = [
@@ -43,6 +44,7 @@ const routes = [
   { path: '/contato', name: 'Contato', component: Contato },
   { path: '/faq', name: 'Faq', component: Faq },
   { path: '/politica-de-privacidade', name: 'PoliticaDePrivacidade', component: PoliticaPrivacidade },
+  { path: '/termos-de-uso', name: 'TermosDeUso', component: TermosDeUso },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 
