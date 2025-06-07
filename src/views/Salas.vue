@@ -48,7 +48,7 @@
                 <td class="px-4 py-2 text-right">
                   <button
                     @click="handleDeleteRoom(room.id)"
-                    class="text-red-600 hover:underline"
+                    class="btn btn-sm btn-danger"
                   >
                     Excluir
                   </button>

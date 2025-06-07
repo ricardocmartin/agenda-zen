@@ -54,13 +54,13 @@
                     :href="whatsappLink(client.phone)"
                     target="_blank"
                     rel="noopener"
-                    class="text-green-600 hover:underline"
+                    class="btn btn-sm btn-success"
                   >
                     WhatsApp
                   </a>
                   <button
                     @click="handleDeleteClient(client.id)"
-                    class="text-red-600 hover:underline"
+                    class="btn btn-sm btn-danger"
                   >
                     Excluir
                   </button>

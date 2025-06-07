@@ -33,7 +33,7 @@
                 <td class="px-4 py-2">{{ r.start_date }} - {{ r.end_date }}</td>
                 <td class="px-4 py-2">{{ r.created_at.split('T')[0] }}</td>
                 <td class="px-4 py-2 text-right">
-                  <button @click="showReceipt(r.content)" class="text-blue-600 hover:underline">Ver</button>
+                  <button @click="showReceipt(r.content)" class="btn btn-sm">Ver</button>
                 </td>
               </tr>
               <tr v-if="receipts.length === 0">
