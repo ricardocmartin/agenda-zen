@@ -10,7 +10,12 @@
       <div v-for="i in 7" :key="i" class="border h-48 p-1 overflow-auto">
         <div class="text-center font-medium">{{ getDateOfDay(i - 1).getDate() }}</div>
         <ul>
-          <li v-for="appt in getAppointmentsForDay(i - 1)" :key="appt.id" class="text-xs truncate">
+          <li
+            v-for="appt in getAppointmentsForDay(i - 1)"
+            :key="appt.id"
+            class="text-xs truncate cursor-pointer"
+            @click="$emit('select', appt)"
+          >
             {{ appt.time }} - {{ getClientName(appt.client_id) }}
           </li>
         </ul>

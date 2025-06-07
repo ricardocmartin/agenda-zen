@@ -56,11 +56,11 @@
           <button
             @click="openModal()"
             class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
-          >Novo Agendamento</button>
+          >Novo</button>
           <button
             @click="exportCSV"
             class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full sm:w-auto"
-          >Exportar CSV</button>
+          >Exportar</button>
         </div>
 
         <Modal v-if="showModal" @close="closeModal">
@@ -101,6 +101,21 @@
               <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
             </div>
           </form>
+        </Modal>
+
+        <Modal v-if="showDetailsModal" @close="closeDetails">
+          <h3 class="text-lg font-semibold mb-4">Detalhes do Agendamento</h3>
+          <div v-if="selectedAppointment" class="space-y-1">
+            <p><strong>Data:</strong> {{ selectedAppointment.date }}</p>
+            <p><strong>Hora:</strong> {{ selectedAppointment.time }}</p>
+            <p><strong>Cliente:</strong> {{ getClientName(selectedAppointment.client_id) }}</p>
+            <p><strong>Serviço:</strong> {{ getServiceName(selectedAppointment.service_id) }}</p>
+            <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
+            <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
+          </div>
+          <div class="flex justify-end mt-4">
+            <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
+          </div>
         </Modal>
 
         <div class="mt-8" v-show="viewMode === 'list'">
@@ -159,7 +174,11 @@
 
         <div class="mt-8" v-show="viewMode === 'week'">
           <h3 class="text-lg font-medium mb-4">Semana</h3>
-          <WeekView :appointments="appointments" :getClientName="getClientName" />
+          <WeekView
+            :appointments="appointments"
+            :getClientName="getClientName"
+            @select="openDetails"
+          />
         </div>
       </section>
     </main>
@@ -182,7 +201,7 @@ export default {
       userId: null,
       showModal: false,
       editingId: null,
-      viewMode: 'list',
+      viewMode: 'week',
       form: {
         date: '',
         time: '',
@@ -194,6 +213,8 @@ export default {
       clients: [],
       services: [],
       appointments: [],
+      selectedAppointment: null,
+      showDetailsModal: false,
       filterStartDate: '',
       filterEndDate: '',
       searchQuery: '',
@@ -274,6 +295,10 @@ export default {
       this.showModal = false
       this.form = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
       this.editingId = null
+    },
+    closeDetails() {
+      this.showDetailsModal = false
+      this.selectedAppointment = null
     },
     async handleSaveAppointment() {
       if (this.editingId) {
@@ -357,6 +382,10 @@ export default {
     setViewMode(mode) {
       this.viewMode = mode
       this.showViewDropdown = false
+    },
+    openDetails(appointment) {
+      this.selectedAppointment = appointment
+      this.showDetailsModal = true
     },
     exportCSV() {
       const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Duração', 'Descrição']
