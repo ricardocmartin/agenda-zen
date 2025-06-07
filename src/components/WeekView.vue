@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import { supabase } from '../supabase'
+
 export default {
   name: 'WeekView',
   props: {
@@ -63,7 +65,9 @@ export default {
     return {
       weekStart,
       daysOfWeek: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-      timeSlots: Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`)
+      startTime: '00:00',
+      endTime: '23:00',
+      timeSlots: []
     }
   },
   computed: {
@@ -74,6 +78,14 @@ export default {
     }
   },
   methods: {
+    generateTimeSlots() {
+      const start = Math.max(0, parseInt(this.startTime.split(':')[0]) - 1)
+      const end = Math.min(23, parseInt(this.endTime.split(':')[0]) + 1)
+      this.timeSlots = []
+      for (let h = start; h <= end; h++) {
+        this.timeSlots.push(`${String(h).padStart(2, '0')}:00`)
+      }
+    },
     formatDate(date) {
       const m = String(date.getMonth() + 1).padStart(2, '0')
       const d = String(date.getDate()).padStart(2, '0')
@@ -108,6 +120,30 @@ export default {
       d.setDate(d.getDate() + 7)
       this.weekStart = d
     }
+  },
+  watch: {
+    startTime() {
+      this.generateTimeSlots()
+    },
+    endTime() {
+      this.generateTimeSlots()
+    }
+  },
+  async mounted() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data } = await supabase
+        .from('profiles')
+        .select('start_time, end_time')
+        .eq('id', user.id)
+        .single()
+
+      if (data) {
+        if (data.start_time) this.startTime = data.start_time
+        if (data.end_time) this.endTime = data.end_time
+      }
+    }
+    this.generateTimeSlots()
   }
 }
 </script>
