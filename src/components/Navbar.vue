@@ -1,12 +1,46 @@
 <template>
-    <nav class="flex items-center justify-between px-8 py-4 bg-white shadow">
-        <router-link to="/" class="text-xl font-bold text-blue-600">Agenda Zen</router-link>
-        <div class="flex items-center space-x-4">
-        <router-link to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
-        <router-link to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
-        <router-link to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
-        <router-link to="/login" class="text-blue-600 hover:underline">Login</router-link>
-        <router-link to="/cadastro" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cadastre-se</router-link>
-        </div>
-    </nav>
+  <nav class="flex items-center justify-between px-8 py-4 bg-white shadow relative">
+    <router-link to="/" class="text-xl font-bold text-blue-600">Agenda Zen</router-link>
+
+    <!-- Botão hambúrguer visível apenas no mobile -->
+    <button @click="toggleMenu" class="md:hidden focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <!-- Menu desktop -->
+    <div class="hidden md:flex items-center space-x-4">
+      <router-link to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
+      <router-link to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
+      <router-link to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
+      <router-link to="/login" class="text-blue-600 hover:underline">Login</router-link>
+      <router-link to="/cadastro" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cadastre-se</router-link>
+    </div>
+
+    <!-- Menu mobile -->
+    <div v-if="open" class="absolute top-full left-0 w-full bg-white shadow-md md:hidden flex flex-col items-start space-y-2 py-4 px-8">
+      <router-link @click="open = false" to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
+      <router-link @click="open = false" to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
+      <router-link @click="open = false" to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
+      <router-link @click="open = false" to="/login" class="text-blue-600 hover:underline">Login</router-link>
+      <router-link @click="open = false" to="/cadastro" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cadastre-se</router-link>
+    </div>
+  </nav>
 </template>
+
+<script>
+export default {
+  name: 'Navbar',
+  data() {
+    return {
+      open: false
+    }
+  },
+  methods: {
+    toggleMenu() {
+      this.open = !this.open
+    }
+  }
+}
+</script>
