@@ -29,7 +29,7 @@
           v-for="(day, idx) in daysOfWeek"
           :key="day"
           class="font-semibold text-center border px-1 bg-gray-50"
-          :class="{ 'bg-blue-50': isToday(idx) }"
+          :class="{ 'bg-blue-50 border-l-4 border-blue-500': isToday(idx) }"
         >
           {{ day }}
         </div>
@@ -40,6 +40,7 @@
             v-for="i in 7"
             :key="time + '-' + i"
             class="border h-16 p-1 overflow-auto bg-white"
+            :class="{ 'border-l-4 border-blue-500': isToday(i - 1) }"
           >
             <ul>
               <li

@@ -26,7 +26,7 @@
         v-for="day in daysInMonth"
         :key="day"
         class="border border-gray-200 h-24 p-1 overflow-auto bg-white"
-        :class="{ 'bg-blue-50': isToday(day) }"
+        :class="{ 'bg-blue-50 border-l-4 border-blue-500': isToday(day) }"
       >
         <div class="text-center font-medium">{{ day }}</div>
         <ul>
