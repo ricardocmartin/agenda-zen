@@ -11,39 +11,27 @@
       </div>
       <HeaderUser title="Agendamentos" />
       <section>
-        <div class="flex flex-col sm:flex-row sm:items-end mb-4 gap-2">
-          <div class="flex flex-col flex-grow sm:max-w-xs">
-            <label class="text-sm font-medium text-gray-700 mb-1">Buscar</label>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Buscar..."
-              class="border px-3 py-2 rounded"
-            />
-          </div>
-          <div class="flex flex-col">
-            <label class="text-sm font-medium text-gray-700 mb-1">Data de Início</label>
-            <input
-              v-model="filterStartDate"
-              type="date"
-              class="border px-3 py-2 rounded"
-            />
-          </div>
-          <div class="flex flex-col">
-            <label class="text-sm font-medium text-gray-700 mb-1">Data de Fim</label>
-            <input
-              v-model="filterEndDate"
-              type="date"
-              class="border px-3 py-2 rounded"
-            />
-          </div>
-          <p class="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded sm:self-end">
-            Formato: dd/mm/aaaa
-          </p>
+        <div class="flex flex-col sm:flex-row sm:items-center mb-4 gap-2">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Buscar..."
+            class="border px-3 py-2 rounded-lg flex-grow sm:max-w-xs"
+          />
+          <input
+            v-model="filterStartDate"
+            type="date"
+            class="border px-3 py-2 rounded-lg"
+          />
+          <input
+            v-model="filterEndDate"
+            type="date"
+            class="border px-3 py-2 rounded-lg"
+          />
           <div class="relative">
             <button
               @click="showViewDropdown = !showViewDropdown"
-              class="px-4 py-2 bg-gray-200 rounded"
+              class="px-4 py-2 bg-gray-200 rounded-lg"
             >
               {{ viewMode === 'list' ? 'Lista' : viewMode === 'calendar' ? 'Calendário' : 'Semana' }}
             </button>
@@ -67,11 +55,11 @@
           </div>
           <button
             @click="openModal()"
-            class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
+            class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
           >Novo</button>
           <button
             @click="exportCSV"
-            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full sm:w-auto"
+            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-auto"
           >Exportar</button>
         </div>
 
@@ -80,37 +68,37 @@
           <form @submit.prevent="handleSaveAppointment" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700">Data</label>
-              <input type="date" v-model="form.date" class="w-full mt-1 px-4 py-2 border rounded-md" />
+              <input type="date" v-model="form.date" class="w-full mt-1 px-4 py-2 border rounded-lg" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Hora</label>
-              <input type="time" v-model="form.time" class="w-full mt-1 px-4 py-2 border rounded-md" />
+              <input type="time" v-model="form.time" class="w-full mt-1 px-4 py-2 border rounded-lg" />
             </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Cliente</label>
-            <select v-model="form.clientId" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <select v-model="form.clientId" class="w-full mt-1 px-4 py-2 border rounded-lg">
               <option disabled value="">Selecione um cliente</option>
               <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Serviço</label>
-            <select v-model="form.serviceId" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <select v-model="form.serviceId" class="w-full mt-1 px-4 py-2 border rounded-lg">
               <option disabled value="">Selecione um serviço</option>
               <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Duração (minutos)</label>
-            <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-lg" />
           </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Descrição</label>
-              <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
+              <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-lg"></textarea>
             </div>
             <div class="flex justify-end space-x-2">
-              <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+              <button type="button" @click="closeModal" class="px-4 py-2 rounded-lg border">Cancelar</button>
+              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Salvar</button>
             </div>
           </form>
         </Modal>
@@ -126,7 +114,7 @@
             <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
           </div>
           <div class="flex justify-end mt-4">
-            <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
+            <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
           </div>
         </Modal>
 
