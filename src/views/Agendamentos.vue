@@ -169,13 +169,16 @@
 
         <div class="mt-8" v-show="viewMode === 'calendar'">
           <h3 class="text-lg font-medium mb-4">Calendário</h3>
-          <CalendarView :appointments="appointments" :getClientName="getClientName" />
+          <CalendarView
+            :appointments="processedAppointments"
+            :getClientName="getClientName"
+          />
         </div>
 
         <div class="mt-8" v-show="viewMode === 'week'">
           <h3 class="text-lg font-medium mb-4">Semana</h3>
           <WeekView
-            :appointments="appointments"
+            :appointments="processedAppointments"
             :getClientName="getClientName"
             @select="openDetails"
           />
