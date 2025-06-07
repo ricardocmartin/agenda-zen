@@ -1,6 +1,6 @@
 <template>
     <nav class="flex items-center justify-between px-8 py-4 bg-white shadow">
-        <div class="text-xl font-bold text-blue-600">Agenda Zen</div>
+        <router-link to="/" class="text-xl font-bold text-blue-600">Agenda Zen</router-link>
         <div class="flex items-center space-x-4">
         <router-link to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
         <router-link to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
