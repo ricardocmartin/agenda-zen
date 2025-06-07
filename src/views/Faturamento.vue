@@ -12,7 +12,7 @@
       <HeaderUser title="Relatório de Faturamento" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
           <div>
             <label class="block text-sm font-medium text-gray-700">Serviços</label>
             <div class="mt-1 space-y-1">
