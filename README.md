@@ -10,6 +10,7 @@ Agenda Zen é uma aplicação web de agendamento voltada para profissionais como
 - Dashboard com estatísticas e gráfico dos agendamentos (Chart.js)
 - Configuração de perfil público com link personalizado
 - Geração de comprovantes de atendimento
+- Indicação visual do horário atual na visão semanal
 
 O diretório `supabase/schemas` contém os scripts SQL para criação das tabelas e políticas de segurança no Supabase.
 
