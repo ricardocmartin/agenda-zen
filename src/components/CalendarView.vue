@@ -71,6 +71,11 @@ export default {
         this.currentMonth++
       }
     },
+    goToCurrentMonth() {
+      const today = new Date()
+      this.currentYear = today.getFullYear()
+      this.currentMonth = today.getMonth()
+    },
     getAppointmentsForDay(day) {
       const month = String(this.currentMonth + 1).padStart(2, '0')
       const d = String(day).padStart(2, '0')

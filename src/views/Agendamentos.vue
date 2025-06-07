@@ -61,6 +61,10 @@
             @click="exportCSV"
             class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-auto"
           >Exportar</button>
+          <button
+            @click="clearFilters"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
+          >Limpar</button>
         </div>
 
         <Modal v-if="showModal" @close="closeModal">
@@ -170,6 +174,7 @@
         <div class="mt-8" v-show="viewMode === 'calendar'">
           <h3 class="text-lg font-medium mb-4">Calendário</h3>
           <CalendarView
+            ref="calendarView"
             :appointments="processedAppointments"
             :getClientName="getClientName"
           />
@@ -385,6 +390,9 @@ export default {
     setViewMode(mode) {
       this.viewMode = mode
       this.showViewDropdown = false
+      if (mode === 'calendar' && this.$refs.calendarView && this.$refs.calendarView.goToCurrentMonth) {
+        this.$refs.calendarView.goToCurrentMonth()
+      }
     },
     openDetails(appointment) {
       this.selectedAppointment = appointment
@@ -410,6 +418,11 @@ export default {
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+    },
+    clearFilters() {
+      this.searchQuery = ''
+      this.filterStartDate = ''
+      this.filterEndDate = ''
     }
   },
   watch: {
