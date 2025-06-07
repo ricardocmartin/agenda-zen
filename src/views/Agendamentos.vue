@@ -28,6 +28,18 @@
             type="date"
             class="border px-3 py-2 rounded-lg"
           />
+          <button
+            @click="clearFilters"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
+          >Limpar</button>
+          <button
+            @click="openModal()"
+            class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
+          >Novo</button>
+          <button
+            @click="exportCSV"
+            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-auto"
+          >Exportar</button>
           <div class="relative">
             <button
               @click="showViewDropdown = !showViewDropdown"
@@ -53,18 +65,6 @@
               >Semana</button>
             </div>
           </div>
-          <button
-            @click="openModal()"
-            class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
-          >Novo</button>
-          <button
-            @click="exportCSV"
-            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-auto"
-          >Exportar</button>
-          <button
-            @click="clearFilters"
-            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
-          >Limpar</button>
         </div>
 
         <Modal v-if="showModal" @close="closeModal">
