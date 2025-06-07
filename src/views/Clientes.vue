@@ -48,7 +48,7 @@
               >
                 <td class="px-4 py-2">{{ client.name }}</td>
                 <td class="px-4 py-2">{{ client.email }}</td>
-                <td class="px-4 py-2">{{ client.phone }}</td>
+                <td class="px-4 py-2">{{ phoneMask(client.phone) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
                   <a
                     :href="whatsappLink(client.phone)"
@@ -106,7 +106,11 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Telefone</label>
-            <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input
+              type="text"
+              v-model="form.phone"
+              @input="form.phone = phoneMask(form.phone)"
+              class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
@@ -123,6 +127,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
+import { phoneMask, digitsOnly } from '../utils/phone'
 
 export default {
   name: 'Clientes',
@@ -144,6 +149,8 @@ export default {
     }
   },
   methods: {
+    phoneMask,
+    digitsOnly,
     openModal() {
       this.showModal = true
     },
@@ -151,11 +158,8 @@ export default {
       this.showModal = false
       this.form = { name: '', email: '', phone: '' }
     },
-    formatPhone(phone) {
-      return phone.replace(/[^\d]/g, '')
-    },
     whatsappLink(phone) {
-      const formatted = this.formatPhone(phone)
+      const formatted = digitsOnly(phone)
       return `https://wa.me/${formatted}`
     },
     async handleAddClient() {

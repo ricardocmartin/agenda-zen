@@ -92,7 +92,11 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Telefone</label>
-            <input type="text" v-model="clientForm.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input
+              type="text"
+              v-model="clientForm.phone"
+              @input="clientForm.phone = phoneMask(clientForm.phone)"
+              class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="showClientModal = false" class="px-4 py-2 rounded border">Cancelar</button>
@@ -166,6 +170,7 @@ import Modal from '../components/Modal.vue'
 import WeekView from '../components/WeekView.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
+import { phoneMask } from '../utils/phone'
 
 export default {
   name: 'Dashboard',
@@ -206,6 +211,7 @@ export default {
     }
   },
   methods: {
+    phoneMask,
     async fetchStats() {
       const today = new Date()
       const dayOfWeek = today.getDay()
