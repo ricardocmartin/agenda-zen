@@ -7,34 +7,49 @@
         <thead>
           <tr class="bg-gray-50 text-gray-700">
             <th class="px-4 py-2 text-left">Recursos</th>
-            <th class="px-4 py-2">Grátis</th>
             <th class="px-4 py-2">Básico</th>
             <th class="px-4 py-2">Plus</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="border-t px-4 py-2 text-gray-600">Agendamentos online</td>
-            <td class="border-t px-4 py-2 text-center">✓</td>
+            <td class="border-t px-4 py-2 text-gray-600">Valor</td>
+            <td class="border-t px-4 py-2 text-center font-semibold">Grátis</td>
+            <td class="border-t px-4 py-2 text-center font-semibold">R$69,00</td>
+          </tr>
+          <tr class="bg-gray-50">
+            <td class="border-t px-4 py-2 text-gray-600">Cadastro de pacientes</td>
+            <td class="border-t px-4 py-2 text-center">Até 5 pacientes</td>
+            <td class="border-t px-4 py-2 text-center">Ilimitado</td>
+          </tr>
+          <tr>
+            <td class="border-t px-4 py-2 text-gray-600">Lembretes por e-mail</td>
             <td class="border-t px-4 py-2 text-center">✓</td>
             <td class="border-t px-4 py-2 text-center">✓</td>
           </tr>
           <tr class="bg-gray-50">
-            <td class="border-t px-4 py-2 text-gray-600">Lembretes automáticos</td>
-            <td class="border-t px-4 py-2 text-center">-</td>
-            <td class="border-t px-4 py-2 text-center">✓</td>
+            <td class="border-t px-4 py-2 text-gray-600">Lembretes via WhatsApp</td>
+            <td class="border-t px-4 py-2 text-center line-through text-gray-400">✓</td>
             <td class="border-t px-4 py-2 text-center">✓</td>
           </tr>
           <tr>
-            <td class="border-t px-4 py-2 text-gray-600">Pagamentos via Pix</td>
-            <td class="border-t px-4 py-2 text-center">-</td>
-            <td class="border-t px-4 py-2 text-center">✓</td>
+            <td class="border-t px-4 py-2 text-gray-600">Customização de domínio da página pública</td>
+            <td class="border-t px-4 py-2 text-center line-through text-gray-400">✓</td>
             <td class="border-t px-4 py-2 text-center">✓</td>
           </tr>
           <tr class="bg-gray-50">
-            <td class="border-t px-4 py-2 text-gray-600">Suporte prioritário</td>
-            <td class="border-t px-4 py-2 text-center">-</td>
-            <td class="border-t px-4 py-2 text-center">-</td>
+            <td class="border-t px-4 py-2 text-gray-600">Página pública sem banner do Agenda Zen</td>
+            <td class="border-t px-4 py-2 text-center line-through text-gray-400">✓</td>
+            <td class="border-t px-4 py-2 text-center">✓</td>
+          </tr>
+          <tr>
+            <td class="border-t px-4 py-2 text-gray-600">Geração de recibos de atendimentos</td>
+            <td class="border-t px-4 py-2 text-center line-through text-gray-400">✓</td>
+            <td class="border-t px-4 py-2 text-center">✓</td>
+          </tr>
+          <tr class="bg-gray-50">
+            <td class="border-t px-4 py-2 text-gray-600">Envio de recibos por e-mail automático</td>
+            <td class="border-t px-4 py-2 text-center line-through text-gray-400">✓</td>
             <td class="border-t px-4 py-2 text-center">✓</td>
           </tr>
         </tbody>
