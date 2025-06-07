@@ -11,6 +11,7 @@
           </button>
         </div>
         <HeaderUser title="Configurações" />
+        <router-link to="/onboarding" class="text-blue-600 underline mb-4 inline-block">Refazer Onboarding</router-link>
 
         <nav class="mb-6 space-x-2">
           <button
