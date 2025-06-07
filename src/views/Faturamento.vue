@@ -35,7 +35,7 @@
               </div>
             </div>
           </div>
-          <div>
+          <div class="md:col-span-2 md:col-start-2">
             <label class="block text-sm font-medium text-gray-700">Agrupar por</label>
             <select v-model="groupBy" class="w-full mt-1 px-4 py-2 border rounded-md">
               <option value="mes">Mês</option>
