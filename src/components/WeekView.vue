@@ -40,7 +40,7 @@
             v-for="i in 7"
             :key="time + '-' + i"
             class="border h-16 p-1 overflow-auto bg-white"
-            :class="{ 'border-l-4 border-blue-500': isToday(i - 1) }"
+            :class="{ 'bg-blue-50': isToday(i - 1) }"
           >
             <ul>
               <li
