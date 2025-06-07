@@ -1,9 +1,17 @@
 <template>
-  <div>
-    <div class="flex justify-between items-center mb-2">
-      <button @click="prevWeek" class="px-2">&lt;</button>
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="flex justify-between items-center px-4 py-2 border-b bg-gray-50">
+      <button @click="prevWeek" class="p-1 rounded hover:bg-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
       <div class="font-semibold">{{ formatDate(weekStart) }} - {{ formatDate(weekEnd) }}</div>
-      <button @click="nextWeek" class="px-2">&gt;</button>
+      <button @click="nextWeek" class="p-1 rounded hover:bg-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
     <div class="relative overflow-x-auto">
       <div
@@ -13,24 +21,25 @@
       ></div>
       <div
         ref="grid"
-        class="grid gap-px text-sm"
+        class="grid gap-px text-sm bg-gray-100"
         :style="{ gridTemplateColumns: '64px repeat(7, 1fr)' }"
       >
-        <div></div>
+        <div class="bg-gray-50"></div>
         <div
-          v-for="day in daysOfWeek"
+          v-for="(day, idx) in daysOfWeek"
           :key="day"
-          class="font-semibold text-center border px-1"
+          class="font-semibold text-center border px-1 bg-gray-50"
+          :class="{ 'bg-blue-50': isToday(idx) }"
         >
           {{ day }}
         </div>
 
         <template v-for="time in timeSlots" :key="time">
-          <div class="font-semibold text-right pr-1 border">{{ time }}</div>
+          <div class="font-semibold text-right pr-1 border bg-gray-50">{{ time }}</div>
           <div
             v-for="i in 7"
             :key="time + '-' + i"
-            class="border h-16 p-1 overflow-auto"
+            class="border h-16 p-1 overflow-auto bg-white"
           >
             <ul>
               <li
@@ -139,6 +148,11 @@ export default {
       const d = new Date(this.weekStart)
       d.setDate(d.getDate() + 7)
       this.weekStart = d
+    },
+    isToday(offset) {
+      const today = new Date()
+      const d = this.getDateOfDay(offset)
+      return d.toDateString() === today.toDateString()
     }
   },
   watch: {

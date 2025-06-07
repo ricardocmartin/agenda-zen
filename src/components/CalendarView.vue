@@ -1,17 +1,32 @@
 <template>
-  <div>
-    <div class="flex justify-between items-center mb-2">
-      <button @click="prevMonth" class="px-2">&lt;</button>
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="flex justify-between items-center px-4 py-2 border-b bg-gray-50">
+      <button @click="prevMonth" class="p-1 rounded hover:bg-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
       <div class="font-semibold">{{ monthNames[currentMonth] }} {{ currentYear }}</div>
-      <button @click="nextMonth" class="px-2">&gt;</button>
+      <button @click="nextMonth" class="p-1 rounded hover:bg-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
-    <div class="grid grid-cols-7 gap-1 text-sm">
-      <div class="font-semibold text-center" v-for="day in daysOfWeek" :key="day">{{ day }}</div>
-      <div v-for="n in leadingBlanks" :key="'b'+n"></div>
+    <div class="grid grid-cols-7 gap-px text-sm bg-gray-100">
+      <div
+        class="font-semibold text-center bg-gray-50 p-1"
+        v-for="day in daysOfWeek"
+        :key="day"
+      >
+        {{ day }}
+      </div>
+      <div v-for="n in leadingBlanks" :key="'b'+n" class="bg-white h-24"></div>
       <div
         v-for="day in daysInMonth"
         :key="day"
-        class="border h-24 p-1 overflow-auto"
+        class="border border-gray-200 h-24 p-1 overflow-auto bg-white"
+        :class="{ 'bg-blue-50': isToday(day) }"
       >
         <div class="text-center font-medium">{{ day }}</div>
         <ul>
@@ -81,6 +96,14 @@ export default {
       const d = String(day).padStart(2, '0')
       const dateStr = `${this.currentYear}-${month}-${d}`
       return this.appointments.filter(a => a.date === dateStr)
+    },
+    isToday(day) {
+      const today = new Date()
+      return (
+        this.currentYear === today.getFullYear() &&
+        this.currentMonth === today.getMonth() &&
+        day === today.getDate()
+      )
     }
   }
 }
