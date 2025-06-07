@@ -173,6 +173,7 @@
               </tbody>
             </table>
           </div>
+          </div>
         </div>
 
         <div class="mt-8" v-show="viewMode === 'calendar'">
