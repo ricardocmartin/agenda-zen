@@ -71,6 +71,21 @@
           </router-link>
         </div>
         <div class="space-y-2">
+          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pagamentos</h3>
+          <router-link to="/comprovantes" class="flex items-center text-gray-700 hover:text-blue-600">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+            </svg>
+            <span>Comprovantes</span>
+          </router-link>
+          <router-link to="/templates" class="flex items-center text-gray-700 hover:text-blue-600">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v4H4V4zm0 6h16v10H4V10z" />
+            </svg>
+            <span>Templates</span>
+          </router-link>
+        </div>
+        <div class="space-y-2">
           <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Conta</h3>
           <router-link to="/configuracao" class="flex items-center text-gray-700 hover:text-blue-600">
             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
