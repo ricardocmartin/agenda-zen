@@ -16,6 +16,7 @@ import Comprovantes from '../views/Comprovantes.vue'
 import Templates from '../views/Templates.vue'
 import Contato from '../views/Contato.vue'
 import MinhaAssinatura from '../views/MinhaAssinatura.vue'
+import Faturamento from '../views/Faturamento.vue'
 
 
 const routes = [
@@ -32,6 +33,7 @@ const routes = [
   { path: '/templates', name: 'Templates', component: Templates },
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
   { path: '/minha-assinatura', name: 'MinhaAssinatura', component: MinhaAssinatura },
+  { path: '/faturamento', name: 'Faturamento', component: Faturamento },
   { path: '/buscar', name: 'SearchProfiles', component: SearchProfiles },
   { path: '/planos', name: 'Planos', component: Planos },
   { path: '/contato', name: 'Contato', component: Contato },
