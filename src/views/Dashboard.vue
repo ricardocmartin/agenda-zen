@@ -56,13 +56,25 @@
 
           <div class="bg-white p-4 rounded-lg shadow">
             <h4 class="font-medium mb-2">Clientes com mais agendamentos</h4>
-            <ul class="space-y-1">
-              <li v-for="c in topClients" :key="c.id" class="flex justify-between">
-                <span>{{ c.name }}</span>
-                <span>{{ c.count }}</span>
-              </li>
-              <li v-if="topClients.length === 0" class="text-gray-500 text-sm">Nenhum dado</li>
-            </ul>
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 font-medium text-gray-700">Cliente</th>
+                    <th class="px-4 py-2 font-medium text-gray-700 text-right">Agendamentos</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="c in topClients" :key="c.id" class="border-b last:border-b-0">
+                    <td class="px-4 py-2">{{ c.name }}</td>
+                    <td class="px-4 py-2 text-right">{{ c.count }}</td>
+                  </tr>
+                  <tr v-if="topClients.length === 0">
+                    <td colspan="2" class="px-4 py-6 text-center text-gray-500">Nenhum dado</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
