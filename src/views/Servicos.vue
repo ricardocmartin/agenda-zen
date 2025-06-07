@@ -54,13 +54,13 @@
                 <td class="px-4 py-2 text-right space-x-2">
                   <button
                     @click="openModal(service)"
-                    class="text-blue-600 hover:underline"
+                    class="btn btn-sm"
                   >
                     Editar
                   </button>
                   <button
                     @click="handleDeleteService(service.id)"
-                    class="text-red-600 hover:underline"
+                    class="btn btn-sm btn-danger"
                   >
                     Excluir
                   </button>

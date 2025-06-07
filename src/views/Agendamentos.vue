@@ -162,9 +162,9 @@
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
                   <td class="px-4 py-2">{{ appointment.duration }}</td>
                   <td class="px-4 py-2">{{ appointment.description }}</td>
-                  <td class="px-4 py-2 text-right">
-                    <button @click="openModal(appointment)" class="text-blue-600 hover:underline">Editar</button>
-                    <button @click="handleDeleteAppointment(appointment.id)" class="text-red-600 hover:underline ml-2">Excluir</button>
+                  <td class="px-4 py-2 text-right space-x-2">
+                    <button @click="openModal(appointment)" class="btn btn-sm">Editar</button>
+                    <button @click="handleDeleteAppointment(appointment.id)" class="btn btn-sm btn-danger">Excluir</button>
                   </td>
                 </tr>
                 <tr v-if="processedAppointments.length === 0">
