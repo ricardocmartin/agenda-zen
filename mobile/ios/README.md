@@ -3,23 +3,23 @@
 ## Informações gerais
 
 Versão para iOS desenvolvida em React Native que acompanha a aplicação web do Agenda Zen. Neste estágio inicial possui apenas as telas de **Login** e **Dashboard**.
+Este diretório contém somente o código JavaScript do app (arquivos `App.js` e `src/`).
+O projeto nativo do Xcode não está incluso.
 
 ## Como rodar localmente
 
 1. Tenha o ambiente do React Native configurado no macOS (Xcode e CocoaPods).
-2. Instale as dependências:
+2. Crie um novo projeto React Native com `npx react-native init AgendaZen`.
+3. Copie deste diretório os arquivos `App.js` e a pasta `src/` para a raiz do novo projeto.
+4. Dentro da pasta `ios` do projeto recém-criado execute:
    ```bash
-   npm install
+   npx pod-install
    ```
-3. Instale as bibliotecas nativas:
-   ```bash
-   npx pod-install ios
-   ```
-4. Inicie o bundler:
+5. Na raiz do projeto, inicie o bundler:
    ```bash
    npm start
    ```
-5. Em outro terminal execute:
+6. Em outro terminal execute:
    ```bash
    npx react-native run-ios
    ```

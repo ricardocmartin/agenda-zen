@@ -36,12 +36,13 @@ O diretório `supabase/schemas` contém os scripts SQL para criação das tabela
 - `src/` – código fonte em Vue (componentes, views e roteamento)
 - `public/` – arquivos estáticos
 - `supabase/` – scripts SQL de criação do banco de dados
-- `mobile/android` – aplicativo Android em React Native
-- `mobile/ios` – aplicativo iOS em React Native
+- `mobile/android` – código-fonte do app Android em React Native (sem o projeto nativo)
+- `mobile/ios` – código-fonte do app iOS em React Native (sem o projeto nativo)
 
 ## Aplicativos móveis
 
-Os diretórios `mobile/android` e `mobile/ios` contêm versões iniciais dos apps em React Native.
+Os diretórios `mobile/android` e `mobile/ios` trazem apenas o código JavaScript das versões móveis em React Native.
+Para rodar os apps é necessário criar projetos nativos à parte e incorporar esses arquivos.
 Cada um possui apenas as telas de **Login** e **Dashboard**.
 
 Contribuições são bem‑vindas! Sinta‑se à vontade para abrir _issues_ ou enviar _pull requests_.
