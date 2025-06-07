@@ -62,11 +62,19 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700">Telefone de Contato</label>
-              <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <input
+                type="text"
+                v-model="form.phone"
+                @input="form.phone = phoneMask(form.phone)"
+                class="w-full mt-1 px-4 py-2 border rounded-md">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">WhatsApp</label>
-              <input type="text" v-model="form.whatsapp" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <input
+                type="text"
+                v-model="form.whatsapp"
+                @input="form.whatsapp = phoneMask(form.whatsapp)"
+                class="w-full mt-1 px-4 py-2 border rounded-md">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">E-mail</label>
@@ -139,6 +147,7 @@
   import Sidebar from '../components/Sidebar.vue'
   import HeaderUser from '../components/HeaderUser.vue'
   import { supabase } from '../supabase'
+  import { phoneMask } from '../utils/phone'
   
   export default {
     name: 'Configuracao',
@@ -180,6 +189,7 @@
       }
     },
     methods: {
+      phoneMask,
       updateSlug() {
         this.slug = this.form.businessName
           .toLowerCase()

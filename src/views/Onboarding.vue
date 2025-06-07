@@ -9,7 +9,12 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Telefone</label>
-          <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <input
+            type="text"
+            v-model="form.phone"
+            @input="form.phone = phoneMask(form.phone)"
+            class="w-full mt-1 px-4 py-2 border rounded-md"
+          />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">E-mail</label>
@@ -82,6 +87,7 @@
 
 <script>
 import { supabase } from '../supabase'
+import { phoneMask } from '../utils/phone'
 
 export default {
   name: 'Onboarding',
@@ -117,6 +123,7 @@ export default {
     }
   },
   methods: {
+    phoneMask,
     async next() {
       if (this.step === 1) {
         await this.saveProfile()
