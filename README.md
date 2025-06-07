@@ -1,17 +1,40 @@
 # Agenda Zen
 
-Um aplicativo web para gerenciar compromissos usando Vue 3 e Tailwind CSS.
+Agenda Zen é uma aplicação web de agendamento voltada para profissionais como psicólogos, terapeutas e demais prestadores de serviço. O projeto foi desenvolvido com [Vue 3](https://vuejs.org/) e [Tailwind CSS](https://tailwindcss.com/) utilizando [Vite](https://vitejs.dev/) para o build. Para persistência de dados é utilizado o [Supabase](https://supabase.com/).
 
-## Scripts
+## Principais funcionalidades
 
-- `npm run dev` - inicia o servidor de desenvolvimento
-- `npm run build` - gera os arquivos de produção
-- `npm run preview` - inicia uma pré-visualização do build
-- `npm run deploy` - publica o conteúdo da pasta `dist` via `gh-pages`
+- Cadastro e autenticação de usuários
+- Gestão de clientes, serviços e salas
+- Controle de agendamentos com visualização em lista, calendário ou semana
+- Dashboard com estatísticas e gráfico dos agendamentos (Chart.js)
+- Configuração de perfil público com link personalizado
+- Geração de comprovantes de atendimento
+
+O diretório `supabase/schemas` contém os scripts SQL para criação das tabelas e políticas de segurança no Supabase.
+
+## Instalação e execução
+
+1. Instale as dependências do projeto:
+   ```bash
+   npm install
+   ```
+2. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+   A aplicação estará disponível em `http://localhost:5173`.
+
+### Outros comandos úteis
+
+- `npm run build` – gera a versão de produção em `dist/`
+- `npm run preview` – serve localmente os arquivos gerados pelo build
+- `npm run deploy` – publica a pasta `dist` no GitHub Pages
 
 ## Estrutura do projeto
 
-- `src/` - código fonte da aplicação
-- `public/` - arquivos estáticos
+- `src/` – código fonte em Vue (componentes, views e roteamento)
+- `public/` – arquivos estáticos
+- `supabase/` – scripts SQL de criação do banco de dados
 
-Este README serve como ponto de partida para contribuir com o projeto.
+Contribuições são bem‑vindas! Sinta‑se à vontade para abrir _issues_ ou enviar _pull requests_.
