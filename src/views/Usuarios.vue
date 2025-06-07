@@ -10,7 +10,7 @@
         </button>
       </div>
       <HeaderUser title="Usuários" />
-      <section class="bg-white p-6 rounded-lg shadow">
+      <section class="bg-white p-4 rounded-lg shadow">
         <h3 class="text-lg font-medium mb-4">Cadastrar novo usuário</h3>
         <form @submit.prevent="handleAddUser" class="space-y-4">
           <div>
@@ -29,7 +29,7 @@
         <p v-if="errorMessage" class="text-red-600 mt-4">{{ errorMessage }}</p>
       </section>
 
-      <section class="bg-white p-6 rounded-lg shadow">
+      <section class="bg-white p-4 rounded-lg shadow">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-medium">Usuários cadastrados</h3>
           <input
