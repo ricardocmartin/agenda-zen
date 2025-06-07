@@ -5,20 +5,39 @@
       <div class="font-semibold">{{ formatDate(weekStart) }} - {{ formatDate(weekEnd) }}</div>
       <button @click="nextWeek" class="px-2">&gt;</button>
     </div>
-    <div class="grid grid-cols-7 gap-1 text-sm">
-      <div class="font-semibold text-center" v-for="day in daysOfWeek" :key="day">{{ day }}</div>
-      <div v-for="i in 7" :key="i" class="border h-48 p-1 overflow-auto">
-        <div class="text-center font-medium">{{ getDateOfDay(i - 1).getDate() }}</div>
-        <ul>
-          <li
-            v-for="appt in getAppointmentsForDay(i - 1)"
-            :key="appt.id"
-            class="text-xs truncate cursor-pointer"
-            @click="$emit('select', appt)"
+    <div class="overflow-x-auto">
+      <div
+        class="grid gap-px text-sm"
+        :style="{ gridTemplateColumns: '64px repeat(7, 1fr)' }"
+      >
+        <div></div>
+        <div
+          v-for="day in daysOfWeek"
+          :key="day"
+          class="font-semibold text-center border px-1"
+        >
+          {{ day }}
+        </div>
+
+        <template v-for="time in timeSlots" :key="time">
+          <div class="font-semibold text-right pr-1 border">{{ time }}</div>
+          <div
+            v-for="i in 7"
+            :key="time + '-' + i"
+            class="border h-16 p-1 overflow-auto"
           >
-            {{ appt.time }} - {{ getClientName(appt.client_id) }}
-          </li>
-        </ul>
+            <ul>
+              <li
+                v-for="appt in getAppointmentsForSlot(i - 1, time)"
+                :key="appt.id"
+                class="text-xs truncate cursor-pointer"
+                @click="$emit('select', appt)"
+              >
+                {{ appt.time }} - {{ getClientName(appt.client_id) }}
+              </li>
+            </ul>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -43,7 +62,8 @@ export default {
     weekStart.setDate(today.getDate() - ((today.getDay() + 6) % 7))
     return {
       weekStart,
-      daysOfWeek: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+      daysOfWeek: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      timeSlots: Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`)
     }
   },
   computed: {
@@ -69,10 +89,13 @@ export default {
       d.setDate(d.getDate() + offset)
       return d
     },
-    getAppointmentsForDay(offset) {
+    getAppointmentsForSlot(offset, slot) {
       const day = this.formatISO(this.getDateOfDay(offset))
+      const slotHour = parseInt(slot.split(':')[0])
       return this.appointments
-        .filter(a => a.date === day)
+        .filter(
+          a => a.date === day && parseInt(a.time.substring(0, 2)) === slotHour
+        )
         .sort((a, b) => a.time.localeCompare(b.time))
     },
     prevWeek() {
