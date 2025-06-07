@@ -1,0 +1,12 @@
+{
+  "name": "agenda-zen-android",
+  "version": "0.1.0",
+  "private": true,
+  "main": "App.js",
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.73.2",
+    "@react-navigation/native": "^6.0.0",
+    "@react-navigation/native-stack": "^6.0.0"
+  }
+}
