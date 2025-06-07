@@ -14,6 +14,7 @@ import Planos from '../views/Planos.vue'
 import Salas from '../views/Salas.vue'
 import Comprovantes from '../views/Comprovantes.vue'
 import Templates from '../views/Templates.vue'
+import Contato from '../views/Contato.vue'
 
 
 const routes = [
@@ -31,6 +32,7 @@ const routes = [
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
   { path: '/buscar', name: 'SearchProfiles', component: SearchProfiles },
   { path: '/planos', name: 'Planos', component: Planos },
+  { path: '/contato', name: 'Contato', component: Contato },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 
