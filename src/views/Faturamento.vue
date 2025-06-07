@@ -12,15 +12,7 @@
       <HeaderUser title="Relatório de Faturamento" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">De</label>
-            <input type="date" v-model="filterStart" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Até</label>
-            <input type="date" v-model="filterEnd" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Serviços</label>
             <div class="mt-1 space-y-1">
@@ -28,6 +20,19 @@
                 <input type="checkbox" :value="s.id" v-model="selectedServices" />
                 <span>{{ s.name }}</span>
               </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Datas</label>
+            <div class="grid grid-cols-2 gap-2 mt-1">
+              <div>
+                <label class="block text-xs font-medium text-gray-700">De</label>
+                <input type="date" v-model="filterStart" class="w-full mt-1 px-4 py-2 border rounded-md" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-700">Até</label>
+                <input type="date" v-model="filterEnd" class="w-full mt-1 px-4 py-2 border rounded-md" />
+              </div>
             </div>
           </div>
           <div>
