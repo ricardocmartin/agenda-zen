@@ -23,9 +23,12 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Serviços</label>
-            <select multiple v-model="selectedServices" class="w-full mt-1 px-4 py-2 border rounded-md">
-              <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
-            </select>
+            <div class="mt-1 space-y-1">
+              <label v-for="s in services" :key="s.id" class="flex items-center space-x-2">
+                <input type="checkbox" :value="s.id" v-model="selectedServices" />
+                <span>{{ s.name }}</span>
+              </label>
+            </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Agrupar por</label>
@@ -98,6 +101,7 @@ export default {
         .select()
         .eq('user_id', this.userId)
       this.services = data || []
+      this.selectedServices = this.services.map(s => s.id)
     },
     async fetchRevenue() {
       if (!this.filterStart || !this.filterEnd) return
@@ -180,6 +184,11 @@ export default {
     }
     this.userId = user.id
     await this.fetchServices()
+    const today = new Date()
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+    this.filterStart = firstDay.toISOString().split('T')[0]
+    this.filterEnd = lastDay.toISOString().split('T')[0]
   }
 }
 </script>
