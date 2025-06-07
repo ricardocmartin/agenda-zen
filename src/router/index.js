@@ -18,6 +18,8 @@ import Templates from '../views/Templates.vue'
 import Contato from '../views/Contato.vue'
 import MinhaAssinatura from '../views/MinhaAssinatura.vue'
 import Faturamento from '../views/Faturamento.vue'
+import Faq from '../views/Faq.vue'
+import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
 
 
 const routes = [
@@ -39,6 +41,8 @@ const routes = [
   { path: '/buscar', name: 'SearchProfiles', component: SearchProfiles },
   { path: '/planos', name: 'Planos', component: Planos },
   { path: '/contato', name: 'Contato', component: Contato },
+  { path: '/faq', name: 'Faq', component: Faq },
+  { path: '/politica-de-privacidade', name: 'PoliticaDePrivacidade', component: PoliticaPrivacidade },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 
