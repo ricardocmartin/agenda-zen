@@ -51,4 +51,11 @@ const router = createRouter({
   routes
 })
 
+// Envia page views ao Google Analytics
+router.afterEach((to) => {
+  if (window.gtag) {
+    window.gtag('config', 'G-XXXXXXXXXX', { page_path: to.fullPath })
+  }
+})
+
 export default router
