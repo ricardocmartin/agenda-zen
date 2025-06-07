@@ -35,9 +35,9 @@
               </div>
             </div>
           </div>
-          <div class="md:col-span-2 md:col-start-2">
-            <label class="block text-sm font-medium text-gray-700">Agrupar por</label>
-            <select v-model="groupBy" class="w-full mt-1 px-4 py-2 border rounded-md">
+          <div class="md:col-span-2 md:col-start-2 flex flex-col">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Agrupar por</label>
+            <select v-model="groupBy" class="w-full px-4 py-2 border rounded-md">
               <option value="mes">Mês</option>
               <option value="semana">Semana</option>
               <option value="dia">Dia</option>
