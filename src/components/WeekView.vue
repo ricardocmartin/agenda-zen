@@ -5,8 +5,14 @@
       <div class="font-semibold">{{ formatDate(weekStart) }} - {{ formatDate(weekEnd) }}</div>
       <button @click="nextWeek" class="px-2">&gt;</button>
     </div>
-    <div class="overflow-x-auto">
+    <div class="relative overflow-x-auto">
       <div
+        v-if="showCurrentLine"
+        class="absolute left-0 right-0 border-t-2 border-blue-500 pointer-events-none"
+        :style="{ top: currentLineTop + 'px' }"
+      ></div>
+      <div
+        ref="grid"
         class="grid gap-px text-sm"
         :style="{ gridTemplateColumns: '64px repeat(7, 1fr)' }"
       >
@@ -67,7 +73,9 @@ export default {
       daysOfWeek: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
       startTime: '00:00',
       endTime: '23:00',
-      timeSlots: []
+      timeSlots: [],
+      currentLineTop: 0,
+      lineInterval: null
     }
   },
   computed: {
@@ -75,6 +83,10 @@ export default {
       const d = new Date(this.weekStart)
       d.setDate(d.getDate() + 6)
       return d
+    },
+    showCurrentLine() {
+      const totalHeight = this.timeSlots.length * 64
+      return this.currentLineTop >= 0 && this.currentLineTop <= totalHeight
     }
   },
   methods: {
@@ -110,6 +122,14 @@ export default {
         )
         .sort((a, b) => a.time.localeCompare(b.time))
     },
+    updateCurrentLine() {
+      if (this.timeSlots.length === 0) return
+      const firstHour = parseInt(this.timeSlots[0].split(':')[0])
+      const now = new Date()
+      const hours = now.getHours() + now.getMinutes() / 60
+      const pos = (hours - firstHour) * 64
+      this.currentLineTop = pos
+    },
     prevWeek() {
       const d = new Date(this.weekStart)
       d.setDate(d.getDate() - 7)
@@ -124,9 +144,11 @@ export default {
   watch: {
     startTime() {
       this.generateTimeSlots()
+      this.$nextTick(this.updateCurrentLine)
     },
     endTime() {
       this.generateTimeSlots()
+      this.$nextTick(this.updateCurrentLine)
     }
   },
   async mounted() {
@@ -144,6 +166,11 @@ export default {
       }
     }
     this.generateTimeSlots()
+    this.updateCurrentLine()
+    this.lineInterval = setInterval(this.updateCurrentLine, 60000)
+  },
+  beforeUnmount() {
+    if (this.lineInterval) clearInterval(this.lineInterval)
   }
 }
 </script>
