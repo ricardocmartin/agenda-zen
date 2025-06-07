@@ -24,7 +24,7 @@
             <li class="flex items-start line-through text-gray-400"><span class="mr-2">✓</span>Geração de recibos de atendimentos</li>
             <li class="flex items-start line-through text-gray-400"><span class="mr-2">✓</span>Envio de recibos por e-mail automático</li>
           </ul>
-          <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700">Escolher</button>
+          <button class="btn mt-4 w-full">Escolher</button>
         </div>
         <div class="bg-white p-6 rounded-lg shadow space-y-4">
           <h3 class="text-xl font-semibold text-center">Plus</h3>
@@ -38,7 +38,7 @@
             <li class="flex items-start"><span class="mr-2">✓</span>Geração de recibos de atendimentos</li>
             <li class="flex items-start"><span class="mr-2">✓</span>Envio de recibos por e-mail automático</li>
           </ul>
-          <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700">Escolher</button>
+          <button class="btn mt-4 w-full">Escolher</button>
         </div>
       </section>
     </main>

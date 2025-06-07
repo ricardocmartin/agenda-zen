@@ -23,7 +23,7 @@
             />
             <button
               @click="openModal()"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
+              class="btn w-full sm:w-auto"
             >
               Novo Serviço
             </button>
@@ -114,7 +114,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            <button type="submit" class="btn">Salvar</button>
           </div>
         </form>
       </Modal>

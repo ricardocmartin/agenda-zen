@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="flex justify-end">
-          <button @click="fetchRevenue" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Aplicar</button>
+          <button @click="fetchRevenue" class="btn">Aplicar</button>
         </div>
       </section>
 

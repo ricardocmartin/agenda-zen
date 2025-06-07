@@ -34,7 +34,7 @@
           >Limpar</button>
           <button
             @click="openModal()"
-            class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
+            class="btn sm:ml-auto w-full sm:w-auto"
           >Novo</button>
           <button
             @click="exportCSV"
@@ -105,7 +105,7 @@
             </div>
             <div class="flex justify-end space-x-2">
               <button type="button" @click="closeModal" class="px-4 py-2 rounded-lg border">Cancelar</button>
-              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Salvar</button>
+              <button type="submit" class="btn">Salvar</button>
             </div>
           </form>
         </Modal>

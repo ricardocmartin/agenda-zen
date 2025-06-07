@@ -42,7 +42,7 @@
         <div class="md:col-span-8">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-medium">Agenda da Semana</h3>
-            <button @click="showAppointmentModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
+            <button @click="showAppointmentModal = true" class="btn">Novo Agendamento</button>
           </div>
           <WeekView
             :appointments="upcomingAppointments"
@@ -52,7 +52,7 @@
         </div>
         <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
-          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Novo Cliente</button>
+          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Novo Cliente</button>
 
           <div class="bg-white p-4 rounded-lg shadow">
             <h4 class="font-medium mb-2">Clientes com mais agendamentos</h4>
@@ -84,7 +84,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="showClientModal = false" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Salvar</button>
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -124,7 +124,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="showAppointmentModal = false" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            <button type="submit" class="btn">Salvar</button>
           </div>
         </form>
       </Modal>
