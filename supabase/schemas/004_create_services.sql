@@ -4,6 +4,7 @@ create table if not exists services (
   name text not null,
   description text,
   duration text,
+  price numeric,
   created_at timestamp with time zone default now()
 );
 

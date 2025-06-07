@@ -18,6 +18,7 @@
               <h3 class="text-lg font-medium text-blue-700">{{ service.name }}</h3>
               <p class="text-sm text-gray-600">{{ service.description }}</p>
               <p class="text-sm text-gray-500 mt-1">Duração: {{ service.duration }}</p>
+              <p class="text-sm text-gray-500">Valor: {{ formatPrice(service.price) }}</p>
             </li>
           </ul>
           <p v-else class="text-gray-500">Nenhum serviço cadastrado.</p>
@@ -79,6 +80,15 @@ export default {
       const raw = this.profile?.whatsapp || ''
       const digits = raw.replace(/\D/g, '')
       return `https://wa.me/${digits}`
+    }
+  },
+  methods: {
+    formatPrice(value) {
+      if (value === null || value === undefined || value === '') return ''
+      return Number(value).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      })
     }
   },
   async mounted() {

@@ -37,6 +37,7 @@
                 <th class="px-4 py-2 font-medium text-gray-700">Nome</th>
                 <th class="px-4 py-2 font-medium text-gray-700">Descrição</th>
                 <th class="px-4 py-2 font-medium text-gray-700">Duração</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Valor</th>
                 <th class="px-4 py-2"></th>
               </tr>
             </thead>
@@ -49,6 +50,7 @@
                 <td class="px-4 py-2">{{ service.name }}</td>
                 <td class="px-4 py-2">{{ service.description }}</td>
                 <td class="px-4 py-2">{{ service.duration }}</td>
+                <td class="px-4 py-2">{{ formatPrice(service.price) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
                   <button
                     @click="openModal(service)"
@@ -65,7 +67,7 @@
                 </td>
               </tr>
               <tr v-if="filteredServices.length === 0">
-                <td colspan="4" class="px-4 py-6 text-center text-gray-500">
+                <td colspan="5" class="px-4 py-6 text-center text-gray-500">
                   Nenhum serviço encontrado
                 </td>
               </tr>
@@ -106,6 +108,10 @@
             <label class="block text-sm font-medium text-gray-700">Tempo de duração</label>
             <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Valor</label>
+            <input type="number" step="0.01" v-model="form.price" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
@@ -135,7 +141,8 @@ export default {
       form: {
         name: '',
         description: '',
-        duration: ''
+        duration: '',
+        price: ''
       },
       services: [],
       page: 1,
@@ -149,17 +156,18 @@ export default {
         this.form = {
           name: service.name,
           description: service.description,
-          duration: service.duration
+          duration: service.duration,
+          price: service.price
         }
       } else {
         this.editingId = null
-        this.form = { name: '', description: '', duration: '' }
+        this.form = { name: '', description: '', duration: '', price: '' }
       }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { name: '', description: '', duration: '' }
+      this.form = { name: '', description: '', duration: '', price: '' }
       this.editingId = null
     },
     async handleSaveService() {
@@ -170,7 +178,8 @@ export default {
           .update({
             name: this.form.name,
             description: this.form.description,
-            duration: this.form.duration
+            duration: this.form.duration,
+            price: parseFloat(this.form.price)
           })
           .eq('id', this.editingId)
           .select()
@@ -182,6 +191,7 @@ export default {
             name: this.form.name,
             description: this.form.description,
             duration: this.form.duration,
+            price: parseFloat(this.form.price),
             user_id: this.userId
           })
           .select()
@@ -220,6 +230,13 @@ export default {
     },
     prevPage() {
       if (this.page > 1) this.page--
+    },
+    formatPrice(value) {
+      if (value === null || value === undefined || value === '') return ''
+      return Number(value).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      })
     }
   },
   computed: {
@@ -229,7 +246,8 @@ export default {
         s =>
           s.name.toLowerCase().includes(term) ||
           (s.description || '').toLowerCase().includes(term) ||
-          (s.duration || '').toLowerCase().includes(term)
+          (s.duration || '').toLowerCase().includes(term) ||
+          (s.price !== null && s.price.toString().includes(term))
       )
     },
     paginatedServices() {
