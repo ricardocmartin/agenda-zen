@@ -12,12 +12,42 @@
       <HeaderUser title="Agendamentos" />
       <section>
         <div class="flex flex-col sm:flex-row sm:items-center mb-4 gap-2">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Buscar..."
-            class="border px-3 py-2 rounded-lg flex-grow sm:max-w-xs"
-          />
+          <div class="flex flex-col flex-grow sm:max-w-xs">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Buscar..."
+              class="border px-3 py-2 rounded-lg"
+            />
+            <div class="mt-1 flex items-center space-x-2">
+              <span class="text-xs text-gray-600">Modo de exibição:</span>
+              <div class="relative">
+                <button
+                  @click="showViewDropdown = !showViewDropdown"
+                  class="px-4 py-2 bg-gray-200 rounded-lg"
+                >
+                  {{ viewMode === 'list' ? 'Lista' : viewMode === 'calendar' ? 'Calendário' : 'Semana' }}
+                </button>
+                <div
+                  v-if="showViewDropdown"
+                  class="absolute right-0 mt-2 w-32 bg-white border rounded shadow"
+                >
+                  <button
+                    @click="setViewMode('list')"
+                    class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >Lista</button>
+                  <button
+                    @click="setViewMode('calendar')"
+                    class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >Calendário</button>
+                  <button
+                    @click="setViewMode('week')"
+                    class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >Semana</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <input
             v-model="filterStartDate"
             type="date"
@@ -40,31 +70,6 @@
             @click="exportCSV"
             class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-auto"
           >Exportar</button>
-          <div class="relative">
-            <button
-              @click="showViewDropdown = !showViewDropdown"
-              class="px-4 py-2 bg-gray-200 rounded-lg"
-            >
-              {{ viewMode === 'list' ? 'Lista' : viewMode === 'calendar' ? 'Calendário' : 'Semana' }}
-            </button>
-            <div
-              v-if="showViewDropdown"
-              class="absolute right-0 mt-2 w-32 bg-white border rounded shadow"
-            >
-              <button
-                @click="setViewMode('list')"
-                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
-              >Lista</button>
-              <button
-                @click="setViewMode('calendar')"
-                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
-              >Calendário</button>
-              <button
-                @click="setViewMode('week')"
-                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
-              >Semana</button>
-            </div>
-          </div>
         </div>
 
         <Modal v-if="showModal" @close="closeModal">
