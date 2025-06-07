@@ -11,23 +11,35 @@
       </div>
       <HeaderUser title="Agendamentos" />
       <section>
-        <div class="flex flex-col sm:flex-row sm:items-center mb-4 gap-2">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Buscar..."
-            class="border px-3 py-2 rounded flex-grow sm:max-w-xs"
-          />
-          <input
-            v-model="filterStartDate"
-            type="date"
-            class="border px-3 py-2 rounded"
-          />
-          <input
-            v-model="filterEndDate"
-            type="date"
-            class="border px-3 py-2 rounded"
-          />
+        <div class="flex flex-col sm:flex-row sm:items-end mb-4 gap-2">
+          <div class="flex flex-col flex-grow sm:max-w-xs">
+            <label class="text-sm font-medium text-gray-700 mb-1">Buscar</label>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Buscar..."
+              class="border px-3 py-2 rounded"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label class="text-sm font-medium text-gray-700 mb-1">Data de Início</label>
+            <input
+              v-model="filterStartDate"
+              type="date"
+              class="border px-3 py-2 rounded"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label class="text-sm font-medium text-gray-700 mb-1">Data de Fim</label>
+            <input
+              v-model="filterEndDate"
+              type="date"
+              class="border px-3 py-2 rounded"
+            />
+          </div>
+          <p class="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded sm:self-end">
+            Formato: dd/mm/aaaa
+          </p>
           <div class="relative">
             <button
               @click="showViewDropdown = !showViewDropdown"
