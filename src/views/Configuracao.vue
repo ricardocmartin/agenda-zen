@@ -109,20 +109,15 @@
 
       <form v-if="activeTab === 'agenda'" @submit.prevent="handleSaveAgenda" class="space-y-6 max-w-3xl">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Início dos atendimentos</label>
-          <input type="time" v-model="agenda.startTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Final dos atendimentos</label>
-          <input type="time" v-model="agenda.endTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Dias da semana dos atendimentos</label>
-          <div class="mt-1 space-y-1">
-            <label v-for="day in daysOfWeekOptions" :key="day.value" class="flex items-center space-x-2">
-              <input type="checkbox" :value="day.value" v-model="agenda.daysOfWeek" />
-              <span>{{ day.label }}</span>
-            </label>
+          <label class="block text-sm font-medium text-gray-700">Horários por dia</label>
+          <div class="mt-1 space-y-2">
+            <div v-for="day in daysOfWeekOptions" :key="day.value" class="flex items-center space-x-2">
+              <input type="checkbox" v-model="agenda.dailySchedule[day.value].enabled" />
+              <span class="w-20">{{ day.label }}</span>
+              <input type="time" v-model="agenda.dailySchedule[day.value].start" class="border rounded-md px-2 py-1" />
+              <span>-</span>
+              <input type="time" v-model="agenda.dailySchedule[day.value].end" class="border rounded-md px-2 py-1" />
+            </div>
           </div>
         </div>
         <div>
@@ -164,9 +159,15 @@
           imageUrl: ''
         },
         agenda: {
-          startTime: '',
-          endTime: '',
-          daysOfWeek: []
+          dailySchedule: {
+            '0': { enabled: false, start: '', end: '' },
+            '1': { enabled: false, start: '', end: '' },
+            '2': { enabled: false, start: '', end: '' },
+            '3': { enabled: false, start: '', end: '' },
+            '4': { enabled: false, start: '', end: '' },
+            '5': { enabled: false, start: '', end: '' },
+            '6': { enabled: false, start: '', end: '' }
+          }
         },
         daysOfWeekOptions: [
           { value: '0', label: 'Domingo' },
@@ -234,11 +235,20 @@
         this.form.imageUrl = publicUrl
       },
       async handleSaveAgenda() {
+        const summary = { start: null, end: null, days: [] }
+        for (const [day, cfg] of Object.entries(this.agenda.dailySchedule)) {
+          if (cfg.enabled && cfg.start && cfg.end) {
+            summary.days.push(day)
+            if (!summary.start || cfg.start < summary.start) summary.start = cfg.start
+            if (!summary.end || cfg.end > summary.end) summary.end = cfg.end
+          }
+        }
         const updates = {
           id: this.userId,
-          start_time: this.agenda.startTime,
-          end_time: this.agenda.endTime,
-          week_days: this.agenda.daysOfWeek.join(',')
+          start_time: summary.start,
+          end_time: summary.end,
+          week_days: summary.days.join(','),
+          daily_schedule: this.agenda.dailySchedule
         }
         const { error } = await supabase
           .from('profiles')
@@ -281,9 +291,27 @@
           imageUrl: data.image_url || ''
         }
         this.agenda = {
-          startTime: data.start_time || '',
-          endTime: data.end_time || '',
-          daysOfWeek: data.week_days ? data.week_days.split(',') : []
+          dailySchedule: {
+            '0': { enabled: false, start: '', end: '' },
+            '1': { enabled: false, start: '', end: '' },
+            '2': { enabled: false, start: '', end: '' },
+            '3': { enabled: false, start: '', end: '' },
+            '4': { enabled: false, start: '', end: '' },
+            '5': { enabled: false, start: '', end: '' },
+            '6': { enabled: false, start: '', end: '' }
+          }
+        }
+        if (data.daily_schedule) {
+          Object.assign(this.agenda.dailySchedule, typeof data.daily_schedule === 'string' ? JSON.parse(data.daily_schedule) : data.daily_schedule)
+        } else {
+          const days = data.week_days ? data.week_days.split(',') : []
+          for (const d of days) {
+            this.agenda.dailySchedule[d] = {
+              enabled: true,
+              start: data.start_time || '',
+              end: data.end_time || ''
+            }
+          }
         }
         this.updateSlug()
       }
