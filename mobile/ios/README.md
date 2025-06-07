@@ -8,7 +8,19 @@ O projeto nativo do Xcode não está incluso.
 
 ## Como rodar localmente
 
-1. Tenha o ambiente do React Native configurado no macOS (Xcode e CocoaPods).
+1. Instale o Xcode pela App Store e as ferramentas de linha de comando:
+   ```bash
+   xcode-select --install
+   ```
+   Em seguida instale o CocoaPods (requer `ruby`):
+   ```bash
+   sudo gem install cocoapods
+   ```
+   *(se preferir, use `brew install cocoapods`)*
+   Verifique a instalação com:
+   ```bash
+   pod --version
+   ```
 2. Crie um novo projeto React Native com `npx react-native init AgendaZen`.
 3. Copie deste diretório os arquivos `App.js` e a pasta `src/` para a raiz do novo projeto.
 4. Dentro da pasta `ios` do projeto recém-criado execute:
