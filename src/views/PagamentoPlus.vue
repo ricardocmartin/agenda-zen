@@ -25,8 +25,14 @@
       </nav>
 
       <section v-if="activeTab === 'cartao'" class="bg-white p-6 rounded-lg shadow space-y-4 max-w-md">
+        <div class="flex justify-center space-x-2 mb-4">
+          <img src="/icons/visa.svg" alt="Visa" class="h-8" />
+          <img src="/icons/mastercard.svg" alt="Mastercard" class="h-8" />
+          <img src="/icons/amex.svg" alt="American Express" class="h-8" />
+          <img src="/icons/elo.svg" alt="Elo" class="h-8" />
+        </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Nome no cartão</label>
+          <label class="block text-sm font-medium text-gray-700">Nome (igual no cartão)</label>
           <input type="text" v-model="card.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
@@ -39,11 +45,52 @@
             <input type="text" v-model="card.expiry" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">CVV</label>
+            <label class="block text-sm font-medium text-gray-700">Código de Segurança (CVV)</label>
             <input type="text" v-model="card.cvv" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
         </div>
-        <div class="text-right">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">CPF/CNPJ</label>
+          <input type="text" v-model="card.document" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+
+        <div class="space-y-4 mt-4">
+          <h3 class="text-md font-semibold">Endereço de cobrança</h3>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">CEP</label>
+            <input type="text" v-model="billing.cep" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Rua</label>
+            <input type="text" v-model="billing.street" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Número</label>
+              <input type="text" v-model="billing.number" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Complemento</label>
+              <input type="text" v-model="billing.complement" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Bairro</label>
+            <input type="text" v-model="billing.neighborhood" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Cidade</label>
+              <input type="text" v-model="billing.city" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Estado</label>
+              <input type="text" v-model="billing.state" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            </div>
+          </div>
+        </div>
+
+        <div class="text-right mt-4">
           <button class="btn">Pagar</button>
         </div>
       </section>
@@ -73,7 +120,17 @@ export default {
         name: '',
         number: '',
         expiry: '',
-        cvv: ''
+        cvv: '',
+        document: ''
+      },
+      billing: {
+        cep: '',
+        street: '',
+        number: '',
+        complement: '',
+        neighborhood: '',
+        city: '',
+        state: ''
       },
       pixCode: '000201010212...'
     }
