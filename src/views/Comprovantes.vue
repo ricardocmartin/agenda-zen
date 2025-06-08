@@ -80,8 +80,10 @@
       </Modal>
 
       <Modal v-if="receiptContent" @close="receiptContent = null">
-        <h3 class="text-lg font-semibold mb-4">Comprovante</h3>
-        <pre class="whitespace-pre-wrap">{{ receiptContent }}</pre>
+        <h3 class="text-lg font-semibold text-center mb-4">Comprovante</h3>
+        <div class="border rounded-md p-4 bg-gray-50">
+          <pre class="whitespace-pre-wrap font-mono text-sm">{{ receiptContent }}</pre>
+        </div>
       </Modal>
     </main>
   </div>
