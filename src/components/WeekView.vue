@@ -96,7 +96,16 @@ export default {
     },
     showCurrentLine() {
       const totalHeight = this.timeSlots.length * 64
-      return this.currentLineTop >= 0 && this.currentLineTop <= totalHeight
+      const now = new Date()
+      const nowMinutes = now.getHours() * 60 + now.getMinutes()
+      const [startHour, startMin] = this.startTime.split(':').map(Number)
+      const [endHour, endMin] = this.endTime.split(':').map(Number)
+      const startMinutes = startHour * 60 + startMin
+      const endMinutes = endHour * 60 + endMin
+      const withinHours = nowMinutes >= startMinutes && nowMinutes <= endMinutes
+      const withinGrid =
+        this.currentLineTop >= 0 && this.currentLineTop <= totalHeight
+      return withinHours && withinGrid
     }
   },
   methods: {
