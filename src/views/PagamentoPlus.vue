@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex bg-gray-100 relative">
     <Sidebar :is-open="sidebarOpen" @close="sidebarOpen = false" />
-    <main class="flex-1 p-4 md:p-8 space-y-6">
+    <main class="flex-1 p-8 space-y-6">
       <div v-if="!sidebarOpen" class="flex items-center mb-4">
         <button @click="sidebarOpen = true" class="text-gray-600 focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +24,7 @@
         >Pix</button>
       </nav>
 
-      <section v-if="activeTab === 'cartao'" class="bg-white p-6 rounded-lg shadow space-y-4 max-w-md">
+      <section v-if="activeTab === 'cartao'" class="space-y-6 max-w-3xl">
         <div class="flex justify-center space-x-2 mb-4">
           <img src="/icons/visa.svg" alt="Visa" class="h-8" />
           <img src="/icons/mastercard.svg" alt="Mastercard" class="h-8" />
@@ -95,7 +95,7 @@
         </div>
       </section>
 
-      <section v-if="activeTab === 'pix'" class="bg-white p-6 rounded-lg shadow space-y-4 max-w-md">
+      <section v-if="activeTab === 'pix'" class="space-y-6 max-w-3xl">
         <div class="text-center space-y-4">
           <img src="/icons/pix.svg" alt="QR Code Pix" class="w-32 h-32 mx-auto" />
           <input type="text" v-model="pixCode" readonly class="w-full px-4 py-2 border rounded-md text-center" />
