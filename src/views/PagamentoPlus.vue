@@ -10,6 +10,7 @@
         </button>
       </div>
       <HeaderUser title="Pagamento" />
+      <img src="/icons/pix.svg" alt="Pagamento Pix" class="w-24 h-24 mx-auto" />
 
       <nav class="mb-6 space-x-2">
         <button
@@ -97,7 +98,11 @@
 
       <section v-if="activeTab === 'pix'" class="space-y-6 max-w-3xl">
         <div class="text-center space-y-4">
-          <img src="/icons/pix.svg" alt="QR Code Pix" class="w-32 h-32 mx-auto" />
+          <img src="/icons/fake-qr.svg" alt="QR Code Pix" class="w-32 h-32 mx-auto" />
+          <p class="font-semibold">Código de pagamento</p>
+          <p>Copie e cole o código abaixo no app da sua instituição financeira para finalizar a compra.</p>
+          <p class="font-semibold">Valor do pagamento</p>
+          <p class="text-lg font-semibold">R$ 67,00</p>
           <input type="text" v-model="pixCode" readonly class="w-full px-4 py-2 border rounded-md text-center" />
         </div>
       </section>
