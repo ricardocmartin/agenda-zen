@@ -97,7 +97,7 @@
 
       <section v-if="activeTab === 'pix'" class="space-y-6 max-w-3xl">
         <div class="text-center space-y-4">
-          <img src="/logo_pix.png" alt="Logo Pix" class="mx-auto w-48 h-auto" />
+          <img src="/logo_pix.png" alt="Logo Pix" class="mx-auto w-64 h-auto" />
           <p class="font-semibold">Código de pagamento</p>
           <p>Copie e cole o código abaixo no app da sua instituição financeira para finalizar a compra.</p>
           <p class="font-semibold">Valor do pagamento</p>
