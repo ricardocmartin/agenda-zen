@@ -21,6 +21,7 @@ import Faturamento from '../views/Faturamento.vue'
 import Faq from '../views/Faq.vue'
 import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
 import TermosDeUso from '../views/TermosDeUso.vue'
+import PagamentoPlus from '../views/PagamentoPlus.vue'
 
 
 const routes = [
@@ -38,6 +39,7 @@ const routes = [
   { path: '/templates', name: 'Templates', component: Templates },
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
   { path: '/minha-assinatura', name: 'MinhaAssinatura', component: MinhaAssinatura },
+  { path: '/assinatura-plus', name: 'PagamentoPlus', component: PagamentoPlus },
   { path: '/faturamento', name: 'Faturamento', component: Faturamento },
   { path: '/buscar', name: 'SearchProfiles', component: SearchProfiles },
   { path: '/planos', name: 'Planos', component: Planos },
