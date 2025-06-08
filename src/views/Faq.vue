@@ -1,15 +1,21 @@
 <template>
   <Navbar />
-  <section class="max-w-3xl mx-auto px-4 py-16">
-    <h1 class="text-3xl font-bold text-center mb-8">Perguntas Frequentes</h1>
-    <div class="space-y-6">
-      <div v-for="(faq, index) in faqs" :key="index" class="bg-white p-6 rounded-lg shadow">
-        <h2 class="font-semibold text-blue-600 mb-2">{{ faq.question }}</h2>
-        <p class="text-gray-700">{{ faq.answer }}</p>
+  <div class="min-h-screen flex flex-col bg-gray-100">
+    <main class="flex-1 max-w-3xl mx-auto p-8">
+      <h1 class="text-3xl font-bold text-center mb-8">Perguntas Frequentes</h1>
+      <div class="space-y-6">
+        <div
+          v-for="(faq, index) in faqs"
+          :key="index"
+          class="bg-white p-6 rounded-lg shadow"
+        >
+          <h2 class="font-semibold text-blue-600 mb-2">{{ faq.question }}</h2>
+          <p class="text-gray-700">{{ faq.answer }}</p>
+        </div>
       </div>
-    </div>
-  </section>
-  <Footer />
+    </main>
+    <Footer />
+  </div>
 </template>
 
 <script>
