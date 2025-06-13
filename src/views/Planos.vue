@@ -9,14 +9,14 @@
             <tr>
               <th class="px-4 py-2 font-medium text-gray-700">Recursos</th>
               <th class="px-4 py-2 font-medium text-gray-700 text-center">Básico</th>
-              <th class="px-4 py-2 font-medium text-gray-700 text-center">Plus</th>
+              <th class="px-4 py-2 font-medium text-gray-700 text-center">Beta</th>
             </tr>
           </thead>
         <tbody>
           <tr>
             <td class="border-t px-4 py-2 text-gray-600">Valor</td>
             <td class="border-t px-4 py-2 text-center font-semibold">Grátis</td>
-            <td class="border-t px-4 py-2 text-center font-semibold">R$69,00</td>
+            <td class="border-t px-4 py-2 text-center font-semibold line-through text-gray-400">R$169,00</td>
           </tr>
           <tr class="bg-gray-50">
             <td class="border-t px-4 py-2 text-gray-600">Cadastro de pacientes</td>
