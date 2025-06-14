@@ -43,6 +43,12 @@ export default {
   beforeUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
   },
+  watch: {
+    // fecha o menu automaticamente ao navegar para outra rota
+    $route() {
+      this.open = false
+    }
+  },
   methods: {
     toggleMenu() {
       this.open = !this.open
