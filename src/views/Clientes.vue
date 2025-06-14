@@ -12,18 +12,18 @@
       <HeaderUser title="Clientes" />
 
       <section class="bg-white p-4 rounded-lg shadow">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-4 sm:space-y-0">
           <h3 class="text-lg font-medium">Clientes cadastrados</h3>
-          <div class="flex items-center space-x-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-3">
             <input
               v-model="search"
               type="text"
               placeholder="Buscar..."
-              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
             />
             <button
               @click="openModal"
-              class="btn"
+              class="btn w-full sm:w-auto"
             >
               Novo Cliente
             </button>
