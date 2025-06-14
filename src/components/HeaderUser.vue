@@ -13,6 +13,7 @@
         </svg>
       </button>
       <div v-if="showMenu" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md">
+        <router-link to="/" class="block px-4 py-2 hover:bg-gray-100">Início</router-link>
         <router-link to="/configuracao" class="block px-4 py-2 hover:bg-gray-100">Perfil</router-link>
         <router-link to="/usuarios" class="block px-4 py-2 hover:bg-gray-100">Usuários</router-link>
         <router-link to="/minha-assinatura" class="block px-4 py-2 hover:bg-gray-100">Assinatura</router-link>
