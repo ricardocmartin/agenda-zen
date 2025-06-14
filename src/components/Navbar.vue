@@ -37,9 +37,20 @@ export default {
       open: false
     }
   },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
   methods: {
     toggleMenu() {
       this.open = !this.open
+    },
+    handleScroll() {
+      if (this.open) {
+        this.open = false
+      }
     }
   }
 }
