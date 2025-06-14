@@ -25,6 +25,17 @@
       <p v-if="erro" class="mt-4 text-red-600 text-center">{{ erro }}</p>
     </div>
   </section>
+  <section class="py-8 flex justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
+    <a
+      href="https://wa.me/5518996233098"
+      target="_blank"
+      rel="noopener"
+      class="btn btn-success flex items-center space-x-2"
+    >
+      <img src="/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5" />
+      <span>Falar via WhatsApp</span>
+    </a>
+  </section>
   <Footer />
 </template>
 
