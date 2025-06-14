@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       userId: null,
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       services: [],
       selectedServices: [],
       filterStart: '',

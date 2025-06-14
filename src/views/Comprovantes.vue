@@ -101,7 +101,7 @@ export default {
   data() {
     return {
       userId: null,
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       templates: [],
       receipts: [],
       clients: [],

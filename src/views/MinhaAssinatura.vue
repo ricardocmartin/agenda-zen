@@ -54,7 +54,7 @@ export default {
   components: { Sidebar, HeaderUser },
   data() {
     return {
-      sidebarOpen: true
+      sidebarOpen: window.innerWidth >= 768
     }
   },
   methods: {

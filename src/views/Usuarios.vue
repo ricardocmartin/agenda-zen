@@ -77,7 +77,7 @@ export default {
         email: '',
         password: ''
       },
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       userId: null,
       successMessage: '',
       errorMessage: '',

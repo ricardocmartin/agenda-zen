@@ -155,7 +155,7 @@
     data() {
       return {
         userId: null,
-        sidebarOpen: true,
+        sidebarOpen: window.innerWidth >= 768,
         slug: '',
         activeTab: 'perfil',
         form: {

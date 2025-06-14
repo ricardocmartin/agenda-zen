@@ -188,7 +188,7 @@ export default {
       clients: [],
       services: [],
       topClients: [],
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       showClientModal: false,
       showAppointmentModal: false,
       showDetailsModal: false,
