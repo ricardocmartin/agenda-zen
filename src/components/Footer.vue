@@ -1,7 +1,7 @@
 <template>
   <footer class="bg-gray-100 text-center text-sm text-gray-500 py-6 space-y-2">
     <div class="space-x-4 text-blue-600">
-      <a href="https://www.instagram.com/agenda.zen" target="_blank" class="hover:underline">Instagram</a>
+      <a href="https://www.instagram.com/agendazen_" target="_blank" class="hover:underline">Instagram</a>
       <a href="https://www.facebook.com/agenda.zen" target="_blank" class="hover:underline">Facebook</a>
       <a href="https://x.com/agenda_zen" target="_blank" class="hover:underline">X</a>
     </div>
