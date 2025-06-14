@@ -143,7 +143,7 @@ export default {
         phone: ''
       },
       clients: [],
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       page: 1,
       pageSize: 10
     }

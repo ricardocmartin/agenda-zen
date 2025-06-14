@@ -137,7 +137,7 @@ export default {
       showModal: false,
       editingId: null,
       search: '',
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       form: {
         name: '',
         description: '',

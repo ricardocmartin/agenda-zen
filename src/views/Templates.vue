@@ -69,7 +69,7 @@ export default {
   data() {
     return {
       userId: null,
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       templates: [],
       showTemplateModal: false,
       templateForm: { name: '', content: '' }

@@ -234,7 +234,7 @@ export default {
       sortColumn: '',
       sortAsc: true,
       showViewDropdown: false,
-      sidebarOpen: true
+      sidebarOpen: window.innerWidth >= 768
     }
   },
   computed: {
