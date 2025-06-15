@@ -24,7 +24,7 @@ serve(async req => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      from: 'no-reply@agenda-zen.com',
+      from: 'no-reply@agendazen.com.br',
       to,
       subject,
       text
