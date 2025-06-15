@@ -321,7 +321,8 @@ export default {
     },
     isSlotAllowed(dateStr, timeStr) {
       if (!dateStr || !timeStr) return false
-      const day = new Date(dateStr).getDay().toString()
+      // Parse date using local timezone to avoid day offset issues
+      const day = new Date(dateStr + 'T12:00:00').getDay().toString()
       if (this.schedule.dailySchedule) {
         const cfg = this.schedule.dailySchedule[day]
         if (!cfg || !cfg.enabled || !cfg.start || !cfg.end) return false
