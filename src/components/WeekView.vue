@@ -83,7 +83,8 @@ export default {
       daysOfWeek: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
       startTime: '00:00',
       endTime: '23:00',
-      timeSlots: [],
+      dailySchedule: null,
+      timeSlots: []
       currentLineTop: 0,
       lineInterval: null
     }
@@ -180,13 +181,22 @@ export default {
     if (user) {
       const { data } = await supabase
         .from('profiles')
-        .select('start_time, end_time')
+        .select('start_time, end_time, daily_schedule')
         .eq('id', user.id)
         .single()
 
       if (data) {
-        if (data.start_time) this.startTime = data.start_time
-        if (data.end_time) this.endTime = data.end_time
+        if (data.daily_schedule) {
+          this.dailySchedule = typeof data.daily_schedule === 'string' ? JSON.parse(data.daily_schedule) : data.daily_schedule
+          const enabled = Object.values(this.dailySchedule).filter(d => d && d.enabled && d.start && d.end)
+          if (enabled.length) {
+            this.startTime = enabled.reduce((m, d) => !m || d.start < m ? d.start : m, null)
+            this.endTime = enabled.reduce((m, d) => !m || d.end > m ? d.end : m, null)
+          }
+        } else {
+          if (data.start_time) this.startTime = data.start_time
+          if (data.end_time) this.endTime = data.end_time
+        }
       }
     }
     this.generateTimeSlots()
