@@ -12,10 +12,10 @@
       <HeaderUser title="Comprovantes" />
 
 
-      <section class="bg-white p-6 rounded-lg shadow space-y-4">
+      <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="text-lg font-medium">Comprovantes Gerados</h3>
-          <button @click="showGenerateModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Comprovante</button>
+          <button @click="showGenerateModal = true" class="btn">Novo Comprovante</button>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full text-left">
@@ -33,7 +33,7 @@
                 <td class="px-4 py-2">{{ r.start_date }} - {{ r.end_date }}</td>
                 <td class="px-4 py-2">{{ r.created_at.split('T')[0] }}</td>
                 <td class="px-4 py-2 text-right">
-                  <button @click="showReceipt(r.content)" class="text-blue-600 hover:underline">Ver</button>
+                  <button @click="showReceipt(r.content)" class="btn btn-sm">Ver</button>
                 </td>
               </tr>
               <tr v-if="receipts.length === 0">
@@ -74,14 +74,16 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeGenerateModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Gerar</button>
+            <button type="submit" class="btn">Gerar</button>
           </div>
         </form>
       </Modal>
 
       <Modal v-if="receiptContent" @close="receiptContent = null">
-        <h3 class="text-lg font-semibold mb-4">Comprovante</h3>
-        <pre class="whitespace-pre-wrap">{{ receiptContent }}</pre>
+        <h3 class="text-lg font-semibold text-center mb-4">Comprovante</h3>
+        <div class="border rounded-md p-4 bg-gray-50">
+          <pre class="whitespace-pre-wrap font-mono text-sm">{{ receiptContent }}</pre>
+        </div>
       </Modal>
     </main>
   </div>
@@ -99,7 +101,7 @@ export default {
   data() {
     return {
       userId: null,
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       templates: [],
       receipts: [],
       clients: [],

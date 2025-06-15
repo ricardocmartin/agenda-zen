@@ -11,10 +11,10 @@
       </div>
       <HeaderUser title="Templates" />
 
-      <section class="bg-white p-6 rounded-lg shadow space-y-4">
+      <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="text-lg font-medium">Templates</h3>
-          <button @click="showTemplateModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Template</button>
+          <button @click="showTemplateModal = true" class="btn">Novo Template</button>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full text-left">
@@ -49,7 +49,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeTemplateModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            <button type="submit" class="btn">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -69,7 +69,7 @@ export default {
   data() {
     return {
       userId: null,
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       templates: [],
       showTemplateModal: false,
       templateForm: { name: '', content: '' }

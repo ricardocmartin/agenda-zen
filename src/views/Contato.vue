@@ -19,11 +19,22 @@
           <label class="block text-sm font-medium text-gray-700 mb-1" for="mensagem">Mensagem</label>
           <textarea v-model="mensagem" id="mensagem" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4"></textarea>
         </div>
-        <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-200">Enviar</button>
+        <button type="submit" class="btn w-full">Enviar</button>
       </form>
       <p v-if="sucesso" class="mt-4 text-green-600 text-center">Mensagem enviada com sucesso!</p>
       <p v-if="erro" class="mt-4 text-red-600 text-center">{{ erro }}</p>
     </div>
+  </section>
+  <section class="py-8 flex justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
+    <a
+      href="https://wa.me/5518996233098"
+      target="_blank"
+      rel="noopener"
+      class="btn btn-success flex items-center space-x-2"
+    >
+      <img src="/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5" />
+      <span>Falar via WhatsApp</span>
+    </a>
   </section>
   <Footer />
 </template>

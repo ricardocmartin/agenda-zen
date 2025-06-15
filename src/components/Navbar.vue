@@ -15,7 +15,7 @@
       <router-link to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
       <router-link to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
       <router-link to="/login" class="text-blue-600 hover:underline">Login</router-link>
-      <router-link to="/cadastro" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cadastre-se</router-link>
+      <router-link to="/cadastro" class="btn">Cadastre-se</router-link>
     </div>
 
     <!-- Menu mobile -->
@@ -24,7 +24,7 @@
       <router-link @click="open = false" to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
       <router-link @click="open = false" to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
       <router-link @click="open = false" to="/login" class="text-blue-600 hover:underline">Login</router-link>
-      <router-link @click="open = false" to="/cadastro" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cadastre-se</router-link>
+      <router-link @click="open = false" to="/cadastro" class="btn">Cadastre-se</router-link>
     </div>
   </nav>
 </template>
@@ -37,9 +37,26 @@ export default {
       open: false
     }
   },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+  watch: {
+    // fecha o menu automaticamente ao navegar para outra rota
+    $route() {
+      this.open = false
+    }
+  },
   methods: {
     toggleMenu() {
       this.open = !this.open
+    },
+    handleScroll() {
+      if (this.open) {
+        this.open = false
+      }
     }
   }
 }

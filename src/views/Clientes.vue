@@ -11,19 +11,19 @@
       </div>
       <HeaderUser title="Clientes" />
 
-      <section class="bg-white p-6 rounded-lg shadow">
-        <div class="flex justify-between items-center mb-4">
+      <section class="bg-white p-4 rounded-lg shadow">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-4 sm:space-y-0">
           <h3 class="text-lg font-medium">Clientes cadastrados</h3>
-          <div class="flex items-center space-x-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-3">
             <input
               v-model="search"
               type="text"
               placeholder="Buscar..."
-              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
             />
             <button
               @click="openModal"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              class="btn w-full sm:w-auto"
             >
               Novo Cliente
             </button>
@@ -48,19 +48,19 @@
               >
                 <td class="px-4 py-2">{{ client.name }}</td>
                 <td class="px-4 py-2">{{ client.email }}</td>
-                <td class="px-4 py-2">{{ client.phone }}</td>
+                <td class="px-4 py-2">{{ phoneMask(client.phone) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
                   <a
                     :href="whatsappLink(client.phone)"
                     target="_blank"
                     rel="noopener"
-                    class="text-green-600 hover:underline"
+                    class="btn btn-sm btn-success"
                   >
                     WhatsApp
                   </a>
                   <button
                     @click="handleDeleteClient(client.id)"
-                    class="text-red-600 hover:underline"
+                    class="btn btn-sm btn-danger"
                   >
                     Excluir
                   </button>
@@ -106,11 +106,15 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Telefone</label>
-            <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input
+              type="text"
+              v-model="form.phone"
+              @input="form.phone = phoneMask(form.phone)"
+              class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            <button type="submit" class="btn">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -123,6 +127,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
+import { phoneMask, digitsOnly } from '../utils/phone'
 
 export default {
   name: 'Clientes',
@@ -138,12 +143,14 @@ export default {
         phone: ''
       },
       clients: [],
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       page: 1,
       pageSize: 10
     }
   },
   methods: {
+    phoneMask,
+    digitsOnly,
     openModal() {
       this.showModal = true
     },
@@ -151,11 +158,8 @@ export default {
       this.showModal = false
       this.form = { name: '', email: '', phone: '' }
     },
-    formatPhone(phone) {
-      return phone.replace(/[^\d]/g, '')
-    },
     whatsappLink(phone) {
-      const formatted = this.formatPhone(phone)
+      const formatted = digitsOnly(phone)
       return `https://wa.me/${formatted}`
     },
     async handleAddClient() {

@@ -11,7 +11,7 @@
       </div>
       <HeaderUser title="Salas" />
 
-      <section class="bg-white p-6 rounded-lg shadow">
+      <section class="bg-white p-4 rounded-lg shadow">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-medium">Salas cadastradas</h3>
           <div class="flex items-center space-x-3">
@@ -23,7 +23,7 @@
             />
             <button
               @click="openModal"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              class="btn"
             >
               Nova Sala
             </button>
@@ -48,7 +48,7 @@
                 <td class="px-4 py-2 text-right">
                   <button
                     @click="handleDeleteRoom(room.id)"
-                    class="text-red-600 hover:underline"
+                    class="btn btn-sm btn-danger"
                   >
                     Excluir
                   </button>
@@ -90,7 +90,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            <button type="submit" class="btn">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -116,7 +116,7 @@ export default {
         name: ''
       },
       rooms: [],
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       page: 1,
       pageSize: 10
     }

@@ -11,16 +11,8 @@
       </div>
       <HeaderUser title="Relatório de Faturamento" />
 
-      <section class="bg-white p-6 rounded-lg shadow space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">De</label>
-            <input type="date" v-model="filterStart" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Até</label>
-            <input type="date" v-model="filterEnd" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
+      <section class="bg-white p-4 rounded-lg shadow space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
           <div>
             <label class="block text-sm font-medium text-gray-700">Serviços</label>
             <div class="mt-1 space-y-1">
@@ -30,21 +22,34 @@
               </label>
             </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Agrupar por</label>
-            <select v-model="groupBy" class="w-full mt-1 px-4 py-2 border rounded-md">
-              <option value="mes">Mês</option>
-              <option value="semana">Semana</option>
-              <option value="dia">Dia</option>
-            </select>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700">Datas</label>
+            <div class="grid grid-cols-2 gap-2 mt-1">
+              <div>
+                <label class="block text-xs font-medium text-gray-700">De</label>
+                <input type="date" v-model="filterStart" class="w-full mt-1 px-4 py-2 border rounded-md" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-700">Até</label>
+                <input type="date" v-model="filterEnd" class="w-full mt-1 px-4 py-2 border rounded-md" />
+              </div>
+            </div>
+            <div class="flex flex-col mt-3">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Agrupar por</label>
+              <select v-model="groupBy" class="w-full px-4 py-2 border rounded-md">
+                <option value="mes">Mês</option>
+                <option value="semana">Semana</option>
+                <option value="dia">Dia</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="flex justify-end">
-          <button @click="fetchRevenue" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Aplicar</button>
+          <button @click="fetchRevenue" class="btn">Aplicar</button>
         </div>
       </section>
 
-      <section class="bg-white p-6 rounded-lg shadow space-y-4">
+      <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="overflow-x-auto">
           <table class="min-w-full text-left">
             <thead class="bg-gray-50">
@@ -84,7 +89,7 @@ export default {
   data() {
     return {
       userId: null,
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       services: [],
       selectedServices: [],
       filterStart: '',

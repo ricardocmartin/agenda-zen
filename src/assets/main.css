@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Base button style used across the application */
+.btn {
+  @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700;
+}
+
+/* Smaller variant for table actions */
+.btn-sm {
+  @apply px-3 py-1 text-sm;
+}
+
+/* Danger style for destructive actions */
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+/* Success style variant */
+.btn-success {
+  @apply bg-green-600 text-white hover:bg-green-700;
+}

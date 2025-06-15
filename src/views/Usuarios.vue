@@ -10,7 +10,7 @@
         </button>
       </div>
       <HeaderUser title="Usuários" />
-      <section class="bg-white p-6 rounded-lg shadow">
+      <section class="bg-white p-4 rounded-lg shadow">
         <h3 class="text-lg font-medium mb-4">Cadastrar novo usuário</h3>
         <form @submit.prevent="handleAddUser" class="space-y-4">
           <div>
@@ -22,14 +22,14 @@
             <input type="password" v-model="form.password" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Cadastrar</button>
+            <button type="submit" class="btn">Cadastrar</button>
           </div>
         </form>
         <p v-if="successMessage" class="text-green-600 mt-4">{{ successMessage }}</p>
         <p v-if="errorMessage" class="text-red-600 mt-4">{{ errorMessage }}</p>
       </section>
 
-      <section class="bg-white p-6 rounded-lg shadow">
+      <section class="bg-white p-4 rounded-lg shadow">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-medium">Usuários cadastrados</h3>
           <input
@@ -77,7 +77,7 @@ export default {
         email: '',
         password: ''
       },
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       userId: null,
       successMessage: '',
       errorMessage: '',

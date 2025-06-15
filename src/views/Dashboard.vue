@@ -42,7 +42,7 @@
         <div class="md:col-span-8">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-medium">Agenda da Semana</h3>
-            <button @click="showAppointmentModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Novo Agendamento</button>
+            <button @click="showAppointmentModal = true" class="btn">Novo Agendamento</button>
           </div>
           <WeekView
             :appointments="upcomingAppointments"
@@ -52,17 +52,29 @@
         </div>
         <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
-          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Novo Cliente</button>
+          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Novo Cliente</button>
 
           <div class="bg-white p-4 rounded-lg shadow">
             <h4 class="font-medium mb-2">Clientes com mais agendamentos</h4>
-            <ul class="space-y-1">
-              <li v-for="c in topClients" :key="c.id" class="flex justify-between">
-                <span>{{ c.name }}</span>
-                <span>{{ c.count }}</span>
-              </li>
-              <li v-if="topClients.length === 0" class="text-gray-500 text-sm">Nenhum dado</li>
-            </ul>
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 font-medium text-gray-700">Cliente</th>
+                    <th class="px-4 py-2 font-medium text-gray-700 text-right">Agendamentos</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="c in topClients" :key="c.id" class="border-b last:border-b-0">
+                    <td class="px-4 py-2">{{ c.name }}</td>
+                    <td class="px-4 py-2 text-right">{{ c.count }}</td>
+                  </tr>
+                  <tr v-if="topClients.length === 0">
+                    <td colspan="2" class="px-4 py-6 text-center text-gray-500">Nenhum dado</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -80,11 +92,15 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Telefone</label>
-            <input type="text" v-model="clientForm.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input
+              type="text"
+              v-model="clientForm.phone"
+              @input="clientForm.phone = phoneMask(clientForm.phone)"
+              class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="showClientModal = false" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Salvar</button>
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -124,7 +140,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="showAppointmentModal = false" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Salvar</button>
+            <button type="submit" class="btn">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -154,6 +170,7 @@ import Modal from '../components/Modal.vue'
 import WeekView from '../components/WeekView.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
+import { phoneMask } from '../utils/phone'
 
 export default {
   name: 'Dashboard',
@@ -171,7 +188,7 @@ export default {
       clients: [],
       services: [],
       topClients: [],
-      sidebarOpen: true,
+      sidebarOpen: window.innerWidth >= 768,
       showClientModal: false,
       showAppointmentModal: false,
       showDetailsModal: false,
@@ -194,6 +211,7 @@ export default {
     }
   },
   methods: {
+    phoneMask,
     async fetchStats() {
       const today = new Date()
       const dayOfWeek = today.getDay()
@@ -310,14 +328,21 @@ export default {
             datasets: [{
               label: 'Agendamentos',
               data: this.weekCounts,
-              backgroundColor: '#3b82f6'
+              backgroundColor: '#6366f1',
+              borderColor: '#4f46e5',
+              borderWidth: 1,
+              borderRadius: 4
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
             scales: {
-              y: { beginAtZero: true }
+              x: { grid: { display: false } },
+              y: { beginAtZero: true, grid: { color: '#e5e7eb' } }
             }
           }
         })

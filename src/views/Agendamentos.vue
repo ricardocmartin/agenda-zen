@@ -12,42 +12,12 @@
       <HeaderUser title="Agendamentos" />
       <section>
         <div class="flex flex-col sm:flex-row sm:items-center mb-4 gap-2">
-          <div class="flex flex-col flex-grow sm:max-w-xs">
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Buscar..."
-              class="border px-3 py-2 rounded-lg"
-            />
-            <div class="mt-1 flex items-center space-x-2">
-              <span class="text-xs text-gray-600">Modo de exibição:</span>
-              <div class="relative">
-                <button
-                  @click="showViewDropdown = !showViewDropdown"
-                  class="px-4 py-2 bg-gray-200 rounded-lg"
-                >
-                  {{ viewMode === 'list' ? 'Lista' : viewMode === 'calendar' ? 'Calendário' : 'Semana' }}
-                </button>
-                <div
-                  v-if="showViewDropdown"
-                  class="absolute right-0 mt-2 w-32 bg-white border rounded shadow"
-                >
-                  <button
-                    @click="setViewMode('list')"
-                    class="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >Lista</button>
-                  <button
-                    @click="setViewMode('calendar')"
-                    class="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >Calendário</button>
-                  <button
-                    @click="setViewMode('week')"
-                    class="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >Semana</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Buscar..."
+            class="border px-3 py-2 rounded-lg flex-grow sm:max-w-xs"
+          />
           <input
             v-model="filterStartDate"
             type="date"
@@ -64,12 +34,40 @@
           >Limpar</button>
           <button
             @click="openModal()"
-            class="sm:ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
+            class="btn sm:ml-auto w-full sm:w-auto"
           >Novo</button>
           <button
             @click="exportCSV"
             class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-auto"
           >Exportar</button>
+        </div>
+        <div class="mb-4 flex items-center space-x-2">
+          <span class="text-xs text-gray-600">Modo de exibição:</span>
+          <div class="relative">
+            <button
+              @click="showViewDropdown = !showViewDropdown"
+              class="px-4 py-2 bg-gray-200 rounded-lg"
+            >
+              {{ viewMode === 'list' ? 'Lista' : viewMode === 'calendar' ? 'Calendário' : 'Semana' }}
+            </button>
+            <div
+              v-if="showViewDropdown"
+              class="absolute right-0 mt-2 w-32 bg-white border rounded shadow"
+            >
+              <button
+                @click="setViewMode('list')"
+                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >Lista</button>
+              <button
+                @click="setViewMode('calendar')"
+                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >Calendário</button>
+              <button
+                @click="setViewMode('week')"
+                class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >Semana</button>
+            </div>
+          </div>
         </div>
 
         <Modal v-if="showModal" @close="closeModal">
@@ -107,7 +105,7 @@
             </div>
             <div class="flex justify-end space-x-2">
               <button type="button" @click="closeModal" class="px-4 py-2 rounded-lg border">Cancelar</button>
-              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Salvar</button>
+              <button type="submit" class="btn">Salvar</button>
             </div>
           </form>
         </Modal>
@@ -129,8 +127,9 @@
 
         <div class="mt-8" v-show="viewMode === 'list'">
           <h3 class="text-lg font-medium mb-4">Agendamentos</h3>
-          <div class="bg-white p-6 rounded-lg shadow overflow-x-auto">
-            <table class="min-w-full text-left">
+          <div class="bg-white p-4 rounded-lg shadow">
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left">
               <thead class="bg-gray-50">
                 <tr>
                   <th @click="sortBy('datetime')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
@@ -163,9 +162,9 @@
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
                   <td class="px-4 py-2">{{ appointment.duration }}</td>
                   <td class="px-4 py-2">{{ appointment.description }}</td>
-                  <td class="px-4 py-2 text-right">
-                    <button @click="openModal(appointment)" class="text-blue-600 hover:underline">Editar</button>
-                    <button @click="handleDeleteAppointment(appointment.id)" class="text-red-600 hover:underline ml-2">Excluir</button>
+                  <td class="px-4 py-2 text-right space-x-2">
+                    <button @click="openModal(appointment)" class="btn btn-sm">Editar</button>
+                    <button @click="handleDeleteAppointment(appointment.id)" class="btn btn-sm btn-danger">Excluir</button>
                   </td>
                 </tr>
                 <tr v-if="processedAppointments.length === 0">
@@ -173,6 +172,7 @@
                 </tr>
               </tbody>
             </table>
+          </div>
           </div>
         </div>
 
@@ -234,7 +234,7 @@ export default {
       sortColumn: '',
       sortAsc: true,
       showViewDropdown: false,
-      sidebarOpen: true
+      sidebarOpen: window.innerWidth >= 768
     }
   },
   computed: {

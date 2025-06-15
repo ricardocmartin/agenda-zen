@@ -9,7 +9,12 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Telefone</label>
-          <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <input
+            type="text"
+            v-model="form.phone"
+            @input="form.phone = phoneMask(form.phone)"
+            class="w-full mt-1 px-4 py-2 border rounded-md"
+          />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">E-mail</label>
@@ -53,7 +58,7 @@
           <input type="number" step="0.01" v-model="serviceForm.price" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div class="flex justify-end">
-          <button @click="addService" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Adicionar</button>
+          <button @click="addService" class="btn">Adicionar</button>
         </div>
         <ul class="mt-4 space-y-1">
           <li v-for="(s, index) in services" :key="index" class="flex justify-between">
@@ -71,10 +76,10 @@
 
       <div class="flex justify-between mt-6" v-if="step < 4">
         <button v-if="step > 1" @click="prev" class="px-4 py-2 border rounded">Voltar</button>
-        <button @click="next" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ml-auto">{{ step === 3 ? 'Finalizar' : 'Próximo' }}</button>
+        <button @click="next" class="btn ml-auto">{{ step === 3 ? 'Finalizar' : 'Próximo' }}</button>
       </div>
       <div class="flex justify-center mt-6" v-else>
-        <button @click="$router.push('/dashboard')" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Ir para o Dashboard</button>
+        <button @click="$router.push('/dashboard')" class="btn">Ir para o Dashboard</button>
       </div>
     </div>
   </div>
@@ -82,6 +87,7 @@
 
 <script>
 import { supabase } from '../supabase'
+import { phoneMask } from '../utils/phone'
 
 export default {
   name: 'Onboarding',
@@ -117,6 +123,7 @@ export default {
     }
   },
   methods: {
+    phoneMask,
     async next() {
       if (this.step === 1) {
         await this.saveProfile()
