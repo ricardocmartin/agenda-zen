@@ -6,6 +6,17 @@
         <h2 class="text-3xl font-extrabold text-blue-700">Fale conosco</h2>
         <p class="text-gray-500">Envie sua mensagem e entraremos em contato</p>
       </div>
+      <div class="mb-6 text-center">
+        <a
+          href="https://wa.me/5518996233098"
+          target="_blank"
+          rel="noopener"
+          class="btn btn-success inline-flex items-center space-x-2"
+        >
+          <img src="/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5" />
+          <span>Falar via WhatsApp</span>
+        </a>
+      </div>
       <form @submit.prevent="enviar" class="space-y-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1" for="nome">Nome</label>
@@ -24,17 +35,6 @@
       <p v-if="sucesso" class="mt-4 text-green-600 text-center">Mensagem enviada com sucesso!</p>
       <p v-if="erro" class="mt-4 text-red-600 text-center">{{ erro }}</p>
     </div>
-  </section>
-  <section class="py-8 flex justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
-    <a
-      href="https://wa.me/5518996233098"
-      target="_blank"
-      rel="noopener"
-      class="btn btn-success flex items-center space-x-2"
-    >
-      <img src="/icons/whatsapp.svg" alt="WhatsApp" class="w-5 h-5" />
-      <span>Falar via WhatsApp</span>
-    </a>
   </section>
   <Footer />
 </template>
