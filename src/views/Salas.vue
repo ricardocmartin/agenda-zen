@@ -145,13 +145,14 @@ export default {
       this.showModal = true
     },
     generateMeetLink() {
-      const letters = 'abcdefghijklmnopqrstuvwxyz'
-      const random = length =>
-        Array.from({ length }, () =>
-          letters[Math.floor(Math.random() * letters.length)]
-        ).join('')
-      const code = `${random(3)}-${random(4)}-${random(3)}`
-      this.form.googleMeetLink = `https://meet.google.com/${code}`
+      const meetWindow = window.open('https://meet.google.com/new', '_blank')
+      setTimeout(() => {
+        try {
+          this.form.googleMeetLink = meetWindow.location.href
+        } catch (e) {
+          alert('Copie o link criado na nova aba do Google Meet e cole no campo.')
+        }
+      }, 3000)
     },
     closeModal() {
       this.showModal = false
