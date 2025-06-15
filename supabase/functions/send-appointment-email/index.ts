@@ -10,7 +10,8 @@ const corsHeaders = {
 
 serve(async req => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders })
+    // Return a 200 response for CORS preflight requests
+    return new Response('ok', { status: 200, headers: corsHeaders })
   }
 
   const { to, subject, text } = await req.json()
