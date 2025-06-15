@@ -154,7 +154,8 @@ export default {
         try {
           this.form.googleMeetLink = meetWindow.location.href
         } catch (e) {
-          alert('Copie o link criado na nova aba do Google Meet e cole no campo.')
+          // If we can't access the new window's URL due to browser
+          // restrictions, the user will need to copy it manually.
         }
       }, 3000)
     },
