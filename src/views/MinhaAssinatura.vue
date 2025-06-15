@@ -27,8 +27,8 @@
           <button class="btn mt-4 w-full" @click="goBasico">Escolher</button>
         </div>
         <div class="bg-white p-6 rounded-lg shadow space-y-4">
-          <h3 class="text-xl font-semibold text-center">Plus</h3>
-          <p class="text-center text-2xl font-bold text-blue-600">R$69,00</p>
+          <h3 class="text-xl font-semibold text-center">Beta</h3>
+          <p class="text-center text-2xl font-bold line-through text-gray-400">R$169,00</p>
           <ul class="space-y-2">
             <li class="flex items-start"><span class="mr-2">✓</span>Cadastro de pacientes ilimitado</li>
             <li class="flex items-start"><span class="mr-2">✓</span>Lembretes por e-mail</li>
@@ -38,7 +38,7 @@
             <li class="flex items-start"><span class="mr-2">✓</span>Geração de recibos de atendimentos</li>
             <li class="flex items-start"><span class="mr-2">✓</span>Envio de recibos por e-mail automático</li>
           </ul>
-          <button class="btn mt-4 w-full" @click="goPlus">Escolher</button>
+          <button class="btn mt-4 w-full" @click="goBeta">Escolher</button>
         </div>
       </section>
     </main>
@@ -58,7 +58,7 @@ export default {
     }
   },
   methods: {
-    goPlus() {
+    goBeta() {
       this.$router.push('/assinatura-plus')
     },
     goBasico() {
