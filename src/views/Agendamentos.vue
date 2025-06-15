@@ -131,7 +131,8 @@
               <a :href="getRoomLink(selectedAppointment.room_id)" target="_blank" class="text-blue-600 underline">Acessar Google Meet</a>
             </p>
           </div>
-          <div class="flex justify-end mt-4">
+          <div class="flex justify-end mt-4 space-x-2">
+            <button @click="sendConfirmationEmail" class="btn btn-success">Enviar confirmação</button>
             <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
           </div>
         </Modal>
@@ -468,6 +469,18 @@ export default {
     openDetails(appointment) {
       this.selectedAppointment = appointment
       this.showDetailsModal = true
+    },
+    async sendConfirmationEmail() {
+      const appt = this.selectedAppointment
+      if (!appt) return
+      const client = this.clients.find(c => c.id === appt.client_id)
+      const service = this.services.find(s => s.id === appt.service_id)
+      const room = this.rooms.find(r => r.id === appt.room_id)
+      await sendAppointmentEmail({
+        to: client?.email,
+        subject: `Agendamento confirmado para ${appt.date} às ${appt.time}`,
+        text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${appt.date} às ${appt.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${appt.description ? `Observações: ${appt.description}` : ''}`
+      })
     },
     exportCSV() {
       const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Duração', 'Descrição']
