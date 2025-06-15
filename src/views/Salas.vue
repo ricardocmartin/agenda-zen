@@ -104,7 +104,11 @@
             <div class="flex space-x-2 mt-1">
               <input type="text" v-model="form.googleMeetLink" class="flex-grow px-4 py-2 border rounded-md" />
               <button type="button" @click="generateMeetLink" class="btn">Gerar</button>
+              <button type="button" @click="pasteFromClipboard" class="btn">Paste</button>
             </div>
+            <p class="text-xs text-gray-500 mt-2">
+              Após abrir a nova aba, copie o link da reunião e cole no campo acima.
+            </p>
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
@@ -145,23 +149,22 @@ export default {
       this.showModal = true
     },
     generateMeetLink() {
-      const meetWindow = window.open('https://meet.google.com/new', '_blank', 'noopener')
-
-      if (!meetWindow) {
-        alert('Pop-up bloqueado. Habilite o pop-up para gerar o link do Google Meet.')
-        return
-      }
-
-      alert('Aguarde a nova aba abrir e copie o link da reunião. O link não pode ser obtido automaticamente devido às políticas de segurança do navegador.')
-
-      // Fecha a aba após alguns segundos caso o usuário não feche manualmente
+      const meetWindow = window.open('https://meet.google.com/new', '_blank')
       setTimeout(() => {
         try {
-          meetWindow.close()
+          this.form.googleMeetLink = meetWindow.location.href
         } catch (e) {
-          // Ignora erros caso a janela já tenha sido fechada
+          alert('Copie o link criado na nova aba do Google Meet e cole no campo.')
         }
-      }, 10000)
+      }, 3000)
+    },
+    async pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText()
+        this.form.googleMeetLink = text
+      } catch (e) {
+        alert('Não foi possível acessar o conteúdo da área de transferência.')
+      }
     },
     closeModal() {
       this.showModal = false
