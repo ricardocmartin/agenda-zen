@@ -145,14 +145,23 @@ export default {
       this.showModal = true
     },
     generateMeetLink() {
-      const meetWindow = window.open('https://meet.google.com/new', '_blank')
+      const meetWindow = window.open('https://meet.google.com/new', '_blank', 'noopener')
+
+      if (!meetWindow) {
+        alert('Pop-up bloqueado. Habilite o pop-up para gerar o link do Google Meet.')
+        return
+      }
+
+      alert('Aguarde a nova aba abrir e copie o link da reunião. O link não pode ser obtido automaticamente devido às políticas de segurança do navegador.')
+
+      // Fecha a aba após alguns segundos caso o usuário não feche manualmente
       setTimeout(() => {
         try {
-          this.form.googleMeetLink = meetWindow.location.href
+          meetWindow.close()
         } catch (e) {
-          alert('Copie o link criado na nova aba do Google Meet e cole no campo.')
+          // Ignora erros caso a janela já tenha sido fechada
         }
-      }, 3000)
+      }, 10000)
     },
     closeModal() {
       this.showModal = false
