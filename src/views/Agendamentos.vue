@@ -234,7 +234,13 @@ export default {
       sortColumn: '',
       sortAsc: true,
       showViewDropdown: false,
-      sidebarOpen: window.innerWidth >= 768
+      sidebarOpen: window.innerWidth >= 768,
+      schedule: {
+        startTime: '',
+        endTime: '',
+        weekDays: [],
+        dailySchedule: null
+      }
     }
   },
   computed: {
@@ -313,7 +319,26 @@ export default {
       this.showDetailsModal = false
       this.selectedAppointment = null
     },
+    isSlotAllowed(dateStr, timeStr) {
+      if (!dateStr || !timeStr) return false
+      const day = new Date(dateStr).getDay().toString()
+      if (this.schedule.dailySchedule) {
+        const cfg = this.schedule.dailySchedule[day]
+        if (!cfg || !cfg.enabled || !cfg.start || !cfg.end) return false
+        return timeStr >= cfg.start && timeStr <= cfg.end
+      }
+      if (this.schedule.weekDays.length) {
+        if (!this.schedule.weekDays.includes(day)) return false
+        if (this.schedule.startTime && timeStr < this.schedule.startTime) return false
+        if (this.schedule.endTime && timeStr > this.schedule.endTime) return false
+      }
+      return true
+    },
     async handleSaveAppointment() {
+      if (!this.isSlotAllowed(this.form.date, this.form.time)) {
+        alert('Horário fora do horário de trabalho configurado')
+        return
+      }
       if (this.editingId) {
         const { data, error } = await supabase
           .from('appointments')
@@ -464,6 +489,25 @@ export default {
 
     if (serviceData) {
       this.services = serviceData
+    }
+
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('start_time, end_time, week_days, daily_schedule')
+      .eq('id', this.userId)
+      .single()
+
+    if (profileData) {
+      this.schedule.startTime = profileData.start_time || ''
+      this.schedule.endTime = profileData.end_time || ''
+      this.schedule.weekDays = profileData.week_days
+        ? profileData.week_days.split(',')
+        : []
+      this.schedule.dailySchedule = profileData.daily_schedule
+        ? typeof profileData.daily_schedule === 'string'
+          ? JSON.parse(profileData.daily_schedule)
+          : profileData.daily_schedule
+        : null
     }
 
     const { data: appointmentData } = await supabase
