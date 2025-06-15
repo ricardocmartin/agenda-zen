@@ -96,6 +96,13 @@
             </select>
           </div>
           <div>
+            <label class="block text-sm font-medium text-gray-700">Sala de Reunião</label>
+            <select v-model="form.roomId" class="w-full mt-1 px-4 py-2 border rounded-lg">
+              <option disabled value="">Selecione uma sala</option>
+              <option v-for="room in rooms" :key="room.id" :value="room.id">{{ room.name }}</option>
+            </select>
+          </div>
+          <div>
             <label class="block text-sm font-medium text-gray-700">Duração (minutos)</label>
             <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-lg" />
           </div>
@@ -119,6 +126,10 @@
             <p><strong>Serviço:</strong> {{ getServiceName(selectedAppointment.service_id) }}</p>
             <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
             <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
+            <p v-if="selectedAppointment.room_id"><strong>Sala:</strong> {{ getRoomName(selectedAppointment.room_id) }}</p>
+            <p v-if="selectedAppointment.room_id && getRoomLink(selectedAppointment.room_id)">
+              <a :href="getRoomLink(selectedAppointment.room_id)" target="_blank" class="text-blue-600 underline">Acessar Google Meet</a>
+            </p>
           </div>
           <div class="flex justify-end mt-4">
             <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
@@ -140,10 +151,11 @@
                     Cliente
                     <span v-if="sortColumn === 'client'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
-                  <th @click="sortBy('service')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                 <th @click="sortBy('service')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
                     Serviço
                     <span v-if="sortColumn === 'service'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
+                  <th class="px-4 py-2 font-medium text-gray-700">Sala</th>
                   <th @click="sortBy('duration')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
                     Duração
                     <span v-if="sortColumn === 'duration'">{{ sortAsc ? '▲' : '▼' }}</span>
@@ -160,6 +172,7 @@
                   <td class="px-4 py-2">{{ appointment.date }} {{ appointment.time }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
+                  <td class="px-4 py-2">{{ getRoomName(appointment.room_id) }}</td>
                   <td class="px-4 py-2">{{ appointment.duration }}</td>
                   <td class="px-4 py-2">{{ appointment.description }}</td>
                   <td class="px-4 py-2 text-right space-x-2">
@@ -168,7 +181,7 @@
                   </td>
                 </tr>
                 <tr v-if="processedAppointments.length === 0">
-                  <td colspan="6" class="px-4 py-6 text-center text-gray-500">Nenhum agendamento encontrado</td>
+                  <td colspan="7" class="px-4 py-6 text-center text-gray-500">Nenhum agendamento encontrado</td>
                 </tr>
               </tbody>
             </table>
@@ -182,6 +195,7 @@
             ref="calendarView"
             :appointments="processedAppointments"
             :getClientName="getClientName"
+            @select="openDetails"
           />
         </div>
 
@@ -220,11 +234,13 @@ export default {
         time: '',
         clientId: '',
         serviceId: '',
+        roomId: '',
         duration: '',
         description: ''
       },
       clients: [],
       services: [],
+      rooms: [],
       appointments: [],
       selectedAppointment: null,
       showDetailsModal: false,
@@ -301,18 +317,19 @@ export default {
           time: appointment.time,
           clientId: appointment.client_id,
           serviceId: appointment.service_id,
+          roomId: appointment.room_id || '',
           duration: appointment.duration,
           description: appointment.description
         }
       } else {
         this.editingId = null
-        this.form = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
+        this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '' }
       }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
+      this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '' }
       this.editingId = null
     },
     closeDetails() {
@@ -348,6 +365,7 @@ export default {
             time: this.form.time,
             client_id: this.form.clientId,
             service_id: this.form.serviceId,
+            room_id: this.form.roomId || null,
             duration: this.form.duration,
             description: this.form.description
           })
@@ -370,6 +388,7 @@ export default {
             time: this.form.time,
             client_id: this.form.clientId,
             service_id: this.form.serviceId,
+            room_id: this.form.roomId || null,
             duration: this.form.duration,
             description: this.form.description,
             user_id: this.userId
@@ -409,6 +428,14 @@ export default {
     getServiceName(serviceId) {
       const service = this.services.find(s => s.id === serviceId)
       return service ? service.name : ''
+    },
+    getRoomName(roomId) {
+      const room = this.rooms.find(r => r.id === roomId)
+      return room ? room.name : ''
+    },
+    getRoomLink(roomId) {
+      const room = this.rooms.find(r => r.id === roomId)
+      return room ? room.google_meet_link : ''
     },
     sortBy(column) {
       if (this.sortColumn === column) {
@@ -490,6 +517,15 @@ export default {
 
     if (serviceData) {
       this.services = serviceData
+    }
+
+    const { data: roomsData } = await supabase
+      .from('rooms')
+      .select()
+      .eq('user_id', this.userId)
+
+    if (roomsData) {
+      this.rooms = roomsData
     }
 
     const { data: profileData } = await supabase

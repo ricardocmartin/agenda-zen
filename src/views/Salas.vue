@@ -35,6 +35,7 @@
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-4 py-2 font-medium text-gray-700">Nome</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Google Meet</th>
                 <th class="px-4 py-2"></th>
               </tr>
             </thead>
@@ -45,6 +46,16 @@
                 class="border-b last:border-b-0"
               >
                 <td class="px-4 py-2">{{ room.name }}</td>
+                <td class="px-4 py-2">
+                  <a
+                    v-if="room.google_meet_link"
+                    :href="room.google_meet_link"
+                    class="text-blue-600 underline"
+                    target="_blank"
+                  >
+                    Link
+                  </a>
+                </td>
                 <td class="px-4 py-2 text-right">
                   <button
                     @click="handleDeleteRoom(room.id)"
@@ -55,7 +66,7 @@
                 </td>
               </tr>
               <tr v-if="filteredRooms.length === 0">
-                <td colspan="2" class="px-4 py-6 text-center text-gray-500">
+                <td colspan="3" class="px-4 py-6 text-center text-gray-500">
                   Nenhuma sala encontrada
                 </td>
               </tr>
@@ -88,6 +99,13 @@
             <label class="block text-sm font-medium text-gray-700">Nome</label>
             <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Link do Google Meet</label>
+            <div class="flex space-x-2 mt-1">
+              <input type="text" v-model="form.googleMeetLink" class="flex-grow px-4 py-2 border rounded-md" />
+              <button type="button" @click="generateMeetLink" class="btn">Gerar</button>
+            </div>
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="btn">Salvar</button>
@@ -113,7 +131,8 @@ export default {
       showModal: false,
       search: '',
       form: {
-        name: ''
+        name: '',
+        googleMeetLink: ''
       },
       rooms: [],
       sidebarOpen: window.innerWidth >= 768,
@@ -125,15 +144,20 @@ export default {
     openModal() {
       this.showModal = true
     },
+    generateMeetLink() {
+      this.form.googleMeetLink = 'https://meet.google.com/new'
+      window.open(this.form.googleMeetLink, '_blank')
+    },
     closeModal() {
       this.showModal = false
-      this.form = { name: '' }
+      this.form = { name: '', googleMeetLink: '' }
     },
     async handleAddRoom() {
       const { data, error } = await supabase
         .from('rooms')
         .insert({
           name: this.form.name,
+          google_meet_link: this.form.googleMeetLink,
           user_id: this.userId
         })
         .select()
@@ -171,7 +195,10 @@ export default {
   computed: {
     filteredRooms() {
       const term = this.search.toLowerCase()
-      return this.rooms.filter(r => r.name.toLowerCase().includes(term))
+      return this.rooms.filter(r =>
+        r.name.toLowerCase().includes(term) ||
+        (r.google_meet_link && r.google_meet_link.toLowerCase().includes(term))
+      )
     },
     paginatedRooms() {
       const start = (this.page - 1) * this.pageSize
