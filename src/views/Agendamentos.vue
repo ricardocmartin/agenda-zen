@@ -219,6 +219,7 @@ import Modal from '../components/Modal.vue'
 import CalendarView from '../components/CalendarView.vue'
 import WeekView from '../components/WeekView.vue'
 import { supabase } from '../supabase'
+import { sendAppointmentEmail } from '../utils/email'
 
 export default {
   name: 'Agendamentos',
@@ -400,6 +401,14 @@ export default {
           alert('Erro ao salvar agendamento: ' + error.message)
         } else {
           this.appointments.push(data)
+          const client = this.clients.find(c => c.id === this.form.clientId)
+          const service = this.services.find(s => s.id === this.form.serviceId)
+          const room = this.rooms.find(r => r.id === this.form.roomId)
+          await sendAppointmentEmail({
+            to: client?.email,
+            subject: `Agendamento confirmado para ${this.form.date} às ${this.form.time}`,
+            text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${this.form.date} às ${this.form.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${this.form.description ? `Observações: ${this.form.description}` : ''}`
+          })
           this.closeModal()
         }
       }
@@ -424,6 +433,10 @@ export default {
     getClientName(clientId) {
       const client = this.clients.find(c => c.id === clientId)
       return client ? client.name : ''
+    },
+    getClientEmail(clientId) {
+      const client = this.clients.find(c => c.id === clientId)
+      return client ? client.email : ''
     },
     getServiceName(serviceId) {
       const service = this.services.find(s => s.id === serviceId)
