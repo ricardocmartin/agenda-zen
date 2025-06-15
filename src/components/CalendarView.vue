@@ -30,7 +30,12 @@
       >
         <div class="text-center font-medium">{{ day }}</div>
         <ul>
-          <li v-for="appt in getAppointmentsForDay(day)" :key="appt.id" class="text-xs truncate">
+          <li
+            v-for="appt in getAppointmentsForDay(day)"
+            :key="appt.id"
+            class="text-xs truncate cursor-pointer"
+            @click="$emit('select', appt)"
+          >
             {{ appt.time }} - {{ getClientName(appt.client_id) }}
           </li>
         </ul>
