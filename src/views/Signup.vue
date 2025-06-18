@@ -59,7 +59,7 @@ export default {
         email: this.email,
         password: this.password,
         options: {
-          data: { name: this.name }
+          data: { name: this.name, display_name: this.name }
         }
       })
 

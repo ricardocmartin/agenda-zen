@@ -5,6 +5,7 @@ Agenda Zen é uma aplicação web de agendamento para psicólogos, terapeutas e 
 ## Principais funcionalidades
 
 - Cadastro e autenticação de usuários
+- Nome cadastrado é salvo como display name no Supabase
 - Gestão de clientes, serviços e salas
 - Controle de agendamentos em lista, calendário ou semana
 - Dashboard com estatísticas e gráficos (Chart.js)
