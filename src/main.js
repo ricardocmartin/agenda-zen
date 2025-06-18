@@ -4,6 +4,31 @@ import router from './router'
 import './assets/main.css'
 import { supabase } from './supabase'
 
+// Processa tokens de confirmação enviados pelo Supabase
+const handleEmailConfirmation = async () => {
+  if (
+    window.location.hash.includes('access_token') &&
+    window.location.hash.includes('type=signup')
+  ) {
+    const hash = window.location.hash.replace(/^#\/?/, '')
+    const params = new URLSearchParams(hash)
+
+    const access_token = params.get('access_token')
+    const refresh_token = params.get('refresh_token')
+
+    if (access_token && refresh_token) {
+      try {
+        await supabase.auth.setSession({ access_token, refresh_token })
+        router.replace('/confirmacao')
+      } catch (_) {
+        // ignore
+      }
+    }
+  }
+}
+
+handleEmailConfirmation()
+
 // Redireciona para a página de confirmação após validar o e-mail
 supabase.auth.onAuthStateChange((event) => {
   if (
