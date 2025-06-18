@@ -101,6 +101,14 @@
             <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
+            <label class="block text-sm font-medium text-gray-700">CPF</label>
+            <input type="text" v-model="form.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Data de nascimento</label>
+            <input type="date" v-model="form.birthdate" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
             <label class="block text-sm font-medium text-gray-700">E-mail</label>
             <input type="email" v-model="form.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
@@ -111,14 +119,6 @@
               v-model="form.phone"
               @input="form.phone = phoneMask(form.phone)"
               class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Data de nascimento</label>
-            <input type="date" v-model="form.birthdate" class="w-full mt-1 px-4 py-2 border rounded-md" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">CPF</label>
-            <input type="text" v-model="form.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">CEP</label>
