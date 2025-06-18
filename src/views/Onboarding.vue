@@ -88,6 +88,7 @@
 <script>
 import { supabase } from '../supabase'
 import { phoneMask } from '../utils/phone'
+import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'Onboarding',
@@ -140,6 +141,10 @@ export default {
       if (this.step > 1) this.step--
     },
     async saveProfile() {
+      if (this.form.email && !isValidEmail(this.form.email)) {
+        alert('E-mail inválido')
+        return
+      }
       const updates = {
         id: this.userId,
         business_name: this.form.businessName,

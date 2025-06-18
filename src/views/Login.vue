@@ -30,6 +30,7 @@
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
 import { supabase } from '../supabase'
+import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'Login',
@@ -42,6 +43,10 @@ export default {
     },
     methods: {
       async handleLogin() {
+        if (this.email && !isValidEmail(this.email)) {
+          alert('E-mail inválido')
+          return
+        }
         const { data, error } = await supabase.auth.signInWithPassword({
           email: this.email,
           password: this.password
