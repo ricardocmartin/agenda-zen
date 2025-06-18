@@ -52,7 +52,7 @@
         </div>
         <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
-          <button @click="showClientModal = true" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Novo Cliente</button>
+          <button @click="openClientModal" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Novo Cliente</button>
 
           <div class="bg-white p-4 rounded-lg shadow">
             <h4 class="font-medium mb-2">Clientes com mais agendamentos</h4>
@@ -107,8 +107,38 @@
             <input type="text" v-model="clientForm.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Endereço completo</label>
-            <input type="text" v-model="clientForm.address" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <label class="block text-sm font-medium text-gray-700">CEP</label>
+            <input type="text" v-model="clientForm.cep" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Endereço</label>
+            <input type="text" v-model="clientForm.street" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Número</label>
+            <input type="text" v-model="clientForm.number" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Complemento</label>
+            <input type="text" v-model="clientForm.complement" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Bairro</label>
+            <input type="text" v-model="clientForm.neighborhood" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Estado</label>
+            <select v-model="clientForm.stateId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione</option>
+              <option v-for="s in states" :key="s.id" :value="s.id">{{ s.nome }} ({{ s.sigla }})</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Cidade</label>
+            <select v-model="clientForm.cityId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione</option>
+              <option v-for="c in cities" :key="c.id" :value="c.id">{{ c.nome }}</option>
+            </select>
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="showClientModal = false" class="px-4 py-2 rounded border">Cancelar</button>
@@ -183,6 +213,7 @@ import WeekView from '../components/WeekView.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
 import { phoneMask } from '../utils/phone'
+import { fetchStates, fetchCities } from '../utils/locations'
 
 export default {
   name: 'Dashboard',
@@ -206,13 +237,21 @@ export default {
       showDetailsModal: false,
       weekChart: null,
       weekCounts: [0, 0, 0, 0, 0, 0, 0],
+      states: [],
+      cities: [],
       clientForm: {
         name: '',
         email: '',
         phone: '',
         birthdate: '',
         cpf: '',
-        address: ''
+        cep: '',
+        street: '',
+        number: '',
+        complement: '',
+        neighborhood: '',
+        stateId: '',
+        cityId: ''
       },
       appointmentForm: {
         date: '',
@@ -227,6 +266,19 @@ export default {
   },
   methods: {
     phoneMask,
+    async fetchStatesList() {
+      this.states = await fetchStates()
+    },
+    async fetchCitiesList() {
+      this.cities = await fetchCities(this.clientForm.stateId)
+    },
+    async openClientModal() {
+      await this.fetchStatesList()
+      if (this.clientForm.stateId) {
+        await this.fetchCitiesList()
+      }
+      this.showClientModal = true
+    },
     async fetchStats() {
       const today = new Date()
       const dayOfWeek = today.getDay()
@@ -387,7 +439,13 @@ export default {
           phone: this.clientForm.phone,
           birthdate: this.clientForm.birthdate,
           cpf: this.clientForm.cpf,
-          address: this.clientForm.address,
+          cep: this.clientForm.cep,
+          street: this.clientForm.street,
+          number: this.clientForm.number,
+          complement: this.clientForm.complement,
+          neighborhood: this.clientForm.neighborhood,
+          state_id: this.clientForm.stateId,
+          city_id: this.clientForm.cityId,
           user_id: this.userId
         })
         .select()
@@ -397,7 +455,20 @@ export default {
         alert('Erro ao salvar cliente: ' + error.message)
       } else {
         this.clients.push(data)
-        this.clientForm = { name: '', email: '', phone: '', birthdate: '', cpf: '', address: '' }
+        this.clientForm = {
+          name: '',
+          email: '',
+          phone: '',
+          birthdate: '',
+          cpf: '',
+          cep: '',
+          street: '',
+          number: '',
+          complement: '',
+          neighborhood: '',
+          stateId: '',
+          cityId: ''
+        }
         this.stats.clients += 1
         const now = new Date(data.created_at)
         const startMonth = new Date(now.getFullYear(), now.getMonth(), 1)
@@ -448,6 +519,9 @@ export default {
           this.appointmentForm.duration = service.duration
         }
       }
+    },
+    'clientForm.stateId'() {
+      this.fetchCitiesList()
     }
   },
   async mounted() {
@@ -468,6 +542,7 @@ export default {
     if (serviceData) {
       this.services = serviceData
     }
+    await this.fetchStatesList()
   }
 }
 </script>

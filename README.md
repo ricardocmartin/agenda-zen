@@ -37,6 +37,12 @@ O diretório `supabase/schemas` reúne os scripts SQL para criação das tabelas
 - `src/` – código-fonte em Vue (componentes, views e roteamento)
 - `public/` – arquivos estáticos
 - `supabase/` – scripts SQL do banco de dados
+- `supabase/scripts/` – utilidades para gerar dados de estados e cidades do Brasil
+
+### Gerar lista de estados e cidades
+
+Execute `node supabase/scripts/generate_locations_sql.js` para baixar os dados do IBGE
+e criar os arquivos `brazil_states.sql` e `brazil_cities.sql` com instruções `INSERT`.
 - `mobile/` – código compartilhado do app móvel em React Native (sem os projetos nativos)
 
 ## Aplicativos móveis
