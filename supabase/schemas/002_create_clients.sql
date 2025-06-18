@@ -4,6 +4,9 @@ create table if not exists clients (
   name text not null,
   email text,
   phone text,
+  birthdate date,
+  cpf text,
+  address text,
   created_at timestamp with time zone default now()
 );
 

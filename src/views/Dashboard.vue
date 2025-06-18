@@ -98,6 +98,18 @@
               @input="clientForm.phone = phoneMask(clientForm.phone)"
               class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Data de nascimento</label>
+            <input type="date" v-model="clientForm.birthdate" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">CPF</label>
+            <input type="text" v-model="clientForm.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Endereço completo</label>
+            <input type="text" v-model="clientForm.address" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="showClientModal = false" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Salvar</button>
@@ -197,7 +209,10 @@ export default {
       clientForm: {
         name: '',
         email: '',
-        phone: ''
+        phone: '',
+        birthdate: '',
+        cpf: '',
+        address: ''
       },
       appointmentForm: {
         date: '',
@@ -370,6 +385,9 @@ export default {
           name: this.clientForm.name,
           email: this.clientForm.email,
           phone: this.clientForm.phone,
+          birthdate: this.clientForm.birthdate,
+          cpf: this.clientForm.cpf,
+          address: this.clientForm.address,
           user_id: this.userId
         })
         .select()
@@ -379,7 +397,7 @@ export default {
         alert('Erro ao salvar cliente: ' + error.message)
       } else {
         this.clients.push(data)
-        this.clientForm = { name: '', email: '', phone: '' }
+        this.clientForm = { name: '', email: '', phone: '', birthdate: '', cpf: '', address: '' }
         this.stats.clients += 1
         const now = new Date(data.created_at)
         const startMonth = new Date(now.getFullYear(), now.getMonth(), 1)
