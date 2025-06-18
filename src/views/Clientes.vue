@@ -121,8 +121,38 @@
             <input type="text" v-model="form.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Endereço completo</label>
-            <input type="text" v-model="form.address" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <label class="block text-sm font-medium text-gray-700">CEP</label>
+            <input type="text" v-model="form.cep" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Endereço</label>
+            <input type="text" v-model="form.street" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Número</label>
+            <input type="text" v-model="form.number" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Complemento</label>
+            <input type="text" v-model="form.complement" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Bairro</label>
+            <input type="text" v-model="form.neighborhood" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Estado</label>
+            <select v-model="form.stateId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione</option>
+              <option v-for="s in states" :key="s.id" :value="s.id">{{ s.nome }} ({{ s.sigla }})</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Cidade</label>
+            <select v-model="form.cityId" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option disabled value="">Selecione</option>
+              <option v-for="c in cities" :key="c.id" :value="c.id">{{ c.nome }}</option>
+            </select>
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
@@ -140,6 +170,7 @@ import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
 import { phoneMask, digitsOnly } from '../utils/phone'
+import { fetchStates, fetchCities } from '../utils/locations'
 
 export default {
   name: 'Clientes',
@@ -155,8 +186,16 @@ export default {
           phone: '',
           birthdate: '',
           cpf: '',
-          address: ''
+          cep: '',
+          street: '',
+          number: '',
+          complement: '',
+          neighborhood: '',
+          stateId: '',
+          cityId: ''
         },
+        states: [],
+        cities: [],
         clients: [],
         sidebarOpen: window.innerWidth >= 768,
         page: 1,
@@ -166,12 +205,35 @@ export default {
   methods: {
     phoneMask,
     digitsOnly,
-    openModal() {
+    async fetchStatesList() {
+      this.states = await fetchStates()
+    },
+    async fetchCitiesList() {
+      this.cities = await fetchCities(this.form.stateId)
+    },
+    async openModal() {
+      await this.fetchStatesList()
+      if (this.form.stateId) {
+        await this.fetchCitiesList()
+      }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', address: '' }
+      this.form = {
+        name: '',
+        email: '',
+        phone: '',
+        birthdate: '',
+        cpf: '',
+        cep: '',
+        street: '',
+        number: '',
+        complement: '',
+        neighborhood: '',
+        stateId: '',
+        cityId: ''
+      }
     },
     whatsappLink(phone) {
       const formatted = digitsOnly(phone)
@@ -186,7 +248,13 @@ export default {
           phone: this.form.phone,
           birthdate: this.form.birthdate,
           cpf: this.form.cpf,
-          address: this.form.address,
+          cep: this.form.cep,
+          street: this.form.street,
+          number: this.form.number,
+          complement: this.form.complement,
+          neighborhood: this.form.neighborhood,
+          state_id: this.form.stateId,
+          city_id: this.form.cityId,
           user_id: this.userId
         })
         .select()
@@ -242,6 +310,9 @@ export default {
   watch: {
     search() {
       this.page = 1
+    },
+    'form.stateId'() {
+      this.fetchCitiesList()
     }
   },
   async mounted() {
@@ -260,6 +331,7 @@ export default {
     if (data) {
       this.clients = data
     }
+    await this.fetchStatesList()
   }
 }
 </script>
