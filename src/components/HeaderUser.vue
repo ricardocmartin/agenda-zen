@@ -1,13 +1,13 @@
 <template>
   <header class="flex justify-between items-center mb-8">
     <h1 class="text-2xl font-semibold text-gray-800">{{ title }}</h1>
-    <div v-if="userEmail" class="relative">
+    <div v-if="userName" class="relative">
       <button @click="toggleMenu" class="flex items-center space-x-2 focus:outline-none">
         <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <circle cx="12" cy="8" r="4" stroke-width="2" />
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 21v-2a6 6 0 0112 0v2" />
         </svg>
-        <span class="text-gray-600">{{ userEmail }}</span>
+        <span class="text-gray-600">{{ userName }}</span>
         <svg class="w-4 h-4 text-gray-600 transition-transform" :class="{ 'rotate-180': showMenu }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      userEmail: null,
+      userName: null,
       showMenu: false
     }
   },
@@ -45,7 +45,8 @@ export default {
     if (!user) {
       this.$router.push('/login')
     } else {
-      this.userEmail = user.email
+      const displayName = user.user_metadata?.display_name || user.user_metadata?.name
+      this.userName = displayName && displayName.trim() !== '' ? displayName : user.email
     }
   },
   methods: {
