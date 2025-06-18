@@ -39,6 +39,7 @@ O diretório `supabase/schemas` reúne os scripts SQL para criação das tabelas
 - `public/` – arquivos estáticos
 - `supabase/` – scripts SQL do banco de dados
 - `supabase/scripts/` – utilidades para gerar dados de estados e cidades do Brasil
+- `supabase/email_templates/` – modelos de email usados pelo Supabase
 
 ### Gerar lista de estados e cidades
 
