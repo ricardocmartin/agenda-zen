@@ -22,11 +22,13 @@ import Faq from '../views/Faq.vue'
 import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
 import TermosDeUso from '../views/TermosDeUso.vue'
 import PagamentoPlus from '../views/PagamentoPlus.vue'
+import Confirmacao from '../views/Confirmacao.vue'
 
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/cadastro', name: 'Signup', component: Signup },
+  { path: '/confirmacao', name: 'Confirmacao', component: Confirmacao },
   { path: '/login', name: 'Login', component: Login },
   { path: '/onboarding', name: 'Onboarding', component: Onboarding },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
