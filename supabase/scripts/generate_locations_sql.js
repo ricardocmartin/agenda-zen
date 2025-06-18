@@ -27,9 +27,14 @@ async function main() {
   const cities = await fetchJSON('https://servicodados.ibge.gov.br/api/v1/localidades/municipios');
   const citySql = cities
     .map(c => {
-      const stateId = c.microrregiao.mesorregiao.UF.id;
+      const stateId = c.microrregiao?.mesorregiao?.UF?.id;
+      if (!stateId) {
+        console.warn(`State id not found for city ${c.nome} (${c.id}), skipping.`);
+        return null;
+      }
       return `insert into cities (id, state_id, name) values (${c.id}, ${stateId}, '${escape(c.nome)}');`;
     })
+    .filter(Boolean)
     .join('\n');
   fs.writeFileSync('brazil_cities.sql', citySql);
 }
