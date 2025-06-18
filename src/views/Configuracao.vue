@@ -142,7 +142,8 @@
   import Sidebar from '../components/Sidebar.vue'
   import HeaderUser from '../components/HeaderUser.vue'
   import { supabase } from '../supabase'
-  import { phoneMask } from '../utils/phone'
+import { phoneMask } from '../utils/phone'
+import { isValidEmail } from '../utils/format'
   
   export default {
     name: 'Configuracao',
@@ -200,6 +201,10 @@
           .replace(/(^-|-$)/g, '')
       },
       async handleSave() {
+        if (this.form.email && !isValidEmail(this.form.email)) {
+          alert('E-mail inválido')
+          return
+        }
         const updates = {
           id: this.userId,
           business_name: this.form.businessName,

@@ -43,6 +43,7 @@
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
 import { supabase } from '../supabase'
+import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'Contato',
@@ -60,6 +61,10 @@ export default {
     async enviar() {
       this.sucesso = false
       this.erro = ''
+      if (this.email && !isValidEmail(this.email)) {
+        this.erro = 'E-mail inválido'
+        return
+      }
       const { error } = await supabase.from('contacts').insert({
         name: this.nome,
         email: this.email,

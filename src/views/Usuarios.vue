@@ -67,6 +67,7 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
+import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'Usuarios',
@@ -89,6 +90,11 @@ export default {
     async handleAddUser() {
       this.successMessage = ''
       this.errorMessage = ''
+
+      if (this.form.email && !isValidEmail(this.form.email)) {
+        this.errorMessage = 'E-mail inválido'
+        return
+      }
 
       const { data: { user: currentUser } } = await supabase.auth.getUser()
       const { data: { session: currentSession } } = await supabase.auth.getSession()

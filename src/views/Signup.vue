@@ -29,6 +29,7 @@
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
 import { supabase } from '../supabase'
+import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'Signup',
@@ -41,6 +42,10 @@ export default {
   },
   methods: {
     async handleSignup() {
+      if (this.email && !isValidEmail(this.email)) {
+        alert('E-mail inválido')
+        return
+      }
       const { data, error } = await supabase.auth.signUp({
         email: this.email,
         password: this.password

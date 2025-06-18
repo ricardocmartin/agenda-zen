@@ -102,7 +102,11 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">CPF</label>
-            <input type="text" v-model="form.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <input
+            type="text"
+            v-model="form.cpf"
+            @input="form.cpf = cpfMask(form.cpf)"
+            class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Data de nascimento</label>
@@ -122,7 +126,11 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">CEP</label>
-            <input type="text" v-model="form.cep" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <input
+            type="text"
+            v-model="form.cep"
+            @input="form.cep = cepMask(form.cep)"
+            class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Endereço</label>
@@ -171,6 +179,7 @@ import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
 import { phoneMask, digitsOnly } from '../utils/phone'
 import { fetchStates, fetchCities } from '../utils/locations'
+import { cpfMask, cepMask, isValidEmail } from '../utils/format'
 
 export default {
   name: 'Clientes',
@@ -205,6 +214,8 @@ export default {
   methods: {
     phoneMask,
     digitsOnly,
+    cpfMask,
+    cepMask,
     async fetchStatesList() {
       this.states = await fetchStates()
     },
@@ -239,7 +250,11 @@ export default {
       const formatted = digitsOnly(phone)
       return `https://wa.me/${formatted}`
     },
-    async handleAddClient() {
+   async handleAddClient() {
+      if (this.form.email && !isValidEmail(this.form.email)) {
+        alert('E-mail inválido')
+        return
+      }
       const { data, error } = await supabase
         .from('clients')
         .insert({

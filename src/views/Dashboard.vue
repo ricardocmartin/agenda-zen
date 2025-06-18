@@ -88,7 +88,11 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">CPF</label>
-            <input type="text" v-model="clientForm.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input
+              type="text"
+              v-model="clientForm.cpf"
+              @input="clientForm.cpf = cpfMask(clientForm.cpf)"
+              class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Data de nascimento</label>
@@ -108,7 +112,11 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">CEP</label>
-            <input type="text" v-model="clientForm.cep" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input
+              type="text"
+              v-model="clientForm.cep"
+              @input="clientForm.cep = cepMask(clientForm.cep)"
+              class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Endereço</label>
@@ -214,6 +222,7 @@ import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
 import { phoneMask } from '../utils/phone'
 import { fetchStates, fetchCities } from '../utils/locations'
+import { cpfMask, cepMask, isValidEmail } from '../utils/format'
 
 export default {
   name: 'Dashboard',
@@ -266,6 +275,8 @@ export default {
   },
   methods: {
     phoneMask,
+    cpfMask,
+    cepMask,
     async fetchStatesList() {
       this.states = await fetchStates()
     },
@@ -430,7 +441,11 @@ export default {
         this.showDetailsModal = false
         this.selectedAppointment = null
       },
-    async handleAddClient() {
+  async handleAddClient() {
+      if (this.clientForm.email && !isValidEmail(this.clientForm.email)) {
+        alert('E-mail inválido')
+        return
+      }
       const { data, error } = await supabase
         .from('clients')
         .insert({
