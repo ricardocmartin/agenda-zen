@@ -6,15 +6,19 @@
         <h2 class="text-3xl font-extrabold text-blue-700">Crie sua conta</h2>
         <p class="text-gray-500">Comece agora a organizar seus atendimentos com praticidade</p>
       </div>
-      <form @submit.prevent="handleSignup" class="space-y-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="email">E-mail</label>
-          <input v-model="email" type="email" id="email" placeholder="seu@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Senha</label>
-          <input v-model="password" type="password" id="password" placeholder="********" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
+        <form @submit.prevent="handleSignup" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="name">Nome</label>
+            <input v-model="name" type="text" id="name" placeholder="Seu nome" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="email">E-mail</label>
+            <input v-model="email" type="email" id="email" placeholder="seu@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Senha</label>
+            <input v-model="password" type="password" id="password" placeholder="********" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
         <button type="submit" class="btn w-full">Cadastrar</button>
       </form>
       <p class="mt-6 text-center text-sm text-gray-500">
@@ -36,19 +40,27 @@ export default {
   components: { Navbar, Footer },
   data() {
     return {
+      name: '',
       email: '',
       password: ''
     }
   },
   methods: {
     async handleSignup() {
+      if (!this.name) {
+        alert('Informe o nome')
+        return
+      }
       if (this.email && !isValidEmail(this.email)) {
         alert('E-mail inválido')
         return
       }
       const { data, error } = await supabase.auth.signUp({
         email: this.email,
-        password: this.password
+        password: this.password,
+        options: {
+          data: { name: this.name }
+        }
       })
 
       if (error) {
