@@ -14,8 +14,7 @@
       <router-link to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
       <router-link to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
       <router-link to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
-      <router-link to="/login" class="text-blue-600 hover:underline">Login</router-link>
-      <router-link to="/cadastro" class="btn">Cadastre-se</router-link>
+      <router-link to="/login" class="btn">Login</router-link>
     </div>
 
     <!-- Menu mobile -->
@@ -23,8 +22,7 @@
       <router-link @click="open = false" to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
       <router-link @click="open = false" to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
       <router-link @click="open = false" to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
-      <router-link @click="open = false" to="/login" class="text-blue-600 hover:underline">Login</router-link>
-      <router-link @click="open = false" to="/cadastro" class="btn">Cadastre-se</router-link>
+      <router-link @click="open = false" to="/login" class="btn">Login</router-link>
     </div>
   </nav>
 </template>
