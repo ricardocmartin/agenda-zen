@@ -112,6 +112,18 @@
               @input="form.phone = phoneMask(form.phone)"
               class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Data de nascimento</label>
+            <input type="date" v-model="form.birthdate" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">CPF</label>
+            <input type="text" v-model="form.cpf" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Endereço completo</label>
+            <input type="text" v-model="form.address" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="btn">Salvar</button>
@@ -133,19 +145,22 @@ export default {
   name: 'Clientes',
   components: { Sidebar, HeaderUser, Modal },
   data() {
-    return {
-      userId: null,
-      showModal: false,
-      search: '',
-      form: {
-        name: '',
-        email: '',
-        phone: ''
-      },
-      clients: [],
-      sidebarOpen: window.innerWidth >= 768,
-      page: 1,
-      pageSize: 10
+      return {
+        userId: null,
+        showModal: false,
+        search: '',
+        form: {
+          name: '',
+          email: '',
+          phone: '',
+          birthdate: '',
+          cpf: '',
+          address: ''
+        },
+        clients: [],
+        sidebarOpen: window.innerWidth >= 768,
+        page: 1,
+        pageSize: 10
     }
   },
   methods: {
@@ -156,7 +171,7 @@ export default {
     },
     closeModal() {
       this.showModal = false
-      this.form = { name: '', email: '', phone: '' }
+      this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', address: '' }
     },
     whatsappLink(phone) {
       const formatted = digitsOnly(phone)
@@ -169,6 +184,9 @@ export default {
           name: this.form.name,
           email: this.form.email,
           phone: this.form.phone,
+          birthdate: this.form.birthdate,
+          cpf: this.form.cpf,
+          address: this.form.address,
           user_id: this.userId
         })
         .select()
