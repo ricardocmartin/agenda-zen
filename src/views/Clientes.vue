@@ -93,9 +93,9 @@
       </div>
       </section>
 
-      <Modal v-if="showModal" @close="closeModal">
-        <h3 class="text-lg font-semibold mb-4">Adicionar Cliente</h3>
-        <form @submit.prevent="handleAddClient" class="space-y-6">
+        <Modal v-if="showModal" @close="closeModal">
+          <h3 class="text-lg font-semibold mb-4">Adicionar Cliente</h3>
+          <form @submit.prevent="handleAddClient" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
             <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
@@ -154,7 +154,7 @@
               <option v-for="c in cities" :key="c.id" :value="c.id">{{ c.nome }}</option>
             </select>
           </div>
-          <div class="flex justify-end space-x-2">
+            <div class="flex justify-end space-x-2 md:col-span-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="btn">Salvar</button>
           </div>
