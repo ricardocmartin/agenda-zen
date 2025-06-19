@@ -53,7 +53,11 @@ export default {
         })
 
         if (error) {
-            alert('Erro ao entrar: ' + error.message)
+            if (error.message && error.message.toLowerCase().includes('confirm')) {
+              alert('Voc\u00ea precisa confirmar o e-mail antes de acessar o sistema.')
+            } else {
+              alert('Erro ao entrar: ' + error.message)
+            }
         } else {
             this.$router.push('/dashboard')
         }
