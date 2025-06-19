@@ -17,6 +17,13 @@
           </div>
           <button type="submit" class="btn w-full">Entrar</button>
           <button type="button" @click="handleGoogleLogin" class="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition duration-200">Entrar com Google</button>
+          <p v-if="loginError" class="text-red-600 text-center text-sm">
+            {{ loginError }}
+            <template v-if="loginError === 'E-mail ou senha inválidos'">
+              Caso não possua cadastro,
+              <router-link to="/cadastro" class="text-blue-600 underline">clique aqui para se cadastrar</router-link>.
+            </template>
+          </p>
         </form>
         <p class="mt-6 text-center text-sm text-gray-500">
           Ainda não tem conta? <router-link to="/cadastro" class="text-blue-600 hover:underline">Criar agora</router-link>
@@ -38,16 +45,18 @@ export default {
   data() {
       return {
         email: '',
-        password: ''
+        password: '',
+        loginError: ''
       }
     },
     methods: {
       async handleLogin() {
+        this.loginError = ''
         if (this.email && !isValidEmail(this.email)) {
-          alert('E-mail inválido')
+          this.loginError = 'E-mail inválido'
           return
         }
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email: this.email,
           password: this.password
         })
@@ -56,7 +65,7 @@ export default {
             if (error.message && error.message.toLowerCase().includes('confirm')) {
               alert('Voc\u00ea precisa confirmar o e-mail antes de acessar o sistema.')
             } else {
-              alert('Erro ao entrar: ' + error.message)
+              this.loginError = 'E-mail ou senha inválidos'
             }
         } else {
             this.$router.push('/dashboard')
