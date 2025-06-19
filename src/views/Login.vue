@@ -62,7 +62,11 @@ export default {
         })
 
         if (error) {
-            this.loginError = 'E-mail ou senha inválidos'
+            if (error.message && error.message.toLowerCase().includes('confirm')) {
+              alert('Voc\u00ea precisa confirmar o e-mail antes de acessar o sistema.')
+            } else {
+              this.loginError = 'E-mail ou senha inválidos'
+            }
         } else {
             this.$router.push('/dashboard')
         }
