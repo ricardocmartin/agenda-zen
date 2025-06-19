@@ -4,15 +4,23 @@ import router from './router'
 import './assets/main.css'
 import { supabase } from './supabase'
 
-// Processa tokens de confirmação enviados pelo Supabase
+// Processa tokens ou erros de confirmação enviados pelo Supabase
 const handleEmailConfirmation = async () => {
+  const hash = window.location.hash.replace(/^#\/?/, '')
+  const params = new URLSearchParams(hash)
+
+  if (
+    params.get('error_code') === 'otp_expired' ||
+    params.get('error_description')?.includes('Email link is invalid')
+  ) {
+    router.replace('/link-expirado')
+    return
+  }
+
   if (
     window.location.hash.includes('access_token') &&
     window.location.hash.includes('type=signup')
   ) {
-    const hash = window.location.hash.replace(/^#\/?/, '')
-    const params = new URLSearchParams(hash)
-
     const access_token = params.get('access_token')
     const refresh_token = params.get('refresh_token')
 
