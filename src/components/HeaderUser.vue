@@ -56,7 +56,7 @@ export default {
     async handleLogout() {
       this.showMenu = false
       await supabase.auth.signOut()
-      this.$router.push('/login')
+      this.$router.push('/')
     }
   }
 }
