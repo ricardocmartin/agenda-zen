@@ -168,7 +168,7 @@
               </thead>
               <tbody>
                 <tr v-for="appointment in processedAppointments" :key="appointment.id" class="border-b last:border-b-0">
-                  <td class="px-4 py-2">{{ appointment.date }} {{ appointment.time }}</td>
+                  <td class="px-4 py-2">{{ formatDateBR(appointment.date) }} {{ appointment.time }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
                   <td class="px-4 py-2">{{ getRoomName(appointment.room_id) }}</td>
@@ -221,6 +221,7 @@ import AppointmentDetails from '../components/AppointmentDetails.vue'
 import { supabase } from '../supabase'
 import { sendAppointmentEmail } from '../utils/email'
 import { digitsOnly } from '../utils/phone'
+import { formatDateBR } from '../utils/format'
 
 export default {
   name: 'Agendamentos',
@@ -414,8 +415,8 @@ export default {
           const room = this.rooms.find(r => r.id === this.form.roomId)
           await sendAppointmentEmail({
             to: client?.email,
-            subject: `Agendamento confirmado para ${this.form.date} às ${this.form.time}`,
-            text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${this.form.date} às ${this.form.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${this.form.description ? `Observações: ${this.form.description}` : ''}`
+            subject: `Agendamento confirmado para ${formatDateBR(this.form.date)} às ${this.form.time}`,
+            text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${formatDateBR(this.form.date)} às ${this.form.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${this.form.description ? `Observações: ${this.form.description}` : ''}`
           })
           this.closeModal()
         }
@@ -503,8 +504,8 @@ export default {
       const room = this.rooms.find(r => r.id === appt.room_id)
       await sendAppointmentEmail({
         to: client?.email,
-        subject: `Agendamento confirmado para ${appt.date} às ${appt.time}`,
-        text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${appt.date} às ${appt.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${appt.description ? `Observações: ${appt.description}` : ''}`
+        subject: `Agendamento confirmado para ${formatDateBR(appt.date)} às ${appt.time}`,
+        text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${appt.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${appt.description ? `Observações: ${appt.description}` : ''}`
       })
     },
     sendConfirmationWhatsApp() {
@@ -521,7 +522,7 @@ export default {
         `Passando para informar que seu agendamento está confirmado!\n\n` +
         `Segue os dados para consulta:\n` +
         `Cliente: ${client.name}\n` +
-        `Data: ${appt.date} - Hora: ${appt.time}\n` +
+        `Data: ${formatDateBR(appt.date)} - Hora: ${appt.time}\n` +
         `Sala: ${room?.google_meet_link || ''}\n\n` +
         `Obrigado.\n\n` +
         `Está mensagem é uma mensagem automática.`
@@ -532,7 +533,7 @@ export default {
     exportCSV() {
       const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Duração', 'Descrição']
       const rows = this.appointments.map(a => [
-        a.date,
+        formatDateBR(a.date),
         a.time,
         this.getClientName(a.client_id),
         this.getServiceName(a.service_id),

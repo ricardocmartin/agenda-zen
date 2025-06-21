@@ -60,7 +60,7 @@
             </thead>
             <tbody>
               <tr v-for="r in revenueData" :key="r.label" class="border-b last:border-b-0">
-                <td class="px-4 py-2">{{ r.label }}</td>
+                <td class="px-4 py-2">{{ formatLabel(r.label) }}</td>
                 <td class="px-4 py-2">{{ formatPrice(r.total) }}</td>
               </tr>
               <tr v-if="revenueData.length === 0">
@@ -82,6 +82,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
+import { formatDateBR } from '../utils/format'
 
 export default {
   name: 'Faturamento',
@@ -158,7 +159,7 @@ export default {
       this.chart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: this.revenueData.map(r => r.label),
+          labels: this.revenueData.map(r => this.formatLabel(r.label)),
           datasets: [
             {
               label: 'Faturamento',
@@ -179,6 +180,20 @@ export default {
         style: 'currency',
         currency: 'BRL'
       })
+    },
+    formatLabel(label) {
+      if (this.groupBy === 'dia') {
+        return formatDateBR(label)
+      }
+      if (this.groupBy === 'semana') {
+        const [year, week] = label.split('-W')
+        return `Semana ${week}/${year}`
+      }
+      if (this.groupBy === 'mes') {
+        const [year, month] = label.split('-')
+        return `${month.padStart(2, '0')}/${year}`
+      }
+      return label
     }
   },
   async mounted() {

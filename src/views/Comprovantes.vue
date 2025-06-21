@@ -30,8 +30,8 @@
             <tbody>
               <tr v-for="r in receipts" :key="r.id" class="border-b last:border-b-0">
                 <td class="px-4 py-2">{{ getClientName(r.client_id) }}</td>
-                <td class="px-4 py-2">{{ r.start_date }} - {{ r.end_date }}</td>
-                <td class="px-4 py-2">{{ r.created_at.split('T')[0] }}</td>
+                <td class="px-4 py-2">{{ formatDateBR(r.start_date) }} - {{ formatDateBR(r.end_date) }}</td>
+                <td class="px-4 py-2">{{ formatDateBR(r.created_at.split('T')[0]) }}</td>
                 <td class="px-4 py-2 text-right">
                   <button @click="showReceipt(r.content)" class="btn btn-sm">Ver</button>
                 </td>
@@ -94,6 +94,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
+import { formatDateBR } from '../utils/format'
 
 export default {
   name: 'Comprovantes',
@@ -138,7 +139,7 @@ export default {
       let content = template ? template.content : ''
       if (client) content = content.replace('{{client_name}}', client.name)
       const list = (appointments || [])
-        .map(a => `- ${a.date} ${a.time}`)
+        .map(a => `- ${formatDateBR(a.date)} ${a.time}`)
         .join('\n')
       content = content.replace('{{appointments}}', list)
 

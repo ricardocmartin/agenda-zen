@@ -44,6 +44,7 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
+import { formatDateBR } from '../utils/format'
 
 export default {
   name: 'Atendimento',
@@ -62,7 +63,7 @@ export default {
   computed: {
     appointmentDateTime() {
       if (!this.appointment) return ''
-      return `${this.appointment.date} ${this.appointment.time}`
+      return `${formatDateBR(this.appointment.date)} ${this.appointment.time}`
     },
     groupedNotes() {
       const groups = {}
@@ -71,7 +72,9 @@ export default {
         if (!groups[d]) groups[d] = []
         groups[d].push(n)
       })
-      return Object.keys(groups).sort((a,b) => new Date(b) - new Date(a)).map(date => ({ date, items: groups[date] }))
+      return Object.keys(groups)
+        .sort((a, b) => new Date(b) - new Date(a))
+        .map(date => ({ date: formatDateBR(date), items: groups[date] }))
     }
   },
   methods: {
