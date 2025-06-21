@@ -131,8 +131,8 @@
                 <h4 class="font-medium mb-2">Ações de atendimento</h4>
                 <div class="flex flex-wrap justify-center gap-2">
                   <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
-                  <button @click="cancelAppointment" class="btn btn-warning">Desmarcou atendimento</button>
-                  <button @click="markNoShow" class="btn btn-secondary">Faltou ao atendimento</button>
+                  <button @click="cancelAppointment" class="btn btn-warning">Desmarcou</button>
+                  <button @click="markNoShow" class="btn btn-secondary">Faltou</button>
                   <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
                 </div>
               </div>
