@@ -488,13 +488,8 @@ export default {
       this.showDetailsModal = true
     },
     startAppointment() {
-      if (!this.selectedAppointment) return
-      const link = this.getRoomLink(this.selectedAppointment.room_id)
-      if (link) {
-        window.open(link, '_blank')
-      } else {
-        alert('Início do atendimento registrado.')
-      }
+        if (!this.selectedAppointment) return
+        this.$router.push(`/atendimento/${this.selectedAppointment.id}`)
     },
     async cancelAppointment() {
       if (!this.selectedAppointment) return
