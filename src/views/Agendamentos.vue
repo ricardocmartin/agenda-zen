@@ -132,6 +132,9 @@
             </p>
           </div>
             <div class="flex justify-end mt-4 space-x-2">
+              <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
+              <button @click="cancelAppointment" class="btn btn-warning">Desmarcou atendimento</button>
+              <button @click="markNoShow" class="btn btn-secondary">Faltou ao atendimento</button>
               <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
               <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
               <button @click="editFromDetails" class="btn">Editar</button>
@@ -483,6 +486,25 @@ export default {
     openDetails(appointment) {
       this.selectedAppointment = appointment
       this.showDetailsModal = true
+    },
+    startAppointment() {
+      if (!this.selectedAppointment) return
+      const link = this.getRoomLink(this.selectedAppointment.room_id)
+      if (link) {
+        window.open(link, '_blank')
+      } else {
+        alert('Início do atendimento registrado.')
+      }
+    },
+    async cancelAppointment() {
+      if (!this.selectedAppointment) return
+      const confirmed = confirm('Tem certeza que deseja desmarcar este atendimento?')
+      if (!confirmed) return
+      await this.handleDeleteAppointment(this.selectedAppointment.id)
+      this.closeDetails()
+    },
+    markNoShow() {
+      alert('Falta registrada para este atendimento.')
     },
     async sendConfirmationEmail() {
       const appt = this.selectedAppointment
