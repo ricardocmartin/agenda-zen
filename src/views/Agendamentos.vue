@@ -118,29 +118,46 @@
         </Modal>
 
         <Modal v-if="showDetailsModal" @close="closeDetails">
-          <h3 class="text-lg font-semibold mb-4">Detalhes do Agendamento</h3>
-          <div v-if="selectedAppointment" class="space-y-1 border rounded-md p-4 bg-gray-50 text-gray-700">
-            <p><strong>Data:</strong> {{ selectedAppointment.date }}</p>
-            <p><strong>Hora:</strong> {{ selectedAppointment.time }}</p>
-            <p><strong>Cliente:</strong> {{ getClientName(selectedAppointment.client_id) }}</p>
-            <p><strong>Serviço:</strong> {{ getServiceName(selectedAppointment.service_id) }}</p>
-            <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
-            <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
-            <p v-if="selectedAppointment.room_id"><strong>Sala:</strong> {{ getRoomName(selectedAppointment.room_id) }}</p>
-            <p v-if="selectedAppointment.room_id && getRoomLink(selectedAppointment.room_id)">
-              <a :href="getRoomLink(selectedAppointment.room_id)" target="_blank" class="text-blue-600 underline">Acessar Google Meet</a>
-            </p>
-          </div>
-            <div class="flex flex-wrap justify-center mt-4 gap-2">
-              <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
-              <button @click="editFromDetails" class="btn">Editar</button>
-              <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
-              <button @click="cancelAppointment" class="btn btn-warning">Desmarcou atendimento</button>
-              <button @click="markNoShow" class="btn btn-secondary">Faltou ao atendimento</button>
-              <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
-              <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
+          <div class="relative">
+            <button
+              @click="closeDetails"
+              class="absolute top-0 right-0 m-2 px-2 py-1 rounded border text-sm"
+            >
+              Fechar
+            </button>
+            <h3 class="text-lg font-semibold mb-4">Detalhes do Agendamento</h3>
+            <div v-if="selectedAppointment" class="space-y-1 border rounded-md p-4 bg-gray-50 text-gray-700">
+              <p><strong>Data:</strong> {{ selectedAppointment.date }}</p>
+              <p><strong>Hora:</strong> {{ selectedAppointment.time }}</p>
+              <p><strong>Cliente:</strong> {{ getClientName(selectedAppointment.client_id) }}</p>
+              <p><strong>Serviço:</strong> {{ getServiceName(selectedAppointment.service_id) }}</p>
+              <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
+              <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
+              <p v-if="selectedAppointment.room_id"><strong>Sala:</strong> {{ getRoomName(selectedAppointment.room_id) }}</p>
+              <p v-if="selectedAppointment.room_id && getRoomLink(selectedAppointment.room_id)">
+                <a :href="getRoomLink(selectedAppointment.room_id)" target="_blank" class="text-blue-600 underline">Acessar Google Meet</a>
+              </p>
             </div>
-          </Modal>
+
+            <div class="mt-4">
+              <h4 class="font-medium mb-2">Ações de atendimento</h4>
+              <div class="flex flex-wrap justify-center gap-2">
+                <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
+                <button @click="cancelAppointment" class="btn btn-warning">Desmarcou atendimento</button>
+                <button @click="markNoShow" class="btn btn-secondary">Faltou ao atendimento</button>
+                <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="font-medium mb-2">Ações de cadastro</h4>
+              <div class="flex flex-wrap justify-center gap-2">
+                <button @click="editFromDetails" class="btn">Editar</button>
+                <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </Modal>
 
         <div class="mt-8" v-show="viewMode === 'list'">
           <h3 class="text-lg font-medium mb-4">Agendamentos</h3>
