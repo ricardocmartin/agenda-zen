@@ -112,6 +112,7 @@ export default {
     }
   },
   methods: {
+    formatDateBR,
     closeGenerateModal() {
       this.showGenerateModal = false
       this.generateForm = { clientId: '', startDate: '', endDate: '', templateId: '' }
