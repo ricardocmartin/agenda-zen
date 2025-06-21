@@ -134,6 +134,7 @@
             <div class="flex justify-end mt-4 space-x-2">
               <button @click="sendConfirmationEmail" class="btn btn-success">Enviar confirmação</button>
               <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
+              <button @click="editFromDetails" class="btn">Editar</button>
               <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
             </div>
           </Modal>
@@ -334,6 +335,12 @@ export default {
       this.showModal = false
       this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '' }
       this.editingId = null
+    },
+    editFromDetails() {
+      if (this.selectedAppointment) {
+        this.openModal(this.selectedAppointment)
+        this.closeDetails()
+      }
     },
     closeDetails() {
       this.showDetailsModal = false
