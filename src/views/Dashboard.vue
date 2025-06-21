@@ -471,10 +471,8 @@ export default {
         this.showDetailsModal = false
         this.selectedAppointment = null
       },
-      async handleDeleteAppointment(id) {
-        const confirmed = confirm(
-          'Tem certeza que deseja excluir este agendamento?'
-        )
+      async handleDeleteAppointment(id, confirmMessage = 'Tem certeza que deseja excluir este agendamento?') {
+        const confirmed = confirm(confirmMessage)
         if (!confirmed) return
 
         const { error } = await supabase
@@ -583,9 +581,10 @@ export default {
     },
     async cancelAppointment() {
       if (!this.selectedAppointment) return
-      const confirmed = confirm('Tem certeza que deseja desmarcar este atendimento?')
-      if (!confirmed) return
-      await this.handleDeleteAppointment(this.selectedAppointment.id)
+      await this.handleDeleteAppointment(
+        this.selectedAppointment.id,
+        'Tem certeza que deseja desmarcar este atendimento?'
+      )
       this.closeDetails()
     },
     markNoShow() {
