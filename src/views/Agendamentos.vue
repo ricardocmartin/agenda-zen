@@ -52,7 +52,7 @@
             </button>
             <div
               v-if="showViewDropdown"
-              class="absolute right-0 mt-2 w-32 bg-white border rounded shadow"
+              class="absolute right-0 mt-2 w-32 bg-white border rounded shadow z-20"
             >
               <button
                 @click="setViewMode('list')"
