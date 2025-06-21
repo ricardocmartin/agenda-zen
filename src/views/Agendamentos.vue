@@ -131,11 +131,12 @@
               <a :href="getRoomLink(selectedAppointment.room_id)" target="_blank" class="text-blue-600 underline">Acessar Google Meet</a>
             </p>
           </div>
-          <div class="flex justify-end mt-4 space-x-2">
-            <button @click="sendConfirmationEmail" class="btn btn-success">Enviar confirmação</button>
-            <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
-          </div>
-        </Modal>
+            <div class="flex justify-end mt-4 space-x-2">
+              <button @click="sendConfirmationEmail" class="btn btn-success">Enviar confirmação</button>
+              <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
+              <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
+            </div>
+          </Modal>
 
         <div class="mt-8" v-show="viewMode === 'list'">
           <h3 class="text-lg font-medium mb-4">Agendamentos</h3>
@@ -429,6 +430,10 @@ export default {
         alert('Erro ao excluir agendamento: ' + error.message)
       } else {
         this.appointments = this.appointments.filter(a => a.id !== id)
+        if (this.selectedAppointment && this.selectedAppointment.id === id) {
+          this.showDetailsModal = false
+          this.selectedAppointment = null
+        }
       }
     },
     getClientName(clientId) {
