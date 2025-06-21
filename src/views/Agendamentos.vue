@@ -313,6 +313,7 @@ export default {
     }
   },
   methods: {
+    formatDateBR,
     openModal(appointment) {
       if (appointment) {
         this.editingId = appointment.id
