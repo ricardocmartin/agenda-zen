@@ -132,12 +132,12 @@
             </p>
           </div>
             <div class="flex justify-end mt-4 space-x-2">
-              <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
+              <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
+              <button @click="editFromDetails" class="btn">Editar</button>
+              <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
               <button @click="cancelAppointment" class="btn btn-warning">Desmarcou atendimento</button>
               <button @click="markNoShow" class="btn btn-secondary">Faltou ao atendimento</button>
-              <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
-              <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
-              <button @click="editFromDetails" class="btn">Editar</button>
+              <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
               <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
             </div>
           </Modal>
