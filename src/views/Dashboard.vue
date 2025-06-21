@@ -200,8 +200,8 @@
           :appointment="selectedAppointment"
           :getClientName="getClientName"
           :getServiceName="getServiceName"
-          :getRoomName="() => ''"
-          :getRoomLink="() => ''"
+          :getRoomName="getRoomName"
+          :getRoomLink="getRoomLink"
           @close="closeDetails"
         >
           <template #actions>
@@ -243,6 +243,7 @@ export default {
       upcomingAppointments: [],
       clients: [],
       services: [],
+      rooms: [],
       topClients: [],
       sidebarOpen: window.innerWidth >= 768,
       showClientModal: false,
@@ -437,6 +438,14 @@ export default {
         const service = this.services.find(s => s.id === serviceId)
         return service ? service.name : ''
       },
+      getRoomName(roomId) {
+        const room = this.rooms.find(r => r.id === roomId)
+        return room ? room.name : ''
+      },
+      getRoomLink(roomId) {
+        const room = this.rooms.find(r => r.id === roomId)
+        return room ? room.google_meet_link : ''
+      },
       openDetails(appointment) {
         this.selectedAppointment = appointment
         this.showDetailsModal = true
@@ -584,6 +593,16 @@ export default {
     if (serviceData) {
       this.services = serviceData
     }
+
+    const { data: roomsData } = await supabase
+      .from('rooms')
+      .select()
+      .eq('user_id', this.userId)
+
+    if (roomsData) {
+      this.rooms = roomsData
+    }
+
     await this.fetchStatesList()
   }
 }
