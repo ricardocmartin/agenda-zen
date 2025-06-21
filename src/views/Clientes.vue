@@ -59,6 +59,12 @@
                     WhatsApp
                   </a>
                   <button
+                    @click="openModal(client, 'view')"
+                    class="btn btn-sm"
+                  >
+                    Visualizar
+                  </button>
+                  <button
                     @click="handleDeleteClient(client.id)"
                     class="btn btn-sm btn-danger"
                   >
@@ -93,34 +99,38 @@
       </div>
       </section>
 
-        <Modal v-if="showModal" @close="closeModal">
-          <h3 class="text-lg font-semibold mb-4">Adicionar Cliente</h3>
-          <form @submit.prevent="handleAddClient" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Modal v-if="showModal" @close="handleClose">
+          <h3 class="text-lg font-semibold mb-4">
+            {{ modalMode === 'new' ? 'Adicionar Cliente' : 'Cadastro do Cliente' }}
+          </h3>
+          <form @submit.prevent="handleSaveClient" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
-            <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.name" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">CPF</label>
           <input
             type="text"
             v-model="form.cpf"
+            :disabled="isReadOnly"
             @input="form.cpf = cpfMask(form.cpf)"
             class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Data de nascimento</label>
-            <input type="date" v-model="form.birthdate" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="date" v-model="form.birthdate" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">E-mail</label>
-            <input type="email" v-model="form.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="email" v-model="form.email" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Telefone</label>
             <input
               type="text"
               v-model="form.phone"
+              :disabled="isReadOnly"
               @input="form.phone = phoneMask(form.phone)"
               class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
@@ -129,42 +139,44 @@
           <input
             type="text"
             v-model="form.cep"
+            :disabled="isReadOnly"
             @input="form.cep = cepMask(form.cep)"
             class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Endereço</label>
-            <input type="text" v-model="form.street" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.street" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Número</label>
-            <input type="text" v-model="form.number" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.number" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Complemento</label>
-            <input type="text" v-model="form.complement" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.complement" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Bairro</label>
-            <input type="text" v-model="form.neighborhood" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.neighborhood" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Estado</label>
-            <select v-model="form.stateId" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <select v-model="form.stateId" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md">
               <option disabled value="">Selecione</option>
               <option v-for="s in states" :key="s.id" :value="s.id">{{ s.nome }} ({{ s.sigla }})</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Cidade</label>
-            <select v-model="form.cityId" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <select v-model="form.cityId" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md">
               <option disabled value="">Selecione</option>
               <option v-for="c in cities" :key="c.id" :value="c.id">{{ c.nome }}</option>
             </select>
           </div>
             <div class="flex justify-end space-x-2 md:col-span-2">
-            <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="btn">Salvar</button>
+            <button type="button" @click="handleClose" class="px-4 py-2 rounded border">Fechar</button>
+            <button v-if="modalMode === 'view'" type="button" @click="enableEdit" class="btn btn-success">Editar</button>
+            <button type="submit" class="btn" :disabled="isReadOnly">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -188,6 +200,8 @@ export default {
       return {
         userId: null,
         showModal: false,
+        modalMode: 'new',
+        editingId: null,
         search: '',
         form: {
           name: '',
@@ -222,7 +236,28 @@ export default {
     async fetchCitiesList() {
       this.cities = await fetchCities(this.form.stateId)
     },
-    async openModal() {
+    async openModal(client, mode = 'new') {
+      this.modalMode = mode
+      if (client) {
+        this.editingId = client.id
+        this.form = {
+          name: client.name,
+          email: client.email,
+          phone: client.phone,
+          birthdate: client.birthdate,
+          cpf: client.cpf,
+          cep: client.cep,
+          street: client.street,
+          number: client.number,
+          complement: client.complement,
+          neighborhood: client.neighborhood,
+          stateId: client.state_id,
+          cityId: client.city_id
+        }
+      } else {
+        this.editingId = null
+        this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '' }
+      }
       await this.fetchStatesList()
       if (this.form.stateId) {
         await this.fetchCitiesList()
@@ -231,54 +266,80 @@ export default {
     },
     closeModal() {
       this.showModal = false
-      this.form = {
-        name: '',
-        email: '',
-        phone: '',
-        birthdate: '',
-        cpf: '',
-        cep: '',
-        street: '',
-        number: '',
-        complement: '',
-        neighborhood: '',
-        stateId: '',
-        cityId: ''
+      this.modalMode = 'new'
+      this.editingId = null
+      this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '' }
+    },
+    handleClose() {
+      if (this.modalMode === 'view') {
+        this.closeModal()
+      } else {
+        if (confirm('Tem certeza? Os dados não foram salvos e serão perdidos.')) {
+          this.closeModal()
+        }
       }
     },
     whatsappLink(phone) {
       const formatted = digitsOnly(phone)
       return `https://wa.me/${formatted}`
     },
-   async handleAddClient() {
+   async handleSaveClient() {
       if (this.form.email && !isValidEmail(this.form.email)) {
         alert('E-mail inválido')
         return
       }
-      const { data, error } = await supabase
-        .from('clients')
-        .insert({
-          name: this.form.name,
-          email: this.form.email,
-          phone: this.form.phone,
-          birthdate: this.form.birthdate,
-          cpf: this.form.cpf,
-          cep: this.form.cep,
-          street: this.form.street,
-          number: this.form.number,
-          complement: this.form.complement,
-          neighborhood: this.form.neighborhood,
-          state_id: this.form.stateId,
-          city_id: this.form.cityId,
-          user_id: this.userId
-        })
-        .select()
-        .single()
+      let data, error
+      if (this.editingId) {
+        ;({ data, error } = await supabase
+          .from('clients')
+          .update({
+            name: this.form.name,
+            email: this.form.email,
+            phone: this.form.phone,
+            birthdate: this.form.birthdate,
+            cpf: this.form.cpf,
+            cep: this.form.cep,
+            street: this.form.street,
+            number: this.form.number,
+            complement: this.form.complement,
+            neighborhood: this.form.neighborhood,
+            state_id: this.form.stateId,
+            city_id: this.form.cityId
+          })
+          .eq('id', this.editingId)
+          .select()
+          .single())
+      } else {
+        ;({ data, error } = await supabase
+          .from('clients')
+          .insert({
+            name: this.form.name,
+            email: this.form.email,
+            phone: this.form.phone,
+            birthdate: this.form.birthdate,
+            cpf: this.form.cpf,
+            cep: this.form.cep,
+            street: this.form.street,
+            number: this.form.number,
+            complement: this.form.complement,
+            neighborhood: this.form.neighborhood,
+            state_id: this.form.stateId,
+            city_id: this.form.cityId,
+            user_id: this.userId
+          })
+          .select()
+          .single())
+      }
 
       if (error) {
         alert('Erro ao salvar cliente: ' + error.message)
       } else {
-        this.clients.push(data)
+        if (this.editingId) {
+          const index = this.clients.findIndex(c => c.id === this.editingId)
+          if (index !== -1) this.clients[index] = data
+        } else {
+          this.clients.push(data)
+        }
         this.closeModal()
       }
     },
@@ -297,6 +358,9 @@ export default {
         this.clients = this.clients.filter(c => c.id !== id)
       }
     },
+    enableEdit() {
+      this.modalMode = 'edit'
+    },
     nextPage() {
       if (this.page < this.totalPages) this.page++
     },
@@ -305,6 +369,9 @@ export default {
     }
   },
   computed: {
+    isReadOnly() {
+      return this.modalMode === 'view'
+    },
     filteredClients() {
       const term = this.search.toLowerCase()
       return this.clients.filter(
