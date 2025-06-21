@@ -14,6 +14,7 @@ import PublicPage from '../views/PublicPage.vue'
 import Planos from '../views/Planos.vue'
 import Salas from '../views/Salas.vue'
 import Comprovantes from '../views/Comprovantes.vue'
+import Atendimento from '../views/Atendimento.vue'
 import Templates from '../views/Templates.vue'
 import Contato from '../views/Contato.vue'
 import MinhaAssinatura from '../views/MinhaAssinatura.vue'
@@ -51,6 +52,7 @@ const routes = [
   { path: '/faq', name: 'Faq', component: Faq },
   { path: '/politica-de-privacidade', name: 'PoliticaDePrivacidade', component: PoliticaPrivacidade },
   { path: '/termos-de-uso', name: 'TermosDeUso', component: TermosDeUso },
+  { path: '/atendimento/:id', name: 'Atendimento', component: Atendimento },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 

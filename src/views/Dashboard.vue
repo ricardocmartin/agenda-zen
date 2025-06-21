@@ -205,7 +205,7 @@
           <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
           <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
         </div>
-        <div class="flex justify-end mt-4 space-x-2">
+        <div class="flex justify-center mt-4 space-x-2">
           <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
           <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
         </div>
