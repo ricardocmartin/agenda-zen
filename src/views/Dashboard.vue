@@ -196,19 +196,21 @@
       </Modal>
 
       <Modal v-if="showDetailsModal" @close="closeDetails">
-        <h3 class="text-lg font-semibold mb-4">Detalhes do Agendamento</h3>
-        <div v-if="selectedAppointment" class="space-y-1">
-          <p><strong>Data:</strong> {{ selectedAppointment.date }}</p>
-          <p><strong>Hora:</strong> {{ selectedAppointment.time }}</p>
-          <p><strong>Cliente:</strong> {{ getClientName(selectedAppointment.client_id) }}</p>
-          <p><strong>Serviço:</strong> {{ getServiceName(selectedAppointment.service_id) }}</p>
-          <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
-          <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
-        </div>
-        <div class="flex justify-center mt-4 space-x-2">
-          <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
-          <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
-        </div>
+        <AppointmentDetails
+          :appointment="selectedAppointment"
+          :getClientName="getClientName"
+          :getServiceName="getServiceName"
+          :getRoomName="() => ''"
+          :getRoomLink="() => ''"
+          @close="closeDetails"
+        >
+          <template #actions>
+            <div class="flex justify-center mt-4 space-x-2">
+              <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
+              <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
+            </div>
+          </template>
+        </AppointmentDetails>
       </Modal>
     </main>
   </div>
@@ -219,6 +221,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import WeekView from '../components/WeekView.vue'
+import AppointmentDetails from '../components/AppointmentDetails.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
 import { phoneMask } from '../utils/phone'
@@ -227,7 +230,7 @@ import { cpfMask, cepMask, isValidEmail } from '../utils/format'
 
 export default {
   name: 'Dashboard',
-  components: { Sidebar, HeaderUser, Modal, WeekView },
+  components: { Sidebar, HeaderUser, Modal, WeekView, AppointmentDetails },
   data() {
     return {
       userId: null,
