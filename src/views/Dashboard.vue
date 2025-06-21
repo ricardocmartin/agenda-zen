@@ -42,7 +42,7 @@
         <div class="md:col-span-8">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-medium">Agenda da Semana</h3>
-            <button @click="showAppointmentModal = true" class="btn">Novo Agendamento</button>
+            <button @click="openAppointmentModal()" class="btn">Novo Agendamento</button>
           </div>
           <WeekView
             :appointments="upcomingAppointments"
@@ -155,8 +155,10 @@
         </form>
       </Modal>
 
-      <Modal v-if="showAppointmentModal" @close="showAppointmentModal = false">
-        <h3 class="text-lg font-semibold mb-4">Adicionar Agendamento</h3>
+      <Modal v-if="showAppointmentModal" @close="closeAppointmentModal">
+        <h3 class="text-lg font-semibold mb-4">
+          {{ editingId ? 'Editar Agendamento' : 'Adicionar Agendamento' }}
+        </h3>
         <form @submit.prevent="handleAddAppointment" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Data</label>
@@ -189,7 +191,7 @@
             <textarea v-model="appointmentForm.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
           </div>
           <div class="flex justify-end space-x-2">
-            <button type="button" @click="showAppointmentModal = false" class="px-4 py-2 rounded border">Cancelar</button>
+            <button type="button" @click="closeAppointmentModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="btn">Salvar</button>
           </div>
         </form>
@@ -205,9 +207,23 @@
           @close="closeDetails"
         >
           <template #actions>
-            <div class="flex justify-center mt-4 space-x-2">
-              <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
-              <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
+            <div class="mt-4">
+              <h4 class="font-medium mb-2">Ações de atendimento</h4>
+              <div class="flex flex-wrap justify-center gap-2">
+                <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
+                <button @click="cancelAppointment" class="btn btn-warning">Desmarcou</button>
+                <button @click="markNoShow" class="btn btn-secondary">Faltou</button>
+                <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="font-medium mb-2">Ações de cadastro</h4>
+              <div class="flex flex-wrap justify-center gap-2">
+                <button @click="editFromDetails" class="btn">Editar</button>
+                <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
+                <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
+              </div>
             </div>
           </template>
         </AppointmentDetails>
@@ -224,9 +240,9 @@ import WeekView from '../components/WeekView.vue'
 import AppointmentDetails from '../components/AppointmentDetails.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
-import { phoneMask } from '../utils/phone'
+import { phoneMask, digitsOnly } from '../utils/phone'
 import { fetchStates, fetchCities } from '../utils/locations'
-import { cpfMask, cepMask, isValidEmail } from '../utils/format'
+import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
 
 export default {
   name: 'Dashboard',
@@ -248,6 +264,7 @@ export default {
       sidebarOpen: window.innerWidth >= 768,
       showClientModal: false,
       showAppointmentModal: false,
+      editingId: null,
       showDetailsModal: false,
       weekChart: null,
       weekCounts: [0, 0, 0, 0, 0, 0, 0],
@@ -532,33 +549,122 @@ export default {
         alert('Cliente cadastrado!')
       }
     },
-    async handleAddAppointment() {
-      const { data, error } = await supabase
-        .from('appointments')
-        .insert({
-          date: this.appointmentForm.date,
-          time: this.appointmentForm.time,
-          client_id: this.appointmentForm.clientId,
-          service_id: this.appointmentForm.serviceId,
-          duration: this.appointmentForm.duration,
-          description: this.appointmentForm.description,
-          user_id: this.userId
-        })
-        .select()
-        .single()
-
-      if (error) {
-        alert('Erro ao salvar agendamento: ' + error.message)
+    openAppointmentModal(appt) {
+      if (appt) {
+        this.editingId = appt.id
+        this.appointmentForm = {
+          date: appt.date,
+          time: appt.time,
+          clientId: appt.client_id,
+          serviceId: appt.service_id,
+          duration: appt.duration,
+          description: appt.description
+        }
       } else {
-        this.upcomingAppointments.push(data)
-        this.showAppointmentModal = false
+        this.editingId = null
         this.appointmentForm = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
-        this.stats.week += 1
-        this.stats.month += 1
-        const d = new Date(data.date)
-        this.weekCounts[d.getDay()]++
-        await this.fetchTopClients()
-        this.renderWeekChart()
+      }
+      this.showAppointmentModal = true
+    },
+    closeAppointmentModal() {
+      this.showAppointmentModal = false
+      this.appointmentForm = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
+      this.editingId = null
+    },
+    editFromDetails() {
+      if (this.selectedAppointment) {
+        this.openAppointmentModal(this.selectedAppointment)
+        this.closeDetails()
+      }
+    },
+    startAppointment() {
+      if (!this.selectedAppointment) return
+      this.$router.push(`/atendimento/${this.selectedAppointment.id}`)
+    },
+    async cancelAppointment() {
+      if (!this.selectedAppointment) return
+      const confirmed = confirm('Tem certeza que deseja desmarcar este atendimento?')
+      if (!confirmed) return
+      await this.handleDeleteAppointment(this.selectedAppointment.id)
+      this.closeDetails()
+    },
+    markNoShow() {
+      alert('Falta registrada para este atendimento.')
+    },
+    sendConfirmationWhatsApp() {
+      const appt = this.selectedAppointment
+      if (!appt) return
+      const client = this.clients.find(c => c.id === appt.client_id)
+      if (!client?.phone) {
+        alert('Cliente sem telefone cadastrado')
+        return
+      }
+      const room = this.rooms.find(r => r.id === appt.room_id)
+      const message =
+        `Olá ${client.name},\n\n` +
+        `Passando para informar que seu agendamento está confirmado!\n\n` +
+        `Segue os dados para consulta:\n` +
+        `Cliente: ${client.name}\n` +
+        `Data: ${formatDateBR(appt.date)} - Hora: ${appt.time}\n` +
+        `Sala: ${room?.google_meet_link || ''}\n\n` +
+        `Obrigado.\n\n` +
+        `Está mensagem é uma mensagem automática.`
+      const phone = digitsOnly(client.phone)
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+      window.open(url, '_blank')
+    },
+    async handleAddAppointment() {
+      if (this.editingId) {
+        const { data, error } = await supabase
+          .from('appointments')
+          .update({
+            date: this.appointmentForm.date,
+            time: this.appointmentForm.time,
+            client_id: this.appointmentForm.clientId,
+            service_id: this.appointmentForm.serviceId,
+            duration: this.appointmentForm.duration,
+            description: this.appointmentForm.description
+          })
+          .eq('id', this.editingId)
+          .select()
+          .single()
+
+        if (error) {
+          alert('Erro ao atualizar agendamento: ' + error.message)
+        } else {
+          const idx = this.upcomingAppointments.findIndex(a => a.id === this.editingId)
+          if (idx !== -1) this.upcomingAppointments[idx] = data
+          this.closeAppointmentModal()
+          await this.fetchStats()
+          await this.fetchUpcomingAppointments()
+        }
+      } else {
+        const { data, error } = await supabase
+          .from('appointments')
+          .insert({
+            date: this.appointmentForm.date,
+            time: this.appointmentForm.time,
+            client_id: this.appointmentForm.clientId,
+            service_id: this.appointmentForm.serviceId,
+            duration: this.appointmentForm.duration,
+            description: this.appointmentForm.description,
+            user_id: this.userId
+          })
+          .select()
+          .single()
+
+        if (error) {
+          alert('Erro ao salvar agendamento: ' + error.message)
+        } else {
+          this.upcomingAppointments.push(data)
+          this.closeAppointmentModal()
+          this.stats.week += 1
+          this.stats.month += 1
+          const d = new Date(data.date)
+          this.weekCounts[d.getDay()]++
+          await this.fetchTopClients()
+          this.renderWeekChart()
+        }
       }
     }
   },
