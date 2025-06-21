@@ -157,7 +157,10 @@ export default {
         .select()
         .eq('appointment_id', this.$route.params.id)
         .order('created_at', { ascending: false })
-      this.notes = notes || []
+      this.notes = (notes || []).map(n => ({
+        ...n,
+        attachments: n.attachments || []
+      }))
     },
     async saveNote() {
       if (!this.note.trim() && !this.files.length && !this.editingAttachments.length) return
@@ -184,7 +187,12 @@ export default {
           .single())
         if (!error) {
           const idx = this.notes.findIndex(n => n.id === this.editingNoteId)
-          if (idx !== -1) this.notes[idx] = data
+          if (idx !== -1) {
+            this.notes[idx] = {
+              ...data,
+              attachments: data.attachments || []
+            }
+          }
         }
       } else {
         ;({ data, error } = await supabase
@@ -198,7 +206,10 @@ export default {
           .select()
           .single())
         if (!error) {
-          this.notes.unshift(data)
+          this.notes.unshift({
+            ...data,
+            attachments: data.attachments || []
+          })
         }
       }
 
