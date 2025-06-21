@@ -132,7 +132,7 @@
             </p>
           </div>
             <div class="flex justify-end mt-4 space-x-2">
-              <button @click="sendConfirmationEmail" class="btn btn-success">Enviar confirmação</button>
+              <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
               <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
               <button @click="editFromDetails" class="btn">Editar</button>
               <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
@@ -223,6 +223,7 @@ import CalendarView from '../components/CalendarView.vue'
 import WeekView from '../components/WeekView.vue'
 import { supabase } from '../supabase'
 import { sendAppointmentEmail } from '../utils/email'
+import { digitsOnly } from '../utils/phone'
 
 export default {
   name: 'Agendamentos',
@@ -260,7 +261,8 @@ export default {
         endTime: '',
         weekDays: [],
         dailySchedule: null
-      }
+      },
+      profileWhatsapp: ''
     }
   },
   computed: {
@@ -494,6 +496,28 @@ export default {
         text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${appt.date} às ${appt.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${appt.description ? `Observações: ${appt.description}` : ''}`
       })
     },
+    sendConfirmationWhatsApp() {
+      const appt = this.selectedAppointment
+      if (!appt) return
+      const client = this.clients.find(c => c.id === appt.client_id)
+      if (!client?.phone) {
+        alert('Cliente sem telefone cadastrado')
+        return
+      }
+      const room = this.rooms.find(r => r.id === appt.room_id)
+      const message =
+        `Olá ${client.name},\n\n` +
+        `Passando para informar que seu agendamento está confirmado!\n\n` +
+        `Segue os dados para consulta:\n` +
+        `Cliente: ${client.name}\n` +
+        `Data: ${appt.date} - Hora: ${appt.time}\n` +
+        `Sala: ${room?.google_meet_link || ''}\n\n` +
+        `Obrigado.\n\n` +
+        `Está mensagem é uma mensagem automática.`
+      const phone = digitsOnly(client.phone)
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+      window.open(url, '_blank')
+    },
     exportCSV() {
       const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Duração', 'Descrição']
       const rows = this.appointments.map(a => [
@@ -568,7 +592,7 @@ export default {
 
     const { data: profileData } = await supabase
       .from('profiles')
-      .select('start_time, end_time, week_days, daily_schedule')
+      .select('start_time, end_time, week_days, daily_schedule, whatsapp')
       .eq('id', this.userId)
       .single()
 
@@ -583,6 +607,7 @@ export default {
           ? JSON.parse(profileData.daily_schedule)
           : profileData.daily_schedule
         : null
+      this.profileWhatsapp = profileData.whatsapp || ''
     }
 
     const { data: appointmentData } = await supabase
