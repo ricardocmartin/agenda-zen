@@ -45,20 +45,44 @@
               <tr>
                 <th class="px-4 py-2 font-medium text-gray-700">ID</th>
                 <th class="px-4 py-2 font-medium text-gray-700">E-mail</th>
+                <th class="px-4 py-2"></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="u in filteredUsers" :key="u.id" class="border-b last:border-b-0">
                 <td class="px-4 py-2">{{ u.id }}</td>
                 <td class="px-4 py-2">{{ u.email }}</td>
+                <td class="px-4 py-2 text-right">
+                  <button @click="openUserModal(u, 'view')" class="btn btn-sm">Visualizar</button>
+                </td>
               </tr>
               <tr v-if="filteredUsers.length === 0">
-                <td colspan="2" class="px-4 py-6 text-center text-gray-500">Nenhum usuário encontrado</td>
+                <td colspan="3" class="px-4 py-6 text-center text-gray-500">Nenhum usuário encontrado</td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
+      <Modal v-if="showUserModal" @close="handleUserClose">
+        <h3 class="text-lg font-semibold mb-4">
+          {{ userModalMode === 'new' ? 'Adicionar Usuário' : 'Cadastro de Usuário' }}
+        </h3>
+        <form @submit.prevent="handleSaveUser" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">E-mail</label>
+            <input type="email" v-model="userForm.email" :disabled="isUserView" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Senha</label>
+            <input type="password" v-model="userForm.password" :disabled="isUserView" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button type="button" @click="handleUserClose" class="px-4 py-2 rounded border">Fechar</button>
+            <button v-if="userModalMode === 'view'" type="button" @click="enableUserEdit" class="btn btn-success">Editar</button>
+            <button type="submit" class="btn" :disabled="isUserView">Salvar</button>
+          </div>
+        </form>
+      </Modal>
     </main>
   </div>
 </template>
@@ -66,12 +90,13 @@
 <script>
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
+import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
 import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'Usuarios',
-  components: { Sidebar, HeaderUser },
+  components: { Sidebar, HeaderUser, Modal },
   data() {
     return {
       form: {
@@ -83,7 +108,11 @@ export default {
       successMessage: '',
       errorMessage: '',
       users: [],
-      search: ''
+      search: '',
+      showUserModal: false,
+      userModalMode: 'new',
+      selectedUserId: null,
+      userForm: { email: '', password: '' }
     }
   },
   methods: {
@@ -142,6 +171,59 @@ export default {
         await this.fetchUsers()
       }
     },
+    openUserModal(user, mode = 'new') {
+      this.userModalMode = mode
+      if (user) {
+        this.selectedUserId = user.id
+        this.userForm = { email: user.email, password: '' }
+      } else {
+        this.selectedUserId = null
+        this.userForm = { email: '', password: '' }
+      }
+      this.showUserModal = true
+    },
+    handleUserClose() {
+      if (this.userModalMode === 'view') {
+        this.closeUserModal()
+      } else {
+        if (confirm('Tem certeza? Os dados não foram salvos e serão perdidos.')) {
+          this.closeUserModal()
+        }
+      }
+    },
+    closeUserModal() {
+      this.showUserModal = false
+      this.userModalMode = 'new'
+      this.selectedUserId = null
+      this.userForm = { email: '', password: '' }
+    },
+    enableUserEdit() {
+      this.userModalMode = 'edit'
+    },
+    async handleSaveUser() {
+      if (this.userModalMode === 'view') return
+      if (this.userForm.email && !isValidEmail(this.userForm.email)) {
+        alert('E-mail inválido')
+        return
+      }
+      if (this.selectedUserId) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ email: this.userForm.email })
+          .eq('id', this.selectedUserId)
+        if (error) {
+          alert('Erro ao salvar usuário: ' + error.message)
+        } else {
+          const index = this.users.findIndex(u => u.id === this.selectedUserId)
+          if (index !== -1) this.users[index].email = this.userForm.email
+          this.closeUserModal()
+        }
+      } else {
+        this.form = { email: this.userForm.email, password: this.userForm.password }
+        await this.handleAddUser()
+        this.closeUserModal()
+      }
+    },
     async fetchUsers() {
       const { data: profile } = await supabase
         .from('profiles')
@@ -160,6 +242,9 @@ export default {
     }
   },
   computed: {
+    isUserView() {
+      return this.userModalMode === 'view'
+    },
     filteredUsers() {
       const term = this.search.toLowerCase()
       return this.users.filter(
