@@ -111,7 +111,7 @@
               <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-lg"></textarea>
             </div>
             <div class="flex justify-end space-x-2">
-              <button type="button" @click="closeModal" class="px-4 py-2 rounded-lg border">Cancelar</button>
+              <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
               <button type="submit" class="btn">Salvar</button>
             </div>
           </form>
@@ -119,7 +119,7 @@
 
         <Modal v-if="showDetailsModal" @close="closeDetails">
           <h3 class="text-lg font-semibold mb-4">Detalhes do Agendamento</h3>
-          <div v-if="selectedAppointment" class="space-y-1">
+          <div v-if="selectedAppointment" class="space-y-1 border rounded-md p-4 bg-gray-50 text-gray-700">
             <p><strong>Data:</strong> {{ selectedAppointment.date }}</p>
             <p><strong>Hora:</strong> {{ selectedAppointment.time }}</p>
             <p><strong>Cliente:</strong> {{ getClientName(selectedAppointment.client_id) }}</p>
@@ -138,7 +138,7 @@
               <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
               <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
               <button @click="editFromDetails" class="btn">Editar</button>
-              <button @click="closeDetails" class="px-4 py-2 rounded-lg border">Fechar</button>
+              <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
             </div>
           </Modal>
 
