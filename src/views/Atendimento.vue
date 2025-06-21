@@ -22,7 +22,7 @@
           <textarea v-model="note" class="w-full border rounded p-2 mb-4" rows="6" placeholder="Descreva o atendimento"></textarea>
           <div v-if="isEditing && editingAttachments.length" class="mb-4 space-y-1">
             <div v-for="(url, index) in editingAttachments" :key="index" class="flex items-center space-x-2">
-              <a :href="url" target="_blank" class="text-blue-600 underline">Anexo {{ index + 1 }}</a>
+              <a :href="url" target="_blank" download class="text-blue-600 underline">Anexo {{ index + 1 }}</a>
               <button type="button" @click="removeAttachment(index)" class="text-red-600 text-sm">Remover</button>
             </div>
           </div>
@@ -39,7 +39,7 @@
                 <p class="text-sm text-gray-600 mb-1">{{ formatDateTime(n.created_at) }}</p>
                 <p class="mb-2 whitespace-pre-line">{{ n.note }}</p>
                 <div v-if="n.attachments && n.attachments.length" class="space-x-2 mb-2">
-                  <a v-for="(url, idx) in n.attachments" :key="idx" :href="url" target="_blank" class="text-blue-600 underline">Anexo {{ idx + 1 }}</a>
+                  <a v-for="(url, idx) in n.attachments" :key="idx" :href="url" target="_blank" download class="text-blue-600 underline">Anexo {{ idx + 1 }}</a>
                 </div>
                 <div class="text-right">
                   <button @click="editExistingNote(n)" class="btn btn-sm">Editar atendimento</button>
