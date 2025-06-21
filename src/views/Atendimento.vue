@@ -20,19 +20,31 @@
         <div v-if="activeTab === 'current'">
           <p class="mb-2 text-sm text-gray-600">Data/hora: {{ appointmentDateTime }}</p>
           <textarea v-model="note" class="w-full border rounded p-2 mb-4" rows="6" placeholder="Descreva o atendimento"></textarea>
+          <div v-if="isEditing && editingAttachments.length" class="mb-4 space-y-1">
+            <div v-for="(url, index) in editingAttachments" :key="index" class="flex items-center space-x-2">
+              <a :href="url" target="_blank" class="text-blue-600 underline">Anexo {{ index + 1 }}</a>
+              <button type="button" @click="removeAttachment(index)" class="text-red-600 text-sm">Remover</button>
+            </div>
+          </div>
           <input type="file" multiple @change="handleFileChange" class="mb-4" accept=".pdf,.doc,.txt,.png,.jpeg" />
-          <button @click="saveNote" class="btn">Salvar</button>
+          <div class="space-x-2">
+            <button @click="saveNote" class="btn">{{ isEditing ? 'Atualizar' : 'Salvar' }}</button>
+            <button v-if="isEditing" @click="cancelEdit" class="btn btn-danger">Cancelar</button>
+          </div>
         </div>
         <div v-else>
           <div v-for="group in groupedNotes" :key="group.date" class="mb-4">
             <h4 class="font-semibold mb-2">{{ group.date }}</h4>
-            <div v-for="n in group.items" :key="n.id" class="border p-2 rounded mb-2">
-              <p class="text-sm text-gray-600 mb-1">{{ formatDateTime(n.created_at) }}</p>
-              <p class="mb-2 whitespace-pre-line">{{ n.note }}</p>
-              <div v-if="n.attachments && n.attachments.length" class="space-x-2">
-                <a v-for="(url, idx) in n.attachments" :key="idx" :href="url" target="_blank" class="text-blue-600 underline">Anexo {{ idx + 1 }}</a>
+              <div v-for="n in group.items" :key="n.id" class="border p-2 rounded mb-2">
+                <p class="text-sm text-gray-600 mb-1">{{ formatDateTime(n.created_at) }}</p>
+                <p class="mb-2 whitespace-pre-line">{{ n.note }}</p>
+                <div v-if="n.attachments && n.attachments.length" class="space-x-2 mb-2">
+                  <a v-for="(url, idx) in n.attachments" :key="idx" :href="url" target="_blank" class="text-blue-600 underline">Anexo {{ idx + 1 }}</a>
+                </div>
+                <div class="text-right">
+                  <button @click="editExistingNote(n)" class="btn btn-sm">Editar atendimento</button>
+                </div>
               </div>
-            </div>
           </div>
         </div>
       </section>
@@ -55,9 +67,12 @@ export default {
       activeTab: 'current',
       appointment: null,
       note: '',
-      files: [] ,
+      files: [],
       notes: [],
-      userId: null
+      userId: null,
+      isEditing: false,
+      editingNoteId: null,
+      editingAttachments: []
     }
   },
   computed: {
@@ -94,6 +109,36 @@ export default {
         }
       }
     },
+    editExistingNote(note) {
+      if ((this.note && this.note.trim()) || this.files.length) {
+        const confirmed = confirm('Dados não salvos serão perdidos. Deseja continuar?')
+        if (!confirmed) return
+      }
+      this.isEditing = true
+      this.editingNoteId = note.id
+      this.editingAttachments = [...(note.attachments || [])]
+      this.note = note.note
+      this.files = []
+      this.activeTab = 'current'
+    },
+    cancelEdit() {
+      this.isEditing = false
+      this.editingNoteId = null
+      this.editingAttachments = []
+      this.note = ''
+      this.files = []
+    },
+    async removeAttachment(index) {
+      const confirmed = confirm('Remover este anexo?')
+      if (!confirmed) return
+      const url = this.editingAttachments[index]
+      const parts = url.split('/appointment-attachments/')
+      if (parts.length === 2) {
+        const path = parts[1]
+        await supabase.storage.from('appointment-attachments').remove([path])
+      }
+      this.editingAttachments.splice(index, 1)
+    },
     async fetchData() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
@@ -115,31 +160,54 @@ export default {
       this.notes = notes || []
     },
     async saveNote() {
-      if (!this.note.trim() && !this.files.length) return
-      const attachmentUrls = []
+      if (!this.note.trim() && !this.files.length && !this.editingAttachments.length) return
+
+      const uploadedUrls = []
       for (const file of this.files) {
         const ext = file.name.split('.').pop()
         const fileName = `${this.$route.params.id}-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
         const { error } = await supabase.storage.from('appointment-attachments').upload(fileName, file)
         if (!error) {
           const { data: { publicUrl } } = supabase.storage.from('appointment-attachments').getPublicUrl(fileName)
-          attachmentUrls.push(publicUrl)
+          uploadedUrls.push(publicUrl)
         }
       }
-      const { data, error } = await supabase
-        .from('appointment_notes')
-        .insert({
-          appointment_id: this.$route.params.id,
-          user_id: this.userId,
-          note: this.note,
-          attachments: attachmentUrls
-        })
-        .select()
-        .single()
+
+      let data, error
+      if (this.isEditing) {
+        const allUrls = [...this.editingAttachments, ...uploadedUrls]
+        ;({ data, error } = await supabase
+          .from('appointment_notes')
+          .update({ note: this.note, attachments: allUrls })
+          .eq('id', this.editingNoteId)
+          .select()
+          .single())
+        if (!error) {
+          const idx = this.notes.findIndex(n => n.id === this.editingNoteId)
+          if (idx !== -1) this.notes[idx] = data
+        }
+      } else {
+        ;({ data, error } = await supabase
+          .from('appointment_notes')
+          .insert({
+            appointment_id: this.$route.params.id,
+            user_id: this.userId,
+            note: this.note,
+            attachments: uploadedUrls
+          })
+          .select()
+          .single())
+        if (!error) {
+          this.notes.unshift(data)
+        }
+      }
+
       if (!error) {
-        this.notes.unshift(data)
         this.note = ''
         this.files = []
+        this.isEditing = false
+        this.editingNoteId = null
+        this.editingAttachments = []
       } else {
         alert('Erro ao salvar atendimento: ' + error.message)
       }
