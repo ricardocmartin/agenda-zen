@@ -26,7 +26,7 @@
               <button type="button" @click="removeAttachment(index)" class="text-red-600 text-sm">Remover</button>
             </div>
           </div>
-          <input type="file" multiple @change="handleFileChange" class="mb-4" accept=".pdf,.doc,.txt,.png,.jpeg" />
+          <input type="file" multiple @change="handleFileChange" class="mb-4" accept=".pdf,.doc,.txt,.png,.jpeg,.jpg" />
           <div class="space-x-2">
             <button @click="saveNote" class="btn">{{ isEditing ? 'Atualizar' : 'Salvar' }}</button>
             <button v-if="isEditing" @click="cancelEdit" class="btn btn-danger">Cancelar</button>
@@ -97,7 +97,7 @@ export default {
       return new Date(dt).toLocaleString('pt-BR')
     },
     handleFileChange(e) {
-      const allowed = ['pdf', 'doc', 'txt', 'png', 'jpeg']
+      const allowed = ['pdf', 'doc', 'txt', 'png', 'jpeg', 'jpg']
       const selected = Array.from(e.target.files)
       this.files = []
       for (const file of selected) {
