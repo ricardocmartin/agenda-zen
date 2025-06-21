@@ -32,9 +32,9 @@
             <input type="text" v-model="form.businessName" @input="updateSlug" class="w-full mt-1 px-4 py-2 border rounded-md">
             <p class="text-sm text-gray-500 mt-1">
               Seu link público:
-              <span class="font-mono">/agenda-zen/#/{{ slug }}</span>
+              <span class="font-mono">#/{{ slug }}</span>
               <a
-                :href="'/agenda-zen/#/' + slug"
+                :href="'#/' + slug"
                 target="_blank"
                 class="text-blue-600 hover:underline ml-2"
               >Abrir página do cliente</a>

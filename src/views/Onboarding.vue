@@ -125,6 +125,15 @@ export default {
   },
   methods: {
     phoneMask,
+    generateSlug(name) {
+      if (!name) return ''
+      return name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')
+    },
     async next() {
       if (this.step === 1) {
         await this.saveProfile()
@@ -148,6 +157,7 @@ export default {
       const updates = {
         id: this.userId,
         business_name: this.form.businessName,
+        slug: this.generateSlug(this.form.businessName),
         phone: this.form.phone,
         email: this.form.email
       }
