@@ -21,3 +21,13 @@
 .btn-success {
   @apply bg-green-600 text-white hover:bg-green-700;
 }
+
+/* Disabled state for buttons */
+button:disabled,
+.btn:disabled {
+  @apply bg-gray-300 text-gray-500 cursor-not-allowed;
+}
+
+.btn:disabled:hover {
+  @apply bg-gray-300;
+}
