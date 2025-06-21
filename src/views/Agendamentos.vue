@@ -131,7 +131,7 @@
               <a :href="getRoomLink(selectedAppointment.room_id)" target="_blank" class="text-blue-600 underline">Acessar Google Meet</a>
             </p>
           </div>
-            <div class="flex justify-center mt-4 space-x-2">
+            <div class="flex flex-wrap justify-center mt-4 gap-2">
               <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
               <button @click="editFromDetails" class="btn">Editar</button>
               <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
