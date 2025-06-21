@@ -20,7 +20,7 @@
         <div v-if="activeTab === 'current'">
           <p class="mb-2 text-sm text-gray-600">Data/hora: {{ appointmentDateTime }}</p>
           <textarea v-model="note" class="w-full border rounded p-2 mb-4" rows="6" placeholder="Descreva o atendimento"></textarea>
-          <input type="file" multiple @change="handleFileChange" class="mb-4" />
+          <input type="file" multiple @change="handleFileChange" class="mb-4" accept=".pdf,.doc,.txt,.png,.jpeg" />
           <button @click="saveNote" class="btn">Salvar</button>
         </div>
         <div v-else>
@@ -79,7 +79,17 @@ export default {
       return new Date(dt).toLocaleString('pt-BR')
     },
     handleFileChange(e) {
-      this.files = Array.from(e.target.files)
+      const allowed = ['pdf', 'doc', 'txt', 'png', 'jpeg']
+      const selected = Array.from(e.target.files)
+      this.files = []
+      for (const file of selected) {
+        const ext = file.name.split('.').pop().toLowerCase()
+        if (allowed.includes(ext)) {
+          this.files.push(file)
+        } else {
+          alert(`Formato de arquivo não permitido: ${file.name}`)
+        }
+      }
     },
     async fetchData() {
       const { data: { user } } = await supabase.auth.getUser()
