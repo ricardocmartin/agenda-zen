@@ -205,7 +205,8 @@
           <p><strong>Duração:</strong> {{ selectedAppointment.duration }}</p>
           <p><strong>Descrição:</strong> {{ selectedAppointment.description }}</p>
         </div>
-        <div class="flex justify-end mt-4">
+        <div class="flex justify-end mt-4 space-x-2">
+          <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
           <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
         </div>
       </Modal>
@@ -441,7 +442,30 @@ export default {
         this.showDetailsModal = false
         this.selectedAppointment = null
       },
-  async handleAddClient() {
+      async handleDeleteAppointment(id) {
+        const confirmed = confirm(
+          'Tem certeza que deseja excluir este agendamento?'
+        )
+        if (!confirmed) return
+
+        const { error } = await supabase
+          .from('appointments')
+          .delete()
+          .eq('id', id)
+
+        if (error) {
+          alert('Erro ao excluir agendamento: ' + error.message)
+        } else {
+          this.upcomingAppointments = this.upcomingAppointments.filter(a => a.id !== id)
+          if (this.selectedAppointment && this.selectedAppointment.id === id) {
+            this.closeDetails()
+          }
+          await this.fetchStats()
+          await this.fetchTopClients()
+          await this.fetchUpcomingAppointments()
+        }
+      },
+      async handleAddClient() {
       if (this.clientForm.email && !isValidEmail(this.clientForm.email)) {
         alert('E-mail inválido')
         return
