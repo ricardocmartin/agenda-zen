@@ -131,7 +131,7 @@
               <a :href="getRoomLink(selectedAppointment.room_id)" target="_blank" class="text-blue-600 underline">Acessar Google Meet</a>
             </p>
           </div>
-            <div class="flex justify-end mt-4 space-x-2">
+            <div class="flex justify-center mt-4 space-x-2">
               <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
               <button @click="editFromDetails" class="btn">Editar</button>
               <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
@@ -488,13 +488,8 @@ export default {
       this.showDetailsModal = true
     },
     startAppointment() {
-      if (!this.selectedAppointment) return
-      const link = this.getRoomLink(this.selectedAppointment.room_id)
-      if (link) {
-        window.open(link, '_blank')
-      } else {
-        alert('Início do atendimento registrado.')
-      }
+        if (!this.selectedAppointment) return
+        this.$router.push(`/atendimento/${this.selectedAppointment.id}`)
     },
     async cancelAppointment() {
       if (!this.selectedAppointment) return
