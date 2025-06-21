@@ -127,22 +127,9 @@
             @close="closeDetails"
           >
             <template #actions>
-              <div class="mt-4">
-                <h4 class="font-medium mb-2">Ações de atendimento</h4>
-                <div class="flex flex-wrap justify-center gap-2">
-                  <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
-                  <button @click="cancelAppointment" class="btn btn-warning">Desmarcou</button>
-                  <button @click="markNoShow" class="btn btn-secondary">Faltou</button>
-                  <button @click="startAppointment" class="btn btn-primary">Iniciar atendimento</button>
-                </div>
-              </div>
-
-              <div class="mt-4">
-                <h4 class="font-medium mb-2">Ações de cadastro</h4>
-                <div class="flex flex-wrap justify-center gap-2">
-                  <button @click="editFromDetails" class="btn">Editar</button>
-                  <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
-                </div>
+              <div class="flex justify-center mt-4 space-x-2">
+                <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
+                <button @click="closeDetails" class="px-4 py-2 rounded border">Fechar</button>
               </div>
             </template>
           </AppointmentDetails>
