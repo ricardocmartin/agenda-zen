@@ -271,7 +271,8 @@ export default {
         startTime: '',
         endTime: '',
         weekDays: [],
-        dailySchedule: null
+        dailySchedule: null,
+        cancelLimitHours: 0
       },
       profileWhatsapp: ''
     }
@@ -376,6 +377,13 @@ export default {
       }
       return true
     },
+    canCancelAppointment(appt) {
+      const limit = this.schedule.cancelLimitHours || 0
+      if (limit === 0) return true
+      const apptTime = new Date(`${appt.date}T${appt.time}`)
+      const diffHours = (apptTime - new Date()) / 36e5
+      return diffHours >= limit
+    },
     async handleSaveAppointment() {
       if (!this.isSlotAllowed(this.form.date, this.form.time)) {
         alert('Horário fora do horário de trabalho configurado')
@@ -437,6 +445,11 @@ export default {
       }
     },
     async handleDeleteAppointment(id, confirmMessage = 'Tem certeza que deseja excluir este agendamento?') {
+      const appointment = this.appointments.find(a => a.id === id)
+      if (appointment && !this.canCancelAppointment(appointment)) {
+        alert('Agendamento fora da política de cancelamento.')
+        return
+      }
       const confirmed = confirm(confirmMessage)
       if (!confirmed) return
 
@@ -500,6 +513,10 @@ export default {
     },
     async cancelAppointment() {
       if (!this.selectedAppointment) return
+      if (!this.canCancelAppointment(this.selectedAppointment)) {
+        alert('Agendamento fora da política de cancelamento.')
+        return
+      }
       await this.handleDeleteAppointment(
         this.selectedAppointment.id,
         'Tem certeza que deseja desmarcar este atendimento?'
@@ -617,7 +634,7 @@ export default {
 
     const { data: profileData } = await supabase
       .from('profiles')
-      .select('start_time, end_time, week_days, daily_schedule, whatsapp')
+      .select('start_time, end_time, week_days, daily_schedule, whatsapp, cancel_limit_hours')
       .eq('id', this.userId)
       .single()
 
@@ -632,6 +649,7 @@ export default {
           ? JSON.parse(profileData.daily_schedule)
           : profileData.daily_schedule
         : null
+      this.schedule.cancelLimitHours = profileData.cancel_limit_hours || 0
       this.profileWhatsapp = profileData.whatsapp || ''
     }
 
