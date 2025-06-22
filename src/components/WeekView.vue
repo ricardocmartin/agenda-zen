@@ -62,6 +62,12 @@
 <script>
 import { supabase } from '../supabase'
 
+function getBrazilNow() {
+  return new Date(
+    new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' })
+  )
+}
+
 export default {
   name: 'WeekView',
   props: {
@@ -75,7 +81,7 @@ export default {
     }
   },
   data() {
-    const today = new Date()
+    const today = getBrazilNow()
     const weekStart = new Date(today)
     weekStart.setDate(today.getDate() - ((today.getDay() + 6) % 7))
     return {
@@ -97,7 +103,7 @@ export default {
     },
     showCurrentLine() {
       const totalHeight = this.timeSlots.length * 64
-      const now = new Date()
+      const now = getBrazilNow()
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const [startHour, startMin] = this.startTime.split(':').map(Number)
       const [endHour, endMin] = this.endTime.split(':').map(Number)
@@ -145,7 +151,7 @@ export default {
     updateCurrentLine() {
       if (this.timeSlots.length === 0) return
       const firstHour = parseInt(this.timeSlots[0].split(':')[0])
-      const now = new Date()
+      const now = getBrazilNow()
       const hours = now.getHours() + now.getMinutes() / 60
       const pos = (hours - firstHour) * 64
       this.currentLineTop = pos
@@ -161,7 +167,7 @@ export default {
       this.weekStart = d
     },
     isToday(offset) {
-      const today = new Date()
+      const today = getBrazilNow()
       const d = this.getDateOfDay(offset)
       return d.toDateString() === today.toDateString()
     }
