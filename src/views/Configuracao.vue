@@ -129,6 +129,10 @@
           </div>
         </div>
         <div>
+          <label class="block text-sm font-medium text-gray-700">Horas para cancelamento sem custo</label>
+          <input type="number" min="0" v-model.number="agenda.cancelLimitHours" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
           <button type="submit" class="btn">Salvar</button>
         </div>
       </form>
@@ -169,6 +173,7 @@ import { isValidEmail } from '../utils/format'
           imageUrl: ''
         },
         agenda: {
+          cancelLimitHours: 0,
           dailySchedule: {
             '0': { enabled: false, start: '', end: '' },
             '1': { enabled: false, start: '', end: '' },
@@ -263,7 +268,8 @@ import { isValidEmail } from '../utils/format'
           start_time: summary.start,
           end_time: summary.end,
           week_days: summary.days.join(','),
-          daily_schedule: this.agenda.dailySchedule
+          daily_schedule: this.agenda.dailySchedule,
+          cancel_limit_hours: this.agenda.cancelLimitHours
         }
         const { error } = await supabase
           .from('profiles')
@@ -306,6 +312,7 @@ import { isValidEmail } from '../utils/format'
           imageUrl: data.image_url || ''
         }
         this.agenda = {
+          cancelLimitHours: data.cancel_limit_hours || 0,
           dailySchedule: {
             '0': { enabled: false, start: '', end: '' },
             '1': { enabled: false, start: '', end: '' },
