@@ -18,5 +18,10 @@ FOR SELECT USING (
   bucket_id = 'appointment-attachments'
 );
 
+CREATE POLICY "Anyone can delete appointment attachments" ON storage.objects
+FOR DELETE USING (
+  bucket_id = 'appointment-attachments'
+);
+
 -- Ensure RLS is enabled for storage.objects
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
