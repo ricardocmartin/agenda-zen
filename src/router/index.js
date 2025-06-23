@@ -64,7 +64,7 @@ const router = createRouter({
 // Envia page views ao Google Analytics
 router.afterEach((to) => {
   if (window.gtag) {
-    window.gtag('config', 'G-XXXXXXXXXX', { page_path: to.fullPath })
+    window.gtag('config', 'G-8DZT2EVSC7', { page_path: to.fullPath })
   }
 })
 
