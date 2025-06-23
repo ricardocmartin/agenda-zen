@@ -209,8 +209,9 @@
               <tr v-for="a in clientAppointments" :key="a.id" class="border-b last:border-b-0">
                 <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ a.time }}</td>
                 <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
-                <td class="px-4 py-2 text-right">
+                <td class="px-4 py-2 text-right space-x-2">
                   <router-link :to="{ path: '/agendamentos', query: { edit: a.id } }" class="btn btn-sm">Editar</router-link>
+                  <button @click="sendConfirmationEmail(a)" class="btn btn-sm btn-success">Enviar e-mail</button>
                 </td>
               </tr>
               <tr v-if="clientAppointments.length === 0">
@@ -247,6 +248,7 @@ import { supabase } from '../supabase'
 import { phoneMask, digitsOnly } from '../utils/phone'
 import { fetchStates, fetchCities } from '../utils/locations'
 import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
+import { sendAppointmentEmail } from '../utils/email'
 
 export default {
   name: 'Clientes',
@@ -282,7 +284,8 @@ export default {
         originalForm: {},
         clientAppointments: [],
         history: [],
-        services: []
+        services: [],
+        rooms: []
     }
   },
   methods: {
@@ -297,6 +300,13 @@ export default {
         .select()
         .eq('user_id', this.userId)
       if (data) this.services = data
+    },
+    async fetchRoomsList() {
+      const { data } = await supabase
+        .from('rooms')
+        .select()
+        .eq('user_id', this.userId)
+      if (data) this.rooms = data
     },
     async fetchStatesList() {
       this.states = await fetchStates()
@@ -338,6 +348,7 @@ export default {
         await this.fetchCitiesList()
       }
       await this.fetchServicesList()
+      await this.fetchRoomsList()
       this.showModal = true
     },
     closeModal() {
@@ -481,6 +492,16 @@ export default {
       const s = this.services.find(sv => sv.id === id)
       return s ? s.name : ''
     },
+    async sendConfirmationEmail(appt) {
+      const client = this.clients.find(c => c.id === appt.client_id)
+      const service = this.services.find(s => s.id === appt.service_id)
+      const room = this.rooms.find(r => r.id === appt.room_id)
+      await sendAppointmentEmail({
+        to: client?.email,
+        subject: `Agendamento confirmado para ${formatDateBR(appt.date)} às ${appt.time}`,
+        text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${appt.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${appt.description ? `Observações: ${appt.description}` : ''}`
+      })
+    },
     nextPage() {
       if (this.page < this.totalPages) this.page++
     },
@@ -535,6 +556,7 @@ export default {
     }
     await this.fetchStatesList()
     await this.fetchServicesList()
+    await this.fetchRoomsList()
   }
 }
 </script>
