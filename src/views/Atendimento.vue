@@ -154,10 +154,21 @@ export default {
         .eq('id', this.$route.params.id)
         .single()
       this.appointment = appt
+
+      let appointmentIds = [this.$route.params.id]
+      if (appt) {
+        const { data: clientAppointments } = await supabase
+          .from('appointments')
+          .select('id')
+          .eq('user_id', this.userId)
+          .eq('client_id', appt.client_id)
+        appointmentIds = clientAppointments ? clientAppointments.map(a => a.id) : appointmentIds
+      }
+
       const { data: notes } = await supabase
         .from('appointment_notes')
         .select()
-        .eq('appointment_id', this.$route.params.id)
+        .in('appointment_id', appointmentIds)
         .order('created_at', { ascending: false })
       this.notes = (notes || []).map(n => ({
         ...n,
@@ -167,8 +178,7 @@ export default {
       if (noteParam) {
         const toEdit = this.notes.find(n => n.id === Number(noteParam) || n.id === noteParam)
         if (toEdit) {
-          this.editExistingNote(toEdit, false)
-          this.activeTab = 'history'
+          this.editExistingNote(toEdit)
         }
       }
     },
