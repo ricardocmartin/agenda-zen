@@ -99,11 +99,12 @@
         <div class="text-center space-y-4">
           <!-- Increase the Pix logo size by about 10% -->
           <img src="/logo_pix.png" alt="Logo Pix" class="mx-auto w-[17.6rem] h-auto" />
+          <img v-if="pixQrCode" :src="pixQrCode" alt="QR Code Pix" class="mx-auto w-40 h-auto" />
           <p class="font-semibold">Código de pagamento</p>
           <p>Copie e cole o código abaixo no app da sua instituição financeira para finalizar a compra.</p>
-          <p class="font-semibold">Valor do pagamento</p>
-          <p class="text-lg font-semibold">R$ 67,00</p>
           <input type="text" v-model="pixCode" readonly class="w-full px-4 py-2 border rounded-md text-center" />
+          <p class="font-semibold">Valor do pagamento</p>
+          <p class="text-lg font-semibold">R$ {{ pixAmount.replace('.', ',') }}</p>
         </div>
       </section>
     </main>
@@ -113,6 +114,8 @@
 <script>
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
+import QRCode from 'qrcode'
+import { generatePixPayload } from '../utils/pix.js'
 
 export default {
   name: 'PagamentoPlus',
@@ -120,7 +123,7 @@ export default {
   data() {
     return {
       sidebarOpen: window.innerWidth >= 768,
-      activeTab: 'cartao',
+      activeTab: 'pix',
       card: {
         name: '',
         number: '',
@@ -137,7 +140,25 @@ export default {
         city: '',
         state: ''
       },
-      pixCode: '000201010212...'
+      pixAmount: '67.00',
+      pixCode: '',
+      pixQrCode: ''
+    }
+  },
+  mounted() {
+    this.generatePix()
+  },
+  methods: {
+    generatePix() {
+      const payload = generatePixPayload({
+        key: '37775989840',
+        name: 'Jeferson Carlos A de Paula',
+        amount: this.pixAmount
+      })
+      this.pixCode = payload
+      QRCode.toDataURL(payload).then(url => {
+        this.pixQrCode = url
+      })
     }
   }
 }
