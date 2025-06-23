@@ -109,7 +109,7 @@ export default {
         }
       }
     },
-    editExistingNote(note) {
+    editExistingNote(note, switchTab = true) {
       if ((this.note && this.note.trim()) || this.files.length) {
         const confirmed = confirm('Dados não salvos serão perdidos. Deseja continuar?')
         if (!confirmed) return
@@ -119,7 +119,9 @@ export default {
       this.editingAttachments = [...(note.attachments || [])]
       this.note = note.note
       this.files = []
-      this.activeTab = 'current'
+      if (switchTab) {
+        this.activeTab = 'current'
+      }
     },
     cancelEdit() {
       this.isEditing = false
@@ -165,7 +167,8 @@ export default {
       if (noteParam) {
         const toEdit = this.notes.find(n => n.id === Number(noteParam) || n.id === noteParam)
         if (toEdit) {
-          this.editExistingNote(toEdit)
+          this.editExistingNote(toEdit, false)
+          this.activeTab = 'history'
         }
       }
     },
