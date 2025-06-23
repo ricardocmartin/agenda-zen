@@ -59,7 +59,11 @@ export default {
   },
   methods: {
     goBeta() {
-      this.$router.push('/assinatura-plus')
+      // Passa o valor do plano para a tela de pagamento
+      this.$router.push({
+        path: '/assinatura-plus',
+        query: { amount: '67.00' }
+      })
     },
     goBasico() {
       this.$router.push('/dashboard')

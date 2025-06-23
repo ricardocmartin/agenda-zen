@@ -140,12 +140,18 @@ export default {
         city: '',
         state: ''
       },
+      // Valor do pagamento será definido com base no plano selecionado
       pixAmount: '67.00',
       pixCode: '',
       pixQrCode: ''
     }
   },
   mounted() {
+    // Obtém o valor do plano via query string caso exista
+    const amount = this.$route.query.amount
+    if (amount) {
+      this.pixAmount = amount
+    }
     this.generatePix()
   },
   methods: {
