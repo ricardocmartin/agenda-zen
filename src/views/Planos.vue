@@ -16,7 +16,7 @@
           <tr>
             <td class="border-t px-4 py-2 text-gray-600">Valor</td>
             <td class="border-t px-4 py-2 text-center font-semibold">Grátis</td>
-            <td class="border-t px-4 py-2 text-center font-semibold line-through text-gray-400">R$167,90</td>
+            <td class="border-t px-4 py-2 text-center font-semibold line-through text-gray-400">R$167,97</td>
           </tr>
           <tr class="bg-gray-50">
             <td class="border-t px-4 py-2 text-gray-600">Cadastro de pacientes</td>

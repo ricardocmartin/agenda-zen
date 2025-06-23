@@ -28,7 +28,7 @@
         </div>
         <div class="bg-white p-6 rounded-lg shadow space-y-4">
           <h3 class="text-xl font-semibold text-center">Beta</h3>
-          <p class="text-center text-2xl font-bold line-through text-gray-400">R$167,90</p>
+          <p class="text-center text-2xl font-bold line-through text-gray-400">R$167,97</p>
           <ul class="space-y-2">
             <li class="flex items-start"><span class="mr-2">✓</span>Cadastro de pacientes ilimitado</li>
             <li class="flex items-start"><span class="mr-2">✓</span>Lembretes por e-mail</li>
@@ -62,7 +62,7 @@ export default {
       // Passa o valor do plano para a tela de pagamento
       this.$router.push({
         path: '/assinatura-plus',
-        query: { amount: '67.00' }
+        query: { amount: '167.97' }
       })
     },
     goBasico() {
