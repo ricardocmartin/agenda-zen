@@ -287,6 +287,7 @@ export default {
     digitsOnly,
     cpfMask,
     cepMask,
+    formatDateBR,
     async fetchServicesList() {
       const { data } = await supabase
         .from('services')
