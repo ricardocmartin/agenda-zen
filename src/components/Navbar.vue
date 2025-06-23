@@ -18,7 +18,7 @@
     </div>
 
     <!-- Menu mobile -->
-    <div v-if="open" class="absolute top-full left-0 w-full bg-white shadow-md md:hidden flex flex-col items-start space-y-2 py-4 px-8">
+    <div v-if="open" class="absolute top-full left-0 w-full bg-white shadow-md md:hidden flex flex-col items-start space-y-4 py-4 px-8">
       <router-link @click="open = false" to="/buscar" class="text-blue-600 hover:underline">Buscar</router-link>
       <router-link @click="open = false" to="/planos" class="text-blue-600 hover:underline">Planos</router-link>
       <router-link @click="open = false" to="/contato" class="text-blue-600 hover:underline">Contato</router-link>
