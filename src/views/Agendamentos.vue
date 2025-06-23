@@ -79,7 +79,7 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Hora</label>
-              <input type="time" step="1800" v-model="form.time" class="w-full mt-1 px-4 py-2 border rounded-lg" />
+              <input type="time" step="3600" v-model="form.time" class="w-full mt-1 px-4 py-2 border rounded-lg" />
             </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Cliente</label>
