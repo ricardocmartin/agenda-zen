@@ -661,6 +661,12 @@ export default {
     if (appointmentData) {
       this.appointments = appointmentData
     }
+
+    const editId = this.$route.query.edit
+    if (editId) {
+      const appt = this.appointments.find(a => a.id === editId)
+      if (appt) this.openModal(appt)
+    }
   }
 }
 </script>

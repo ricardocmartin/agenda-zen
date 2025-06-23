@@ -103,7 +103,23 @@
           <h3 class="text-lg font-semibold mb-4">
             {{ modalMode === 'new' ? 'Adicionar Cliente' : 'Cadastro do Cliente' }}
           </h3>
-          <form @submit.prevent="handleSaveClient" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div v-if="editingId" class="border-b mb-4">
+            <nav class="flex space-x-4">
+              <button
+                :class="activeTab === 'cadastro' ? 'border-b-2 border-blue-500 pb-2' : 'text-gray-500 pb-2'"
+                @click="changeTab('cadastro')"
+              >Cadastro</button>
+              <button
+                :class="activeTab === 'agendamentos' ? 'border-b-2 border-blue-500 pb-2' : 'text-gray-500 pb-2'"
+                @click="changeTab('agendamentos')"
+              >Agendamentos</button>
+              <button
+                :class="activeTab === 'historico' ? 'border-b-2 border-blue-500 pb-2' : 'text-gray-500 pb-2'"
+                @click="changeTab('historico')"
+              >Histórico de atendimento</button>
+            </nav>
+          </div>
+          <form v-show="activeTab === 'cadastro'" @submit.prevent="handleSaveClient" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
             <input type="text" v-model="form.name" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md" />
@@ -179,6 +195,42 @@
             <button type="submit" class="btn" :disabled="isReadOnly">Salvar</button>
           </div>
         </form>
+
+        <div v-show="activeTab === 'agendamentos'">
+          <table class="min-w-full text-left">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 font-medium text-gray-700">Data/Hora</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Serviço</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="a in clientAppointments" :key="a.id" class="border-b last:border-b-0">
+                <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ a.time }}</td>
+                <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
+                <td class="px-4 py-2 text-right">
+                  <router-link :to="{ path: '/agendamentos', query: { edit: a.id } }" class="btn btn-sm">Editar</router-link>
+                </td>
+              </tr>
+              <tr v-if="clientAppointments.length === 0">
+                <td colspan="3" class="px-4 py-6 text-center text-gray-500">Nenhum agendamento</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-show="activeTab === 'historico'" class="space-y-4">
+          <div v-for="h in history" :key="h.id" class="border p-2 rounded">
+            <p class="text-sm text-gray-600 mb-1">{{ formatDateBR(h.appointment.date) }} {{ h.appointment.time }}</p>
+            <p class="mb-2 whitespace-pre-line">{{ h.note }}</p>
+            <div class="text-right">
+              <router-link :to="`/atendimento/${h.appointment_id}`" class="btn btn-sm">Editar atendimento</router-link>
+            </div>
+          </div>
+          <p v-if="history.length === 0" class="text-center text-gray-500">Nenhum atendimento encontrado</p>
+        </div>
+
       </Modal>
     </main>
   </div>
@@ -191,7 +243,7 @@ import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
 import { phoneMask, digitsOnly } from '../utils/phone'
 import { fetchStates, fetchCities } from '../utils/locations'
-import { cpfMask, cepMask, isValidEmail } from '../utils/format'
+import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
 
 export default {
   name: 'Clientes',
@@ -222,7 +274,12 @@ export default {
         clients: [],
         sidebarOpen: window.innerWidth >= 768,
         page: 1,
-        pageSize: 10
+        pageSize: 10,
+        activeTab: 'cadastro',
+        originalForm: {},
+        clientAppointments: [],
+        history: [],
+        services: []
     }
   },
   methods: {
@@ -230,6 +287,13 @@ export default {
     digitsOnly,
     cpfMask,
     cepMask,
+    async fetchServicesList() {
+      const { data } = await supabase
+        .from('services')
+        .select()
+        .eq('user_id', this.userId)
+      if (data) this.services = data
+    },
     async fetchStatesList() {
       this.states = await fetchStates()
     },
@@ -238,6 +302,7 @@ export default {
     },
     async openModal(client, mode = 'new') {
       this.modalMode = mode
+      this.activeTab = 'cadastro'
       if (client) {
         this.editingId = client.id
         this.form = {
@@ -254,14 +319,21 @@ export default {
           stateId: client.state_id,
           cityId: client.city_id
         }
+        this.originalForm = { ...this.form }
+        await this.fetchClientAppointments()
+        await this.fetchClientHistory()
       } else {
         this.editingId = null
         this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '' }
+        this.originalForm = { ...this.form }
+        this.clientAppointments = []
+        this.history = []
       }
       await this.fetchStatesList()
       if (this.form.stateId) {
         await this.fetchCitiesList()
       }
+      await this.fetchServicesList()
       this.showModal = true
     },
     closeModal() {
@@ -269,6 +341,9 @@ export default {
       this.modalMode = 'new'
       this.editingId = null
       this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '' }
+      this.activeTab = 'cadastro'
+      this.clientAppointments = []
+      this.history = []
     },
     handleClose() {
       if (this.modalMode === 'view') {
@@ -304,11 +379,12 @@ export default {
             complement: this.form.complement,
             neighborhood: this.form.neighborhood,
             state_id: this.form.stateId,
-            city_id: this.form.cityId
-          })
+          city_id: this.form.cityId
+        })
           .eq('id', this.editingId)
           .select()
           .single())
+        this.originalForm = { ...data }
       } else {
         ;({ data, error } = await supabase
           .from('clients')
@@ -324,11 +400,12 @@ export default {
             complement: this.form.complement,
             neighborhood: this.form.neighborhood,
             state_id: this.form.stateId,
-            city_id: this.form.cityId,
-            user_id: this.userId
-          })
+          city_id: this.form.cityId,
+          user_id: this.userId
+        })
           .select()
           .single())
+        this.originalForm = { ...data }
       }
 
       if (error) {
@@ -360,6 +437,44 @@ export default {
     },
     enableEdit() {
       this.modalMode = 'edit'
+    },
+    changeTab(tab) {
+      if (tab !== 'cadastro' && this.modalMode !== 'view') {
+        const confirmed = confirm('Dados não salvos serão perdidos. Deseja continuar?')
+        if (!confirmed) return
+        this.modalMode = 'view'
+        this.form = { ...this.originalForm }
+      }
+      this.activeTab = tab
+    },
+    async fetchClientAppointments() {
+      if (!this.editingId) { this.clientAppointments = []; return }
+      const { data } = await supabase
+        .from('appointments')
+        .select()
+        .eq('user_id', this.userId)
+        .eq('client_id', this.editingId)
+        .order('date', { ascending: true })
+        .order('time', { ascending: true })
+      this.clientAppointments = data || []
+    },
+    async fetchClientHistory() {
+      if (!this.editingId) { this.history = []; return }
+      if (!this.clientAppointments.length) { this.history = []; return }
+      const ids = this.clientAppointments.map(a => a.id)
+      const { data } = await supabase
+        .from('appointment_notes')
+        .select()
+        .in('appointment_id', ids)
+        .order('created_at', { ascending: false })
+      this.history = (data || []).map(n => ({
+        ...n,
+        appointment: this.clientAppointments.find(a => a.id === n.appointment_id) || {}
+      }))
+    },
+    getServiceName(id) {
+      const s = this.services.find(sv => sv.id === id)
+      return s ? s.name : ''
     },
     nextPage() {
       if (this.page < this.totalPages) this.page++
@@ -414,6 +529,7 @@ export default {
       this.clients = data
     }
     await this.fetchStatesList()
+    await this.fetchServicesList()
   }
 }
 </script>
