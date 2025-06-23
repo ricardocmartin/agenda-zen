@@ -231,6 +231,21 @@ export default {
       }
     }
   },
+  watch: {
+    '$route.params.id'() {
+      this.fetchData()
+    },
+    '$route.query.note'(val) {
+      if (!val) {
+        if (this.isEditing) this.cancelEdit()
+        return
+      }
+      const note = this.notes.find(n => n.id === Number(val) || n.id === val)
+      if (note) {
+        this.editExistingNote(note)
+      }
+    }
+  },
   async mounted() {
     await this.fetchData()
   }
