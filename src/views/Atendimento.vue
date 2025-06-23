@@ -161,6 +161,13 @@ export default {
         ...n,
         attachments: n.attachments || []
       }))
+      const noteParam = this.$route.query.note
+      if (noteParam) {
+        const toEdit = this.notes.find(n => n.id === Number(noteParam) || n.id === noteParam)
+        if (toEdit) {
+          this.editExistingNote(toEdit)
+        }
+      }
     },
     async saveNote() {
       if (!this.note.trim() && !this.files.length && !this.editingAttachments.length) return
