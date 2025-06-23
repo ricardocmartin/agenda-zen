@@ -141,7 +141,7 @@ export default {
         state: ''
       },
       // Valor do pagamento será definido com base no plano selecionado
-      pixAmount: '67.00',
+      pixAmount: '167.97',
       pixCode: '',
       pixQrCode: ''
     }
