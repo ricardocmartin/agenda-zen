@@ -166,7 +166,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Hora</label>
-            <input type="time" step="3600" v-model="appointmentForm.time" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="time" step="60" v-model="appointmentForm.time" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Cliente</label>
