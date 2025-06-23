@@ -90,6 +90,7 @@ export default {
       startTime: '00:00',
       endTime: '23:00',
       dailySchedule: null,
+      slotInterval: 30,
       timeSlots: [],
       currentLineTop: 0,
       lineInterval: null
@@ -117,11 +118,15 @@ export default {
   },
   methods: {
     generateTimeSlots() {
-      const start = Math.max(0, parseInt(this.startTime.split(':')[0]) - 1)
-      const end = Math.min(23, parseInt(this.endTime.split(':')[0]) + 1)
+      const [startH, startM] = this.startTime.split(':').map(Number)
+      const [endH, endM] = this.endTime.split(':').map(Number)
+      const start = startH * 60 + startM
+      const end = endH * 60 + endM
       this.timeSlots = []
-      for (let h = start; h <= end; h++) {
-        this.timeSlots.push(`${String(h).padStart(2, '0')}:00`)
+      for (let m = start; m <= end; m += this.slotInterval) {
+        const h = Math.floor(m / 60)
+        const mm = m % 60
+        this.timeSlots.push(`${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')}`)
       }
     },
     formatDate(date) {
@@ -141,8 +146,16 @@ export default {
     },
     getAppointmentsForSlot(offset, slot) {
       const day = this.formatISO(this.getDateOfDay(offset))
+      const [slotH, slotM] = slot.split(':').map(Number)
+      const slotStart = slotH * 60 + slotM
+      const slotEnd = slotStart + this.slotInterval
       return this.appointments
-        .filter(a => a.date === day && a.time === slot)
+        .filter(a => {
+          if (a.date !== day) return false
+          const [h, m] = a.time.split(':').map(Number)
+          const mins = h * 60 + m
+          return mins >= slotStart && mins < slotEnd
+        })
         .sort((a, b) => a.time.localeCompare(b.time))
     },
     updateCurrentLine() {
@@ -152,7 +165,7 @@ export default {
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const firstMinutes = firstH * 60 + firstM
       const diff = nowMinutes - firstMinutes
-      const pos = (diff / 60) * 64
+      const pos = (diff / this.slotInterval) * 64
       this.currentLineTop = pos
     },
     prevWeek() {
