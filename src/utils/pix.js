@@ -19,7 +19,10 @@ export function crc16(str) {
   return crc.toString(16).toUpperCase().padStart(4, '0')
 }
 
+
 export function generatePixPayload({ key, name, city = 'SAO PAULO', amount, txid = 'AGENDAZEN' }) {
+  const safeName = name.slice(0, 25)
+
   const merchantAccount =
     formatPixField('00', 'BR.GOV.BCB.PIX') +
     formatPixField('01', key)
@@ -28,12 +31,13 @@ export function generatePixPayload({ key, name, city = 'SAO PAULO', amount, txid
 
   const payloadWithoutCrc =
     '000201' +
+    '010211' +
     '26' + String(merchantAccount.length).padStart(2, '0') + merchantAccount +
     '52040000' +
     '5303986' +
     (amount ? formatPixField('54', amount) : '') +
     '5802BR' +
-    formatPixField('59', name) +
+    formatPixField('59', safeName) +
     formatPixField('60', city) +
     '62' + String(additionalData.length).padStart(2, '0') + additionalData +
     '6304'
