@@ -1,14 +1,16 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
-const corsHeaders = {
+const baseHeaders = {
   'Access-Control-Allow-Origin': '*',
-  // Allow any headers in CORS preflight to avoid 403 responses
-  'Access-Control-Allow-Headers': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Max-Age': '86400'
 }
 
 serve(async req => {
+  const allowHeaders =
+    req.headers.get('access-control-request-headers') || '*'
+  const corsHeaders = { ...baseHeaders, 'Access-Control-Allow-Headers': allowHeaders }
+
   if (req.method === 'OPTIONS') {
     // Return a 200 response for CORS preflight requests
     return new Response('ok', { status: 200, headers: corsHeaders })
