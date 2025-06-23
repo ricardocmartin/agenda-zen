@@ -224,8 +224,11 @@
           <div v-for="h in history" :key="h.id" class="border p-2 rounded">
             <p class="text-sm text-gray-600 mb-1">{{ formatDateBR(h.appointment.date) }} {{ h.appointment.time }}</p>
             <p class="mb-2 whitespace-pre-line">{{ h.note }}</p>
+            <div v-if="h.attachments && h.attachments.length" class="space-x-2 mb-2">
+              <a v-for="(url, idx) in h.attachments" :key="idx" :href="url" target="_blank" download class="text-blue-600 underline">Anexo {{ idx + 1 }}</a>
+            </div>
             <div class="text-right">
-              <router-link :to="`/atendimento/${h.appointment_id}`" class="btn btn-sm">Editar atendimento</router-link>
+              <router-link :to="{ path: `/atendimento/${h.appointment_id}`, query: { note: h.id } }" class="btn btn-sm">Editar atendimento</router-link>
             </div>
           </div>
           <p v-if="history.length === 0" class="text-center text-gray-500">Nenhum atendimento encontrado</p>
@@ -470,6 +473,7 @@ export default {
         .order('created_at', { ascending: false })
       this.history = (data || []).map(n => ({
         ...n,
+        attachments: n.attachments || [],
         appointment: this.clientAppointments.find(a => a.id === n.appointment_id) || {}
       }))
     },
