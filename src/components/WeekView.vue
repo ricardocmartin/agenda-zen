@@ -35,11 +35,11 @@
         </div>
 
         <template v-for="time in timeSlots" :key="time">
-          <div class="font-semibold text-right pr-1 border bg-gray-50">{{ time }}</div>
+          <div class="font-semibold text-right pr-1 border bg-gray-50 h-4 flex items-center justify-end">{{ time }}</div>
           <div
             v-for="i in 7"
             :key="time + '-' + i"
-            class="border h-16 p-1 overflow-auto bg-white"
+            class="border h-4 p-1 overflow-auto bg-white"
             :class="{ 'bg-blue-50': isToday(i - 1) }"
           >
             <ul>
@@ -102,7 +102,7 @@ export default {
       return d
     },
     showCurrentLine() {
-      const totalHeight = this.timeSlots.length * 64
+      const totalHeight = this.timeSlots.length * 16
       const now = getBrazilNow()
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const [startHour, startMin] = this.startTime.split(':').map(Number)
@@ -121,7 +121,11 @@ export default {
       const end = Math.min(23, parseInt(this.endTime.split(':')[0]) + 1)
       this.timeSlots = []
       for (let h = start; h <= end; h++) {
-        this.timeSlots.push(`${String(h).padStart(2, '0')}:00`)
+        for (let m = 0; m < 60; m += 15) {
+          this.timeSlots.push(
+            `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+          )
+        }
       }
     },
     formatDate(date) {
@@ -141,19 +145,18 @@ export default {
     },
     getAppointmentsForSlot(offset, slot) {
       const day = this.formatISO(this.getDateOfDay(offset))
-      const slotHour = parseInt(slot.split(':')[0])
       return this.appointments
-        .filter(
-          a => a.date === day && parseInt(a.time.substring(0, 2)) === slotHour
-        )
+        .filter(a => a.date === day && a.time === slot)
         .sort((a, b) => a.time.localeCompare(b.time))
     },
     updateCurrentLine() {
       if (this.timeSlots.length === 0) return
-      const firstHour = parseInt(this.timeSlots[0].split(':')[0])
+      const [firstH, firstM] = this.timeSlots[0].split(':').map(Number)
       const now = getBrazilNow()
-      const hours = now.getHours() + now.getMinutes() / 60
-      const pos = (hours - firstHour) * 64
+      const nowMinutes = now.getHours() * 60 + now.getMinutes()
+      const firstMinutes = firstH * 60 + firstM
+      const diff = nowMinutes - firstMinutes
+      const pos = (diff / 15) * 16
       this.currentLineTop = pos
     },
     prevWeek() {
