@@ -35,11 +35,11 @@
         </div>
 
         <template v-for="time in timeSlots" :key="time">
-          <div class="font-semibold text-right pr-1 border bg-gray-50 h-4 flex items-center justify-end">{{ time }}</div>
+          <div class="font-semibold text-right pr-1 border bg-gray-50 h-16 flex items-center justify-end">{{ time }}</div>
           <div
             v-for="i in 7"
             :key="time + '-' + i"
-            class="border h-4 p-1 overflow-auto bg-white"
+            class="border h-16 p-1 overflow-auto bg-white"
             :class="{ 'bg-blue-50': isToday(i - 1) }"
           >
             <ul>
@@ -102,7 +102,7 @@ export default {
       return d
     },
     showCurrentLine() {
-      const totalHeight = this.timeSlots.length * 16
+      const totalHeight = this.timeSlots.length * 64
       const now = getBrazilNow()
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const [startHour, startMin] = this.startTime.split(':').map(Number)
@@ -152,7 +152,7 @@ export default {
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const firstMinutes = firstH * 60 + firstM
       const diff = nowMinutes - firstMinutes
-      const pos = (diff / 60) * 16
+      const pos = (diff / 60) * 64
       this.currentLineTop = pos
     },
     prevWeek() {
