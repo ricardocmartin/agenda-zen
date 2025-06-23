@@ -26,11 +26,11 @@
         <h2 class="text-xl font-semibold mb-4">Horários de atendimento</h2>
         <div>
           <label class="block text-sm font-medium text-gray-700">Início</label>
-          <input type="time" v-model="agenda.startTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <input type="time" step="1800" v-model="agenda.startTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Fim</label>
-          <input type="time" v-model="agenda.endTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <input type="time" step="1800" v-model="agenda.endTime" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Dias da semana</label>

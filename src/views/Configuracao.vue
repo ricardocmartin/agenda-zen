@@ -122,9 +122,9 @@
             <div v-for="day in daysOfWeekOptions" :key="day.value" class="flex items-center space-x-2">
               <input type="checkbox" v-model="agenda.dailySchedule[day.value].enabled" />
               <span class="w-20">{{ day.label }}</span>
-              <input type="time" v-model="agenda.dailySchedule[day.value].start" class="border rounded-md px-2 py-1" />
+              <input type="time" step="1800" v-model="agenda.dailySchedule[day.value].start" class="border rounded-md px-2 py-1" />
               <span>-</span>
-              <input type="time" v-model="agenda.dailySchedule[day.value].end" class="border rounded-md px-2 py-1" />
+              <input type="time" step="1800" v-model="agenda.dailySchedule[day.value].end" class="border rounded-md px-2 py-1" />
             </div>
           </div>
         </div>

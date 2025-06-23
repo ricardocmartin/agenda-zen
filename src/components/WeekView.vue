@@ -121,7 +121,7 @@ export default {
       const end = Math.min(23, parseInt(this.endTime.split(':')[0]) + 1)
       this.timeSlots = []
       for (let h = start; h <= end; h++) {
-        for (let m = 0; m < 60; m += 15) {
+        for (let m = 0; m < 60; m += 30) {
           this.timeSlots.push(
             `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
           )
@@ -156,7 +156,7 @@ export default {
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const firstMinutes = firstH * 60 + firstM
       const diff = nowMinutes - firstMinutes
-      const pos = (diff / 15) * 16
+      const pos = (diff / 30) * 16
       this.currentLineTop = pos
     },
     prevWeek() {
