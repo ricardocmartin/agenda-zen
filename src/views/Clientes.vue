@@ -498,8 +498,14 @@ export default {
       const room = this.rooms.find(r => r.id === appt.room_id)
       await sendAppointmentEmail({
         to: client?.email,
-        subject: `Agendamento confirmado para ${formatDateBR(appt.date)} às ${appt.time}`,
-        text: `Olá ${client?.name},\n\nSeu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${appt.time}.\n${room ? `Sala: ${room.name}\n` : ''}${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}${appt.description ? `Observações: ${appt.description}` : ''}`
+        subject: 'Agendamento de Consulta realizado',
+        text:
+          `Olá ${client?.name},\n\n` +
+          `Seu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${appt.time}.\n` +
+          `${room ? `Sala: ${room.name}\n` : ''}` +
+          `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
+          `${appt.description ? `Observações: ${appt.description}\n` : ''}` +
+          `\nE-mail enviado automaticamente.`
       })
     },
     nextPage() {
