@@ -216,6 +216,8 @@
           <WeekView
             :appointments="processedAppointments"
             :getClientName="getClientName"
+            :startHour="scheduleStartHour"
+            :endHour="scheduleEndHour"
             @select="openDetails"
           />
         </div>
@@ -324,6 +326,14 @@ export default {
         })
       }
       return result
+    },
+    scheduleStartHour() {
+      const t = this.schedule.startTime
+      return t ? parseInt(t.split(':')[0]) : 9
+    },
+    scheduleEndHour() {
+      const t = this.schedule.endTime
+      return t ? parseInt(t.split(':')[0]) : 18
     }
   },
   methods: {
