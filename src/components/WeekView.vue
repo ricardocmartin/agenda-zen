@@ -46,7 +46,7 @@
       </div>
         <div
           class="absolute inset-0 pointer-events-none grid"
-          :style="{ gridTemplateColumns: '64px repeat(7, 1fr)', gridAutoRows: '64px', gap: '1px' }"
+          :style="{ gridTemplateColumns: '64px repeat(7, 1fr)', gridAutoRows: 'calc(4rem + 1px)', gap: '0px' }"
         >
           <div
             v-for="appt in appointments"
@@ -106,7 +106,7 @@ export default {
       return d
     },
     showCurrentLine() {
-      const totalHeight = this.timeSlots.length * 64
+      const totalHeight = this.timeSlots.length * 65
       const now = getBrazilNow()
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const [startHour, startMin] = this.startTime.split(':').map(Number)
@@ -168,7 +168,7 @@ export default {
       const nowMinutes = now.getHours() * 60 + now.getMinutes()
       const firstMinutes = firstH * 60 + firstM
       const diff = nowMinutes - firstMinutes
-      const pos = (diff / this.slotInterval) * 64
+      const pos = (diff / this.slotInterval) * 65
       this.currentLineTop = pos
     },
     prevWeek() {
