@@ -67,7 +67,7 @@ export default {
     },
     startHour: {
       type: Number,
-      default: 0
+      default: 6
     },
     endHour: {
       type: Number,
@@ -91,10 +91,10 @@ export default {
   },
   computed: {
     computedStartHour() {
-      return 0
+      return this.startHour
     },
     computedEndHour() {
-      return 23
+      return this.endHour
     },
     totalHours() {
       return Math.max(0, this.computedEndHour - this.computedStartHour + 1)

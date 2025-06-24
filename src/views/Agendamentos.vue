@@ -328,11 +328,11 @@ export default {
     },
     scheduleStartHour() {
       const t = this.schedule.startTime
-      return t ? parseInt(t.split(':')[0]) : 9
+      return t ? parseInt(t.split(':')[0]) : 6
     },
     scheduleEndHour() {
       const t = this.schedule.endTime
-      return t ? parseInt(t.split(':')[0]) : 18
+      return t ? parseInt(t.split(':')[0]) : 23
     }
   },
   methods: {
