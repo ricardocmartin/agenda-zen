@@ -51,20 +51,56 @@
 </template>
 
 <script>
+import { formatDateBR } from '../utils/format'
+
 export default {
+  name: 'WeekView',
+  props: {
+    appointments: {
+      type: Array,
+      required: true
+    },
+    getClientName: {
+      type: Function,
+      required: true
+    }
+  },
   data() {
+    const today = new Date()
+    // calculate monday as start of week (1) with sunday as 7
+    const dayOfWeek = today.getDay() === 0 ? 7 : today.getDay()
+    const start = new Date(today)
+    start.setDate(today.getDate() - dayOfWeek + 1)
+    const end = new Date(start)
+    end.setDate(start.getDate() + 6)
     return {
       startHour: 9,
       endHour: 18,
-      weekStart: '23/06',
-      weekEnd: '29/06',
-      dayLabels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-      events: [
-        { id: 1, title: 'Jeferson Carlos A de Paula', startTime: '10:00', endTime: '11:00', day: 2 },
-        { id: 2, title: 'Ricardo Martin', startTime: '14:00', endTime: '15:00', day: 2 },
-        { id: 3, title: 'Patricia Souza Vinha', startTime: '16:00', endTime: '17:00', day: 6 },
-      ]
-    };
+      weekStart: start,
+      weekEnd: end,
+      dayLabels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+    }
+  },
+  computed: {
+    events() {
+      const startStr = this.weekStart.toISOString().split('T')[0]
+      const endStr = this.weekEnd.toISOString().split('T')[0]
+      return this.appointments
+        .filter(a => a.date >= startStr && a.date <= endStr)
+        .map(a => {
+          const [hour, minute] = a.time.split(':')
+          const startDate = new Date(`${a.date}T${a.time}`)
+          const endDate = new Date(startDate.getTime() + Number(a.duration || 0) * 60000)
+          const day = startDate.getDay() === 0 ? 7 : startDate.getDay()
+          return {
+            id: a.id,
+            title: this.getClientName(a.client_id),
+            startTime: `${hour}:${minute}`,
+            endTime: `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`,
+            day
+          }
+        })
+    }
   },
   methods: {
     getEventStyle(event) {
@@ -92,7 +128,10 @@ export default {
       };
     },
     formatDate(date) {
-      return date;
+      if (date instanceof Date) {
+        return formatDateBR(date.toISOString().split('T')[0])
+      }
+      return date
     }
   }
 };
