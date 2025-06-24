@@ -11,7 +11,7 @@
         class="grid gap-px text-sm bg-gray-100 relative"
         :style="{
           gridTemplateColumns: '64px repeat(7, 1fr)',
-          gridTemplateRows: `repeat(${computedEndHour - computedStartHour + 1}, 60px)`
+          gridTemplateRows: `repeat(${totalHours}, 60px)`
         }"
       >
         <!-- Cabeçalho dos dias -->
@@ -25,7 +25,7 @@
         </div>
 
         <!-- Linhas de horários e células -->
-        <template v-for="hour in (computedEndHour - computedStartHour + 1)" :key="'line-' + hour">
+        <template v-for="hour in totalHours" :key="'line-' + hour">
           <div class="flex justify-center items-start border bg-gray-50">
             {{ (computedStartHour + hour - 1).toString().padStart(2, '0') }}:00
           </div>
@@ -93,7 +93,8 @@ export default {
     computedStartHour() {
       const hours = this.appointments.map(a => parseInt(a.time.split(':')[0]))
       const minAppt = hours.length ? Math.min(...hours) : this.startHour
-      return Math.min(this.startHour, minAppt)
+      const start = Math.min(this.startHour, minAppt)
+      return isNaN(start) ? this.startHour : start
     },
     computedEndHour() {
       const hours = this.appointments.map(a => {
@@ -102,7 +103,13 @@ export default {
         return endDate.getMinutes() > 0 ? endDate.getHours() + 1 : endDate.getHours()
       })
       const maxAppt = hours.length ? Math.max(...hours) : this.endHour
-      return Math.max(this.endHour, maxAppt)
+      let end = Math.max(this.endHour, maxAppt)
+      if (isNaN(end)) end = this.startHour
+      if (end < this.startHour) end = this.startHour
+      return end
+    },
+    totalHours() {
+      return Math.max(0, this.computedEndHour - this.computedStartHour + 1)
     },
     events() {
       const startStr = this.weekStart.toISOString().split('T')[0]
