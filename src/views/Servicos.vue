@@ -49,7 +49,7 @@
               >
                 <td class="px-4 py-2">{{ service.name }}</td>
                 <td class="px-4 py-2">{{ service.description }}</td>
-                <td class="px-4 py-2">{{ service.duration }}</td>
+                <td class="px-4 py-2">{{ service.duration }} minutos</td>
                 <td class="px-4 py-2">{{ formatPrice(service.price) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
                   <button

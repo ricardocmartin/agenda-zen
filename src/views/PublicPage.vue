@@ -17,7 +17,7 @@
             <li v-for="service in services" :key="service.id" class="p-4 bg-gray-50 border rounded-lg shadow">
               <h3 class="text-lg font-medium text-blue-700">{{ service.name }}</h3>
               <p class="text-sm text-gray-600">{{ service.description }}</p>
-              <p class="text-sm text-gray-500 mt-1">Duração: {{ service.duration }}</p>
+              <p class="text-sm text-gray-500 mt-1">Duração: {{ service.duration }} minutos</p>
               <p class="text-sm text-gray-500">Valor: {{ formatPrice(service.price) }}</p>
             </li>
           </ul>

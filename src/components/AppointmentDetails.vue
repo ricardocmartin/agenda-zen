@@ -12,7 +12,7 @@
       <p><strong>Hora:</strong> {{ appointment.time }}</p>
       <p><strong>Cliente:</strong> {{ getClientName(appointment.client_id) }}</p>
       <p><strong>Serviço:</strong> {{ getServiceName(appointment.service_id) }}</p>
-      <p><strong>Duração:</strong> {{ appointment.duration }}</p>
+      <p><strong>Duração:</strong> {{ appointment.duration }} minutos</p>
       <p><strong>Descrição:</strong> {{ appointment.description }}</p>
       <p v-if="appointment.room_id"><strong>Sala:</strong> {{ getRoomName(appointment.room_id) }}</p>
       <p v-if="appointment.room_id && getRoomLink(appointment.room_id)">
