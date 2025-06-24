@@ -13,17 +13,17 @@
         </svg>
       </button>
     </div>
-    <div class="relative overflow-x-auto">
-      <div
-        v-if="showCurrentLine"
-        class="absolute left-0 right-0 border-t-2 border-blue-500 pointer-events-none"
-        :style="{ top: currentLineTop + 'px' }"
-      ></div>
-      <div
-        ref="grid"
-        class="grid gap-px text-sm bg-gray-100"
-        :style="{ gridTemplateColumns: '64px repeat(7, 1fr)' }"
-      >
+      <div class="relative overflow-x-auto">
+        <div
+          v-if="showCurrentLine"
+          class="absolute left-0 right-0 border-t-2 border-blue-500 pointer-events-none"
+          :style="{ top: currentLineTop + 'px' }"
+        ></div>
+        <div
+          ref="grid"
+          class="grid gap-px text-sm bg-gray-100 relative"
+          :style="{ gridTemplateColumns: '64px repeat(7, 1fr)' }"
+        >
         <div class="bg-gray-50"></div>
         <div
           v-for="(day, idx) in daysOfWeek"
@@ -39,21 +39,25 @@
           <div
             v-for="i in 7"
             :key="time + '-' + i"
-            class="border h-16 p-1 overflow-auto bg-white"
+            class="border h-16 p-1 bg-white day-slot"
             :class="{ 'bg-blue-50': isToday(i - 1) }"
-          >
-            <ul>
-              <li
-                v-for="appt in getAppointmentsForSlot(i - 1, time)"
-                :key="appt.id"
-                class="text-xs truncate cursor-pointer"
-                @click="$emit('select', appt)"
-              >
-                {{ appt.time }} - {{ getClientName(appt.client_id) }}
-              </li>
-            </ul>
-          </div>
+          ></div>
         </template>
+      </div>
+        <div
+          class="absolute inset-0 pointer-events-none grid"
+          :style="{ gridTemplateColumns: '64px repeat(7, 1fr)', gridAutoRows: '64px', gap: '1px' }"
+        >
+          <div
+            v-for="appt in appointments"
+            :key="'box-' + appt.id"
+            class="bg-blue-600 text-white text-xs rounded px-1 overflow-hidden cursor-pointer pointer-events-auto"
+            :style="getBoxStyle(appt)"
+            @click.stop="$emit('select', appt)"
+          >
+            {{ getClientName(appt.client_id) }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -182,6 +186,35 @@ export default {
       const today = getBrazilNow()
       const d = this.getDateOfDay(offset)
       return d.toDateString() === today.toDateString()
+    },
+    getDayOffset(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00')
+      return (d.getDay() + 6) % 7
+    },
+    parseMinutes(str) {
+      const [h, m] = str.split(':').map(Number)
+      return h * 60 + m
+    },
+    getSlotIndex(timeStr) {
+      const mins = this.parseMinutes(timeStr)
+      const start = this.parseMinutes(this.startTime)
+      return Math.floor((mins - start) / this.slotInterval)
+    },
+    getDurationSlots(duration) {
+      const mins = parseInt(duration)
+      if (isNaN(mins)) return 1
+      return Math.max(1, Math.ceil(mins / this.slotInterval))
+    },
+    getBoxStyle(appt) {
+      const day = this.getDayOffset(appt.date)
+      const rowStart = this.getSlotIndex(appt.time) + 2
+      const span = this.getDurationSlots(appt.duration)
+      return {
+        gridColumnStart: day + 2,
+        gridColumnEnd: day + 3,
+        gridRowStart: rowStart,
+        gridRowEnd: `span ${span}`
+      }
     }
   },
   watch: {
