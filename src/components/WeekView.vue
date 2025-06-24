@@ -85,7 +85,8 @@ export default {
     return {
       weekStart: start,
       weekEnd: end,
-      dayLabels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+      dayLabels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      minuteHeight: 1
     }
   },
   computed: {
@@ -125,6 +126,16 @@ export default {
     }
   },
   methods: {
+    updateMinuteHeight() {
+      if (this.$refs.grid) {
+        const style = window.getComputedStyle(this.$refs.grid)
+        const row = style.gridTemplateRows.split(' ')[0]
+        const height = parseFloat(row)
+        if (!isNaN(height) && height > 0) {
+          this.minuteHeight = height / 60
+        }
+      }
+    },
     getEventStyle(event) {
       const startHour = parseInt(event.startTime.split(':')[0]);
       const startMinute = parseInt(event.startTime.split(':')[1]);
@@ -135,7 +146,7 @@ export default {
       const endInMinutes = endHour * 60 + endMinute;
       const gridStart = this.computedStartHour * 60;
 
-      const minuteHeight = 1;
+      const minuteHeight = this.minuteHeight;
 
       const top = (startInMinutes - gridStart) * minuteHeight;
       const height = (endInMinutes - startInMinutes) * minuteHeight;
@@ -155,6 +166,17 @@ export default {
       }
       return date
     }
+  },
+  watch: {
+    computedStartHour() {
+      this.$nextTick(this.updateMinuteHeight)
+    },
+    computedEndHour() {
+      this.$nextTick(this.updateMinuteHeight)
+    }
+  },
+  mounted() {
+    this.updateMinuteHeight()
   }
 };
 </script>
