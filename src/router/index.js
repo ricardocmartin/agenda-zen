@@ -25,6 +25,7 @@ import TermosDeUso from '../views/TermosDeUso.vue'
 import PagamentoPlus from '../views/PagamentoPlus.vue'
 import Confirmacao from '../views/Confirmacao.vue'
 import LinkExpirado from '../views/LinkExpirado.vue'
+import { supabase } from '../supabase'
 
 
 const routes = [
@@ -59,6 +60,22 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user && to.path !== '/onboarding') {
+    const { data } = await supabase
+      .from('profiles')
+      .select('onboarding_complete')
+      .eq('id', user.id)
+      .single()
+    if (data && !data.onboarding_complete) {
+      next('/onboarding')
+      return
+    }
+  }
+  next()
 })
 
 // Envia page views ao Google Analytics
