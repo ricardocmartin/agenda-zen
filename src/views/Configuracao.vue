@@ -22,8 +22,13 @@
           <button
             @click="activeTab = 'agenda'"
             :class="activeTab === 'agenda' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
-            class="px-4 py-2 rounded-r"
+            class="px-4 py-2"
           >Agenda</button>
+          <button
+            @click="activeTab = 'financeiro'"
+            :class="activeTab === 'financeiro' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
+            class="px-4 py-2 rounded-r"
+          >Financeiro</button>
         </nav>
 
         <form v-if="activeTab === 'perfil'" @submit.prevent="handleSave" class="space-y-6 max-w-3xl">
@@ -137,6 +142,16 @@
         </div>
       </form>
 
+      <form v-if="activeTab === 'financeiro'" @submit.prevent="handleSave" class="space-y-6 max-w-3xl">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Chave Pix</label>
+          <input type="text" v-model="form.pixKey" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
+          <button type="submit" class="btn">Salvar</button>
+        </div>
+      </form>
+
       </main>
     </div>
   </template>
@@ -170,7 +185,8 @@ import { isValidEmail } from '../utils/format'
           facebook: '',
           youtube: '',
           x: '',
-          imageUrl: ''
+          imageUrl: '',
+          pixKey: ''
         },
         agenda: {
           cancelLimitHours: 0,
@@ -224,7 +240,8 @@ import { isValidEmail } from '../utils/format'
           facebook: this.form.facebook,
           youtube: this.form.youtube,
           x: this.form.x,
-          image_url: this.form.imageUrl
+          image_url: this.form.imageUrl,
+          pix_key: this.form.pixKey
         }
         const { error } = await supabase
           .from('profiles')
@@ -309,7 +326,8 @@ import { isValidEmail } from '../utils/format'
           facebook: data.facebook || '',
           youtube: data.youtube || '',
           x: data.x || '',
-          imageUrl: data.image_url || ''
+          imageUrl: data.image_url || '',
+          pixKey: data.pix_key || ''
         }
         this.agenda = {
           cancelLimitHours: data.cancel_limit_hours || 0,
