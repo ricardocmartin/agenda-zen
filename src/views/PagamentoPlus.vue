@@ -114,7 +114,6 @@
 <script>
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
-import QRCode from 'qrcode'
 import { generatePixPayload } from '../utils/pix.js'
 
 export default {
@@ -162,9 +161,10 @@ export default {
         amount: this.pixAmount
       })
       this.pixCode = payload
-      QRCode.toDataURL(payload).then(url => {
-        this.pixQrCode = url
-      })
+      // Usa a API de charts do Google para gerar a imagem do QR Code
+      this.pixQrCode =
+        'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' +
+        encodeURIComponent(payload)
     }
   }
 }
