@@ -33,6 +33,18 @@ O diretório `supabase/schemas` reúne os scripts SQL para criação das tabelas
 - `npm run preview` – serve localmente os arquivos de produção
 - `npm run deploy` – publica a pasta `dist` no GitHub Pages
 
+### Deploy de funções Edge
+
+Se criar ou modificar um arquivo em `supabase/functions`, execute o deploy para
+que o endpoint seja disponibilizado:
+
+```bash
+supabase functions deploy send-appointment-email
+```
+
+No painel do Supabase você consegue acompanhar os logs e confirmar se as
+requisições estão chegando normalmente.
+
 ## Estrutura do projeto
 
 - `src/` – código-fonte em Vue (componentes, views e roteamento)

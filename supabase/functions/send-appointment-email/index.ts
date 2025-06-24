@@ -9,6 +9,7 @@ const corsHeaders = {
 }
 
 serve(async req => {
+  console.log('Edge Function request:', req.method)
 
   if (req.method === 'OPTIONS') {
     // Return a 200 response for CORS preflight requests
