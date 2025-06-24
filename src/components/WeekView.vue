@@ -35,7 +35,11 @@
         </div>
 
         <template v-for="time in timeSlots" :key="time">
-          <div class="font-semibold text-right pr-1 border bg-gray-50 h-16 flex items-center justify-end">{{ time }}</div>
+          <div
+            class="font-semibold text-right pr-1 border bg-gray-50 h-16 flex items-start justify-end pt-1"
+          >
+            {{ time }}
+          </div>
           <div
             v-for="i in 7"
             :key="time + '-' + i"
