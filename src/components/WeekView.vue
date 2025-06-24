@@ -44,7 +44,7 @@
           :style="getEventStyle(event)"
           @click="$emit('select', event.appointment)"
         >
-          {{ event.title }}
+          {{ event.title }} - {{ event.startTime }}
         </div>
       </div>
     </div>
