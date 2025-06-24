@@ -40,8 +40,9 @@
         <div
           v-for="event in events"
           :key="event.id"
-          class="absolute bg-blue-500 text-white rounded px-2 py-1 event"
+          class="absolute bg-blue-500 text-white rounded px-2 py-1 event cursor-pointer"
           :style="getEventStyle(event)"
+          @click="$emit('select', event.appointment)"
         >
           {{ event.title }}
         </div>
@@ -94,7 +95,11 @@ export default {
       return Math.min(this.startHour, minAppt)
     },
     computedEndHour() {
-      const hours = this.appointments.map(a => parseInt(a.time.split(':')[0]) + 1)
+      const hours = this.appointments.map(a => {
+        const startDate = new Date(`${a.date}T${a.time}`)
+        const endDate = new Date(startDate.getTime() + Number(a.duration || 0) * 60000)
+        return endDate.getMinutes() > 0 ? endDate.getHours() + 1 : endDate.getHours()
+      })
       const maxAppt = hours.length ? Math.max(...hours) : this.endHour
       return Math.max(this.endHour, maxAppt)
     },
@@ -113,7 +118,8 @@ export default {
             title: this.getClientName(a.client_id),
             startTime: `${hour}:${minute}`,
             endTime: `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`,
-            day
+            day,
+            appointment: a
           }
         })
     }
@@ -134,13 +140,13 @@ export default {
       const top = (startInMinutes - gridStart) * minuteHeight;
       const height = (endInMinutes - startInMinutes) * minuteHeight;
 
-      const colWidth = 100 / 7;
+      const colWidth = '(100% - 64px) / 7'
 
       return {
         top: `${top}px`,
         height: `${height}px`,
-        left: `calc(${(event.day - 1) * colWidth}% + 64px)`,
-        width: `calc(${colWidth}% - 4px)`
+        left: `calc(64px + (${colWidth}) * ${event.day - 1})`,
+        width: `calc(${colWidth} - 4px)`
       };
     },
     formatDate(date) {
