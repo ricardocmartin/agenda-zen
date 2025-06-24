@@ -6,5 +6,7 @@ export async function sendAppointmentEmail(details) {
   })
   if (error) {
     console.error('Erro ao enviar email de agendamento:', error.message)
+  } else {
+    alert('E-mail enviado com sucesso!')
   }
 }
