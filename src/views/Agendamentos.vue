@@ -445,7 +445,7 @@ export default {
               `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
               `${this.form.description ? `Observações: ${this.form.description}\n` : ''}` +
               `\nE-mail enviado automaticamente.`
-          })
+          }, false)
           this.closeModal()
         }
       }
