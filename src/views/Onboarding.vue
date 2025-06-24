@@ -57,7 +57,7 @@
         </div>
         <ul class="mt-4 space-y-1">
           <li v-for="(s, index) in services" :key="index" class="flex justify-between">
-            <span>{{ s.name }} - {{ s.duration }}min - {{ formatPrice(s.price) }}</span>
+            <span>{{ s.name }} - {{ s.duration }} minutos - {{ formatPrice(s.price) }}</span>
             <button @click="removeService(index)" class="text-red-600 hover:underline">Remover</button>
           </li>
         </ul>

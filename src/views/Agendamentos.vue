@@ -185,7 +185,7 @@
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
                   <td class="px-4 py-2">{{ getRoomName(appointment.room_id) }}</td>
-                  <td class="px-4 py-2">{{ appointment.duration }}</td>
+                  <td class="px-4 py-2">{{ appointment.duration }} minutos</td>
                   <td class="px-4 py-2">{{ appointment.description }}</td>
                   <td class="px-4 py-2 text-right space-x-2">
                     <button @click="openModal(appointment)" class="btn btn-sm">Editar</button>
