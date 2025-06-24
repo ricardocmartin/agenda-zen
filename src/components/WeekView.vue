@@ -157,7 +157,7 @@ export default {
 .grid {
   position: relative;
 }
-.grid > div {
+.grid > div:not(.event) {
   position: relative;
 }
 .event {
