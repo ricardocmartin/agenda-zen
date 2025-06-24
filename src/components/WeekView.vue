@@ -11,7 +11,7 @@
         class="grid gap-px text-sm bg-gray-100 relative"
         :style="{
           gridTemplateColumns: '64px repeat(7, 1fr)',
-          gridTemplateRows: `repeat(${endHour - startHour}, 60px)`
+          gridTemplateRows: `repeat(${computedEndHour - computedStartHour + 1}, 60px)`
         }"
       >
         <!-- Cabeçalho dos dias -->
@@ -25,9 +25,9 @@
         </div>
 
         <!-- Linhas de horários e células -->
-        <template v-for="hour in (endHour - startHour)" :key="'line-' + hour">
+        <template v-for="hour in (computedEndHour - computedStartHour + 1)" :key="'line-' + hour">
           <div class="flex justify-center items-start border bg-gray-50">
-            {{ (startHour + hour - 1).toString().padStart(2, '0') }}:00
+            {{ (computedStartHour + hour - 1).toString().padStart(2, '0') }}:00
           </div>
           <div
             v-for="day in 7"
@@ -63,6 +63,14 @@ export default {
     getClientName: {
       type: Function,
       required: true
+    },
+    startHour: {
+      type: Number,
+      default: 9
+    },
+    endHour: {
+      type: Number,
+      default: 18
     }
   },
   data() {
@@ -74,14 +82,22 @@ export default {
     const end = new Date(start)
     end.setDate(start.getDate() + 6)
     return {
-      startHour: 9,
-      endHour: 18,
       weekStart: start,
       weekEnd: end,
       dayLabels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
     }
   },
   computed: {
+    computedStartHour() {
+      const hours = this.appointments.map(a => parseInt(a.time.split(':')[0]))
+      const minAppt = hours.length ? Math.min(...hours) : this.startHour
+      return Math.min(this.startHour, minAppt)
+    },
+    computedEndHour() {
+      const hours = this.appointments.map(a => parseInt(a.time.split(':')[0]) + 1)
+      const maxAppt = hours.length ? Math.max(...hours) : this.endHour
+      return Math.max(this.endHour, maxAppt)
+    },
     events() {
       const startStr = this.weekStart.toISOString().split('T')[0]
       const endStr = this.weekEnd.toISOString().split('T')[0]
@@ -111,7 +127,7 @@ export default {
 
       const startInMinutes = startHour * 60 + startMinute;
       const endInMinutes = endHour * 60 + endMinute;
-      const gridStart = this.startHour * 60;
+      const gridStart = this.computedStartHour * 60;
 
       const minuteHeight = 1;
 
