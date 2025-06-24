@@ -188,8 +188,7 @@
                   <td class="px-4 py-2">{{ appointment.duration }} minutos</td>
                   <td class="px-4 py-2">{{ appointment.description }}</td>
                   <td class="px-4 py-2 text-right space-x-2">
-                    <button @click="openModal(appointment)" class="btn btn-sm">Editar</button>
-                    <button @click="handleDeleteAppointment(appointment.id)" class="btn btn-sm btn-danger">Excluir</button>
+                    <button @click="openDetails(appointment)" class="btn btn-sm">Visualizar</button>
                   </td>
                 </tr>
                 <tr v-if="processedAppointments.length === 0">
