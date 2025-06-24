@@ -93,7 +93,7 @@ export default {
       startTime: '00:00',
       endTime: '23:00',
       dailySchedule: null,
-      slotInterval: 30,
+      slotInterval: 60,
       timeSlots: [],
       currentLineTop: 0,
       lineInterval: null
@@ -202,7 +202,7 @@ export default {
     getDurationSlots(duration) {
       const mins = parseInt(duration)
       if (isNaN(mins)) return 1
-      return Math.max(1, Math.ceil(mins / this.slotInterval))
+      return Math.max(1, Math.round(mins / this.slotInterval))
     },
     getBoxStyle(appt) {
       const day = this.getDayOffset(appt.date)
