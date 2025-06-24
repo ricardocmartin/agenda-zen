@@ -93,7 +93,7 @@ export default {
       startTime: '00:00',
       endTime: '23:00',
       dailySchedule: null,
-      slotInterval: 30,
+      slotInterval: 60,
       timeSlots: [],
       currentLineTop: 0,
       lineInterval: null
