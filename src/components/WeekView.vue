@@ -107,7 +107,8 @@ export default {
     events() {
       const startStr = this.weekStart.toISOString().split('T')[0]
       const endStr = this.weekEnd.toISOString().split('T')[0]
-      return this.appointments
+
+      const events = this.appointments
         .filter(a => a.date >= startStr && a.date <= endStr)
         .map(a => {
           const [hour, minute] = a.time.split(':')
@@ -120,9 +121,38 @@ export default {
             startTime: `${hour}:${minute}`,
             endTime: `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`,
             day,
-            appointment: a
+            appointment: a,
+            lane: 0,
+            totalLanes: 1
           }
         })
+
+      const byDay = {}
+      const toMinutes = t => {
+        const [h, m] = t.split(':').map(Number)
+        return h * 60 + m
+      }
+
+      events.forEach(e => {
+        if (!byDay[e.day]) byDay[e.day] = []
+        byDay[e.day].push(e)
+      })
+
+      Object.values(byDay).forEach(dayEvents => {
+        dayEvents.sort((a, b) => toMinutes(a.startTime) - toMinutes(b.startTime))
+        let active = []
+        dayEvents.forEach(event => {
+          active = active.filter(e => toMinutes(e.endTime) > toMinutes(event.startTime))
+          let lane = 0
+          while (active.some(e => e.lane === lane)) lane++
+          event.lane = lane
+          active.push(event)
+          const lanes = Math.max(...active.map(e => e.lane)) + 1
+          active.forEach(e => { e.totalLanes = Math.max(e.totalLanes, lanes) })
+        })
+      })
+
+      return events
     }
   },
   methods: {
@@ -152,12 +182,13 @@ export default {
       const height = (endInMinutes - startInMinutes) * minuteHeight;
 
       const colWidth = '(100% - 64px) / 7'
+      const laneWidth = `calc((${colWidth}) / ${event.totalLanes})`
 
       return {
         top: `${top}px`,
         height: `${height}px`,
-        left: `calc(64px + (${colWidth}) * ${event.day - 1})`,
-        width: `calc(${colWidth} - 4px)`
+        left: `calc(64px + (${colWidth}) * ${event.day - 1} + ${laneWidth} * ${event.lane})`,
+        width: `calc(${laneWidth} - 4px)`
       };
     },
     formatDate(date) {
@@ -187,9 +218,16 @@ export default {
 }
 .grid > div:not(.event) {
   position: relative;
+  border-bottom: 1px solid #e5e7eb;
 }
 .event {
   position: absolute;
   z-index: 10;
+  background-color: #1a73e8;
+  color: #fff;
+  border-radius: 4px;
+  padding: 2px 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 0.75rem;
 }
 </style>
