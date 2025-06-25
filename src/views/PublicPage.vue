@@ -180,7 +180,7 @@ export default {
         return
       }
       if (!this.isSlotAllowed(this.form.date, this.form.time)) {
-        this.slotError = 'Este horário não está disponível, que tal agendar para 1 hora mais tarde ou mais cedo?'
+        this.slotError = 'Este horário não está disponível. Que tal agendar para 1 hora mais tarde ou mais cedo?'
         return
       }
       const { data: exists } = await supabase
@@ -191,7 +191,7 @@ export default {
         .eq('time', this.form.time)
         .limit(1)
       if (exists && exists.length) {
-        this.slotError = 'Este horário não está disponível, que tal agendar para 1 hora mais tarde ou mais cedo?'
+        this.slotError = 'Este horário não está disponível. Que tal agendar para 1 hora mais tarde ou mais cedo?'
         return
       }
 
