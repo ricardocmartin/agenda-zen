@@ -53,6 +53,7 @@
 
 <script>
 import { formatDateBR } from '../utils/format'
+import { getBrazilNow, parseBrazilDateTime } from '../utils/datetime'
 
 export default {
   name: 'WeekView',
@@ -75,7 +76,7 @@ export default {
     }
   },
   data() {
-    const today = new Date()
+    const today = getBrazilNow()
     // calculate monday as start of week (1) with sunday as 7
     const dayOfWeek = today.getDay() === 0 ? 7 : today.getDay()
     const start = new Date(today)
@@ -98,7 +99,7 @@ export default {
     },
     computedEndHour() {
       const hours = this.appointments.map(a => {
-        const startDate = new Date(`${a.date}T${a.time}`)
+        const startDate = parseBrazilDateTime(a.date, a.time)
         const endDate = new Date(startDate.getTime() + Number(a.duration || 0) * 60000)
         return endDate.getMinutes() > 0 ? endDate.getHours() + 1 : endDate.getHours()
       })
@@ -119,7 +120,7 @@ export default {
         .filter(a => a.date >= startStr && a.date <= endStr)
         .map(a => {
           const [hour, minute] = a.time.split(':')
-          const startDate = new Date(`${a.date}T${a.time}`)
+          const startDate = parseBrazilDateTime(a.date, a.time)
           const endDate = new Date(startDate.getTime() + Number(a.duration || 0) * 60000)
           const day = startDate.getDay() === 0 ? 7 : startDate.getDay()
           return {

@@ -236,6 +236,7 @@ import { supabase } from '../supabase'
 import { sendAppointmentEmail } from '../utils/email'
 import { digitsOnly } from '../utils/phone'
 import { formatDateBR } from '../utils/format'
+import { getBrazilNow, parseBrazilDateTime } from '../utils/datetime'
 
 export default {
   name: 'Agendamentos',
@@ -389,8 +390,8 @@ export default {
     canCancelAppointment(appt) {
       const limit = this.schedule.cancelLimitHours || 0
       if (limit === 0) return true
-      const apptTime = new Date(`${appt.date}T${appt.time}`)
-      const diffHours = (apptTime - new Date()) / 36e5
+      const apptTime = parseBrazilDateTime(appt.date, appt.time)
+      const diffHours = (apptTime - getBrazilNow()) / 36e5
       return diffHours >= limit
     },
     async handleSaveAppointment() {
