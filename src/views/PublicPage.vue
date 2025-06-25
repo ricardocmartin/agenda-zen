@@ -270,6 +270,7 @@ export default {
         alert('Erro ao agendar: ' + error.message)
         return
       }
+
       this.closeModal()
       this.$router.push({ name: 'PagamentoAgendamento', params: { id: appt.id } })
     }
