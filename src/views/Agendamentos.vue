@@ -340,6 +340,7 @@ export default {
   },
   methods: {
     formatDateBR,
+    addHoursToTime,
     openModal(appointment) {
       if (appointment) {
         this.editingId = appointment.id

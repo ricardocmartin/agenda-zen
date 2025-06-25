@@ -295,6 +295,7 @@ export default {
     cpfMask,
     cepMask,
     formatDateBR,
+    addHoursToTime,
     async fetchServicesList() {
       const { data } = await supabase
         .from('services')
