@@ -64,7 +64,11 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Telefone</label>
-          <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <input
+            type="text"
+            v-model="form.phone"
+            @input="form.phone = phoneMask(form.phone)"
+            class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Data</label>
@@ -98,6 +102,8 @@
 <script>
 import { supabase } from '../supabase'
 import Modal from '../components/Modal.vue'
+import { phoneMask } from '../utils/phone'
+import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'PublicPage',
@@ -125,6 +131,7 @@ export default {
     }
   },
   methods: {
+    phoneMask,
     formatPrice(value) {
       if (value === null || value === undefined || value === '') return ''
       return Number(value).toLocaleString('pt-BR', {
@@ -156,7 +163,11 @@ export default {
       }
       return true
     },
-    async handleSchedule() {
+   async handleSchedule() {
+      if (this.form.email && !isValidEmail(this.form.email)) {
+        alert('E-mail inválido')
+        return
+      }
       if (!this.isSlotAllowed(this.form.date, this.form.time)) {
         alert('Horário indisponível')
         return
