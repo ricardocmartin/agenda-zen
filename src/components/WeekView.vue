@@ -53,7 +53,7 @@
 
 <script>
 import { formatDateBR } from '../utils/format'
-import { getBrazilNow, parseBrazilDateTime } from '../utils/datetime'
+import { getBrazilNow, parseBrazilDateTime, addHoursToTime } from '../utils/datetime'
 
 export default {
   name: 'WeekView',
@@ -107,8 +107,9 @@ export default {
       const events = this.appointments
         .filter(a => a.date >= startStr && a.date <= endStr)
         .map(a => {
-          const [hour, minute] = a.time.split(':')
-          const startDate = parseBrazilDateTime(a.date, a.time)
+          const adjTime = addHoursToTime(a.time)
+          const [hour, minute] = adjTime.split(':')
+          const startDate = parseBrazilDateTime(a.date, adjTime)
           const endDate = new Date(startDate.getTime() + Number(a.duration || 0) * 60000)
           const day = startDate.getDay() === 0 ? 7 : startDate.getDay()
           return {

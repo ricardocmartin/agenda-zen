@@ -207,7 +207,7 @@
             </thead>
             <tbody>
               <tr v-for="a in clientAppointments" :key="a.id" class="border-b last:border-b-0">
-                <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ a.time }}</td>
+                <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}</td>
                 <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
                   <router-link :to="{ path: '/agendamentos', query: { edit: a.id } }" class="btn btn-sm">Editar</router-link>
@@ -223,7 +223,7 @@
 
         <div v-show="activeTab === 'historico'" class="space-y-4">
           <div v-for="h in history" :key="h.id" class="border p-2 rounded">
-            <p class="text-sm text-gray-600 mb-1">{{ formatDateBR(h.appointment.date) }} {{ h.appointment.time }}</p>
+            <p class="text-sm text-gray-600 mb-1">{{ formatDateBR(h.appointment.date) }} {{ addHoursToTime(h.appointment.time) }}</p>
             <p class="mb-2 whitespace-pre-line">{{ h.note }}</p>
             <div v-if="h.attachments && h.attachments.length" class="space-x-2 mb-2">
               <a v-for="(url, idx) in h.attachments" :key="idx" :href="url" target="_blank" download class="text-blue-600 underline">Anexo {{ idx + 1 }}</a>
@@ -248,6 +248,7 @@ import { supabase } from '../supabase'
 import { phoneMask, digitsOnly } from '../utils/phone'
 import { fetchStates, fetchCities } from '../utils/locations'
 import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
+import { addHoursToTime } from '../utils/datetime'
 import { sendAppointmentEmail } from '../utils/email'
 
 export default {
@@ -501,7 +502,7 @@ export default {
         subject: 'Agendamento de Consulta realizado',
         text:
           `Olá ${client?.name},\n\n` +
-          `Seu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${appt.time}.\n` +
+          `Seu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${addHoursToTime(appt.time)}.\n` +
           `${room ? `Sala: ${room.name}\n` : ''}` +
           `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
           `${appt.description ? `Observações: ${appt.description}\n` : ''}` +
