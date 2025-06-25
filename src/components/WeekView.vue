@@ -221,7 +221,6 @@ export default {
 .event {
   position: absolute;
   z-index: 10;
-  background-color: #1a73e8;
   color: #fff;
   border-radius: 4px;
   padding: 2px 4px;
