@@ -242,6 +242,19 @@ export default {
 
       if (existingClient) {
         clientId = existingClient.id
+        // Atualiza cadastro caso dados diferentes sejam informados
+        const { error: updateErr } = await supabase
+          .from('clients')
+          .update({
+            name: this.form.name,
+            email: this.form.email,
+            phone: this.form.phone,
+            cpf: this.form.cpf
+          })
+          .eq('id', clientId)
+        if (updateErr) {
+          console.error('Erro ao atualizar cliente:', updateErr.message)
+        }
       } else {
         const { data: newClient, error: clientErr } = await supabase
           .from('clients')
