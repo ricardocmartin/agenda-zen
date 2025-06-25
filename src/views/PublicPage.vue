@@ -71,6 +71,14 @@
             class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
+          <label class="block text-sm font-medium text-gray-700">CPF</label>
+          <input
+            type="text"
+            v-model="form.cpf"
+            @input="form.cpf = cpfMask(form.cpf)"
+            class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
           <label class="block text-sm font-medium text-gray-700">Data</label>
           <input type="date" v-model="form.date" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
@@ -104,7 +112,7 @@
 import { supabase } from '../supabase'
 import Modal from '../components/Modal.vue'
 import { phoneMask } from '../utils/phone'
-import { isValidEmail } from '../utils/format'
+import { cpfMask, isValidEmail } from '../utils/format'
 
 export default {
   name: 'PublicPage',
@@ -115,7 +123,7 @@ export default {
       services: [],
       showModal: false,
       selectedService: null,
-      form: { name: '', email: '', phone: '', date: '', time: '' },
+      form: { name: '', email: '', phone: '', cpf: '', date: '', time: '' },
       slotError: '',
       schedule: {
         startTime: '',
@@ -142,6 +150,7 @@ export default {
   },
   methods: {
     phoneMask,
+    cpfMask,
     formatPrice(value) {
       if (value === null || value === undefined || value === '') return ''
       return Number(value).toLocaleString('pt-BR', {
@@ -156,7 +165,7 @@ export default {
     closeModal() {
       this.showModal = false
       this.selectedService = null
-      this.form = { name: '', email: '', phone: '', date: '', time: '' }
+      this.form = { name: '', email: '', phone: '', cpf: '', date: '', time: '' }
       this.slotError = ''
     },
     isSlotAllowed(dateStr, timeStr) {
@@ -209,6 +218,17 @@ export default {
         if (data) existingClient = data
       }
 
+      // Caso não encontre pelo e-mail, tenta localizar pelo CPF
+      if (!existingClient && this.form.cpf) {
+        const { data } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('user_id', this.profile.id)
+          .eq('cpf', this.form.cpf)
+          .maybeSingle()
+        if (data) existingClient = data
+      }
+
       // Caso não tenha e-mail, tenta localizar pelo telefone
       if (!existingClient && this.form.phone) {
         const { data } = await supabase
@@ -222,18 +242,6 @@ export default {
 
       if (existingClient) {
         clientId = existingClient.id
-        const { error: updateErr } = await supabase
-          .from('clients')
-          .update({
-            name: this.form.name,
-            email: this.form.email,
-            phone: this.form.phone
-          })
-          .eq('id', clientId)
-        if (updateErr) {
-          alert('Erro ao atualizar cliente: ' + updateErr.message)
-          return
-        }
       } else {
         const { data: newClient, error: clientErr } = await supabase
           .from('clients')
@@ -241,7 +249,10 @@ export default {
             user_id: this.profile.id,
             name: this.form.name,
             email: this.form.email,
-            phone: this.form.phone
+            phone: this.form.phone,
+            cpf: this.form.cpf,
+            from_site: true,
+            pending_update: true
           })
           .select()
           .single()
