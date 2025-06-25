@@ -20,6 +20,7 @@
       </div>
       <div v-else class="text-gray-500">Carregando...</div>
     </section>
+    <Footer />
   </div>
 </template>
 
@@ -28,9 +29,11 @@
 import { supabase } from '../supabase'
 import { generatePixPayload } from '../utils/pix'
 import { phoneMask } from '../utils/phone'
+import Footer from '../components/Footer.vue'
 
 export default {
   name: 'PagamentoAgendamento',
+  components: { Footer },
   data() {
     return {
       profile: null,
