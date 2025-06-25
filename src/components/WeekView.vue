@@ -41,9 +41,9 @@
           v-for="event in events"
           :key="event.id"
           class="absolute text-white rounded px-2 py-1 event cursor-pointer"
-          :class="event.appointment.confirmed ? 'bg-blue-500' : 'bg-red-500'"
+          :class="event.appointment.from_site && !event.appointment.confirmed ? 'bg-red-500' : 'bg-blue-500'"
           :style="getEventStyle(event)"
-          :title="event.appointment.confirmed ? '' : 'pendente confirmação de pagamento'"
+          :title="event.appointment.from_site && !event.appointment.confirmed ? 'pendente confirmação de pagamento' : ''"
           @click="$emit('select', event.appointment)"
         >
           {{ event.title }} - {{ event.startTime }}

@@ -131,6 +131,7 @@
                 v-if="selectedAppointment && selectedAppointment.from_site && !selectedAppointment.confirmed"
                 class="mb-4 text-center"
               >
+                <h4 class="font-medium mb-2">Ações Financeiras</h4>
                 <button @click="confirmPayment" class="btn btn-primary">
                   Confirmar pagamento
                 </button>
@@ -188,7 +189,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="appointment in processedAppointments" :key="appointment.id" class="border-b last:border-b-0">
+                <tr
+                  v-for="appointment in processedAppointments"
+                  :key="appointment.id"
+                  :class="[
+                    'border-b last:border-b-0',
+                    appointment.from_site && !appointment.confirmed ? 'text-red-600' : ''
+                  ]"
+                >
                   <td class="px-4 py-2">{{ formatDateBR(appointment.date) }} {{ addHoursToTime(appointment.time) }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
