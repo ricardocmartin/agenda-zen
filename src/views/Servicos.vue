@@ -112,6 +112,13 @@
             <label class="block text-sm font-medium text-gray-700">Valor</label>
             <input type="number" step="0.01" v-model="form.price" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Agendável pelo site?</label>
+            <select v-model="form.allowOnlineBooking" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="btn">Salvar</button>
@@ -142,7 +149,8 @@ export default {
         name: '',
         description: '',
         duration: '',
-        price: ''
+        price: '',
+        allowOnlineBooking: true
       },
       services: [],
       page: 1,
@@ -157,17 +165,30 @@ export default {
           name: service.name,
           description: service.description,
           duration: service.duration,
-          price: service.price
+          price: service.price,
+          allowOnlineBooking: service.allow_online_booking
         }
       } else {
         this.editingId = null
-        this.form = { name: '', description: '', duration: '', price: '' }
+        this.form = {
+          name: '',
+          description: '',
+          duration: '',
+          price: '',
+          allowOnlineBooking: true
+        }
       }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { name: '', description: '', duration: '', price: '' }
+      this.form = {
+        name: '',
+        description: '',
+        duration: '',
+        price: '',
+        allowOnlineBooking: true
+      }
       this.editingId = null
     },
     async handleSaveService() {
@@ -179,7 +200,8 @@ export default {
             name: this.form.name,
             description: this.form.description,
             duration: this.form.duration,
-            price: parseFloat(this.form.price)
+            price: parseFloat(this.form.price),
+            allow_online_booking: this.form.allowOnlineBooking
           })
           .eq('id', this.editingId)
           .select()
@@ -192,6 +214,7 @@ export default {
             description: this.form.description,
             duration: this.form.duration,
             price: parseFloat(this.form.price),
+            allow_online_booking: this.form.allowOnlineBooking,
             user_id: this.userId
           })
           .select()
