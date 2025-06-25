@@ -57,6 +57,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
 import { formatDateBR } from '../utils/format'
+import { addHoursToTime } from '../utils/datetime'
 
 export default {
   name: 'Atendimento',
@@ -78,7 +79,7 @@ export default {
   computed: {
     appointmentDateTime() {
       if (!this.appointment) return ''
-      return `${formatDateBR(this.appointment.date)} ${this.appointment.time}`
+      return `${formatDateBR(this.appointment.date)} ${addHoursToTime(this.appointment.time)}`
     },
     groupedNotes() {
       const groups = {}

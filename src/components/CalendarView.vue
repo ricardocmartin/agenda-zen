@@ -36,7 +36,7 @@
             class="text-xs truncate cursor-pointer"
             @click="$emit('select', appt)"
           >
-            {{ appt.time }} - {{ getClientName(appt.client_id) }}
+            {{ addHoursToTime(appt.time) }} - {{ getClientName(appt.client_id) }}
           </li>
         </ul>
       </div>
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { addHoursToTime } from '../utils/datetime'
 export default {
   name: 'CalendarView',
   props: {

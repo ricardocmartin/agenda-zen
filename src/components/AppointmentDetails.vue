@@ -9,7 +9,7 @@
     <h3 class="text-lg font-semibold mb-4">Detalhes do Agendamento</h3>
     <div v-if="appointment" class="space-y-1 border rounded-md p-4 bg-gray-50 text-gray-700">
       <p><strong>Data:</strong> {{ appointment.date }}</p>
-      <p><strong>Hora:</strong> {{ appointment.time }}</p>
+      <p><strong>Hora:</strong> {{ addHoursToTime(appointment.time) }}</p>
       <p><strong>Cliente:</strong> {{ getClientName(appointment.client_id) }}</p>
       <p><strong>Serviço:</strong> {{ getServiceName(appointment.service_id) }}</p>
       <p><strong>Duração:</strong> {{ appointment.duration }} minutos</p>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { addHoursToTime } from '../utils/datetime'
 export default {
   name: 'AppointmentDetails',
   props: {

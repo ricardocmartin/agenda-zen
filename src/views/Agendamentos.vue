@@ -181,7 +181,7 @@
               </thead>
               <tbody>
                 <tr v-for="appointment in processedAppointments" :key="appointment.id" class="border-b last:border-b-0">
-                  <td class="px-4 py-2">{{ formatDateBR(appointment.date) }} {{ appointment.time }}</td>
+                  <td class="px-4 py-2">{{ formatDateBR(appointment.date) }} {{ addHoursToTime(appointment.time) }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
                   <td class="px-4 py-2">{{ getServiceName(appointment.service_id) }}</td>
                   <td class="px-4 py-2">{{ getRoomName(appointment.room_id) }}</td>
@@ -236,7 +236,7 @@ import { supabase } from '../supabase'
 import { sendAppointmentEmail } from '../utils/email'
 import { digitsOnly } from '../utils/phone'
 import { formatDateBR } from '../utils/format'
-import { getBrazilNow, parseBrazilDateTime } from '../utils/datetime'
+import { getBrazilNow, parseBrazilDateTime, addHoursToTime } from '../utils/datetime'
 
 export default {
   name: 'Agendamentos',
@@ -555,7 +555,7 @@ export default {
         subject: 'Agendamento de Consulta realizado',
         text:
           `Olá ${client?.name},\n\n` +
-          `Seu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${appt.time}.\n` +
+          `Seu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${addHoursToTime(appt.time)}.\n` +
           `${room ? `Sala: ${room.name}\n` : ''}` +
           `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
           `${appt.description ? `Observações: ${appt.description}\n` : ''}` +
@@ -576,7 +576,7 @@ export default {
         `Passando para informar que seu agendamento está confirmado!\n\n` +
         `Segue os dados para consulta:\n` +
         `Cliente: ${client.name}\n` +
-        `Data: ${formatDateBR(appt.date)} - Hora: ${appt.time}\n` +
+        `Data: ${formatDateBR(appt.date)} - Hora: ${addHoursToTime(appt.time)}\n` +
         `Sala: ${room?.google_meet_link || ''}\n\n` +
         `Obrigado.\n\n` +
         `Está mensagem é uma mensagem automática.`
@@ -588,7 +588,7 @@ export default {
       const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Duração', 'Descrição']
       const rows = this.appointments.map(a => [
         formatDateBR(a.date),
-        a.time,
+        addHoursToTime(a.time),
         this.getClientName(a.client_id),
         this.getServiceName(a.service_id),
         a.duration,

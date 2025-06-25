@@ -243,6 +243,7 @@ import { Chart } from 'chart.js/auto'
 import { phoneMask, digitsOnly } from '../utils/phone'
 import { fetchStates, fetchCities } from '../utils/locations'
 import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
+import { addHoursToTime } from '../utils/datetime'
 
 export default {
   name: 'Dashboard',
@@ -604,7 +605,7 @@ export default {
         `Passando para informar que seu agendamento está confirmado!\n\n` +
         `Segue os dados para consulta:\n` +
         `Cliente: ${client.name}\n` +
-        `Data: ${formatDateBR(appt.date)} - Hora: ${appt.time}\n` +
+        `Data: ${formatDateBR(appt.date)} - Hora: ${addHoursToTime(appt.time)}\n` +
         `Sala: ${room?.google_meet_link || ''}\n\n` +
         `Obrigado.\n\n` +
         `Está mensagem é uma mensagem automática.`
