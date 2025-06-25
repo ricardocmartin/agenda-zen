@@ -196,7 +196,7 @@
           </div>
         </form>
 
-        <div v-show="activeTab === 'agendamentos'">
+        <div v-show="activeTab === 'agendamentos'" class="overflow-x-auto">
           <table class="min-w-full text-left">
             <thead class="bg-gray-50">
               <tr>
