@@ -206,7 +206,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="a in clientAppointments" :key="a.id" class="border-b last:border-b-0">
+              <tr
+                v-for="a in clientAppointments"
+                :key="a.id"
+                :class="[
+                  'border-b last:border-b-0',
+                  a.from_site && !a.confirmed ? 'text-red-600' : ''
+                ]"
+              >
                 <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}</td>
                 <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
