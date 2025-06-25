@@ -209,10 +209,9 @@
               <tr
                 v-for="a in clientAppointments"
                 :key="a.id"
-                :class="[
-                  'border-b last:border-b-0',
-                  a.from_site && !a.confirmed ? 'ring-2 ring-red-500 rounded' : ''
-                ]"
+                :class="a.from_site && !a.confirmed
+                  ? 'border-2 border-red-500 rounded'
+                  : 'border-b last:border-b-0'"
               >
                 <td class="px-4 py-2">
                   {{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}
