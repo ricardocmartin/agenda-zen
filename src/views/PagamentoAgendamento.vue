@@ -56,15 +56,29 @@ export default {
   },
   async mounted() {
     const id = this.$route.params.id
-    const { data: appt } = await supabase
+    const { data: appt, error: apptErr } = await supabase
       .from('appointments')
-      .select('*, service:services(price), profile:profiles(pix_key,business_name,whatsapp)')
+      .select('*')
       .eq('id', id)
       .single()
+    if (apptErr) {
+      console.error('Erro ao buscar agendamento:', apptErr.message)
+      return
+    }
     if (appt) {
       this.appointment = appt
-      this.service = appt.service
-      this.profile = appt.profile
+      const { data: service } = await supabase
+        .from('services')
+        .select('price')
+        .eq('id', appt.service_id)
+        .single()
+      this.service = service
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('pix_key,business_name,whatsapp')
+        .eq('id', appt.user_id)
+        .single()
+      this.profile = profile
       this.generatePix()
     }
   }

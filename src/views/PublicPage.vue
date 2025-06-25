@@ -77,6 +77,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700">Hora</label>
           <input type="time" step="60" v-model="form.time" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <p v-if="slotError" class="mt-1 text-sm text-red-600">{{ slotError }}</p>
         </div>
         <div class="flex justify-end gap-2">
           <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
@@ -115,6 +116,7 @@ export default {
       showModal: false,
       selectedService: null,
       form: { name: '', email: '', phone: '', date: '', time: '' },
+      slotError: '',
       schedule: {
         startTime: '',
         endTime: '',
@@ -128,6 +130,14 @@ export default {
       const raw = this.profile?.whatsapp || ''
       const digits = raw.replace(/\D/g, '')
       return `https://wa.me/${digits}`
+    }
+  },
+  watch: {
+    'form.date'() {
+      this.slotError = ''
+    },
+    'form.time'() {
+      this.slotError = ''
     }
   },
   methods: {
@@ -147,6 +157,7 @@ export default {
       this.showModal = false
       this.selectedService = null
       this.form = { name: '', email: '', phone: '', date: '', time: '' }
+      this.slotError = ''
     },
     isSlotAllowed(dateStr, timeStr) {
       if (!dateStr || !timeStr) return false
@@ -169,7 +180,7 @@ export default {
         return
       }
       if (!this.isSlotAllowed(this.form.date, this.form.time)) {
-        alert('Horário indisponível')
+        this.slotError = 'Este horário não está disponível, que tal agendar para 1 hora mais tarde ou mais cedo?'
         return
       }
       const { data: exists } = await supabase
@@ -180,7 +191,7 @@ export default {
         .eq('time', this.form.time)
         .limit(1)
       if (exists && exists.length) {
-        alert('Horário não disponível')
+        this.slotError = 'Este horário não está disponível, que tal agendar para 1 hora mais tarde ou mais cedo?'
         return
       }
 
