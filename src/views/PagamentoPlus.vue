@@ -161,9 +161,9 @@ export default {
         amount: this.pixAmount
       })
       this.pixCode = payload
-      // Usa a API de charts do Google para gerar a imagem do QR Code
+      // Gera o QR Code usando um serviço de API público
       this.pixQrCode =
-        'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' +
+        'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' +
         encodeURIComponent(payload)
     }
   }
