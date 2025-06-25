@@ -206,22 +206,39 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="a in clientAppointments"
-                :key="a.id"
-                :class="a.from_site && !a.confirmed
-                  ? 'border-2 border-red-500 rounded-md'
-                  : 'border-b last:border-b-0'"
-              >
-                <td class="px-4 py-2">
+              <tr v-for="a in clientAppointments" :key="a.id">
+                <td
+                  :class="[
+                    'px-4 py-2',
+                    a.from_site && !a.confirmed
+                      ? 'border-l-2 border-t-2 border-b-2 border-red-500 rounded-l-md'
+                      : 'border-b last:border-b-0'
+                  ]"
+                >
                   {{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}
                   <span
                     v-if="a.from_site && !a.confirmed"
                     class="block text-xs text-red-600"
                   >pendente confirmação de pagamento</span>
                 </td>
-                <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
-                <td class="px-4 py-2 text-right space-x-2">
+                <td
+                  :class="[
+                    'px-4 py-2',
+                    a.from_site && !a.confirmed
+                      ? 'border-t-2 border-b-2 border-red-500'
+                      : 'border-b last:border-b-0'
+                  ]"
+                >
+                  {{ getServiceName(a.service_id) }}
+                </td>
+                <td
+                  :class="[
+                    'px-4 py-2 text-right space-x-2',
+                    a.from_site && !a.confirmed
+                      ? 'border-r-2 border-t-2 border-b-2 border-red-500 rounded-r-md'
+                      : 'border-b last:border-b-0'
+                  ]"
+                >
                   <router-link :to="{ path: '/agendamentos', query: { edit: a.id } }" class="btn btn-sm">Editar</router-link>
                   <button @click="sendConfirmationEmail(a)" class="btn btn-sm btn-success">Enviar e-mail</button>
                 </td>
