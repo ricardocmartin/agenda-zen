@@ -211,10 +211,16 @@
                 :key="a.id"
                 :class="[
                   'border-b last:border-b-0',
-                  a.from_site && !a.confirmed ? 'text-red-600' : ''
+                  a.from_site && !a.confirmed ? 'ring-2 ring-red-500 rounded' : ''
                 ]"
               >
-                <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}</td>
+                <td class="px-4 py-2">
+                  {{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}
+                  <span
+                    v-if="a.from_site && !a.confirmed"
+                    class="block text-xs text-red-600"
+                  >pendente confirmação de pagamento</span>
+                </td>
                 <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
                   <router-link :to="{ path: '/agendamentos', query: { edit: a.id } }" class="btn btn-sm">Editar</router-link>
