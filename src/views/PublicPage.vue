@@ -249,7 +249,9 @@ export default {
             name: this.form.name,
             email: this.form.email,
             phone: this.form.phone,
-            cpf: this.form.cpf
+            cpf: this.form.cpf,
+            from_site: true,
+            pending_update: true
           })
           .eq('id', clientId)
         if (updateErr) {
