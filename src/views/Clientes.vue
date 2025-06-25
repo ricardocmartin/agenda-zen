@@ -197,7 +197,7 @@
         </form>
 
         <div v-show="activeTab === 'agendamentos'" class="overflow-x-auto">
-          <table class="min-w-full text-left">
+          <table class="min-w-full text-left border-separate border-spacing-0">
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-4 py-2 font-medium text-gray-700">Data/Hora</th>
@@ -210,7 +210,7 @@
                 v-for="a in clientAppointments"
                 :key="a.id"
                 :class="a.from_site && !a.confirmed
-                  ? 'border-2 border-red-500 rounded'
+                  ? 'border-2 border-red-500 rounded-md'
                   : 'border-b last:border-b-0'"
               >
                 <td class="px-4 py-2">
