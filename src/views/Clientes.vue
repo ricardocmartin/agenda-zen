@@ -49,11 +49,11 @@
                 <td class="px-4 py-2">
                   <span>{{ client.name }}</span>
                   <span
-                    v-if="client.from_site"
+                    v-if="client.from_site && client.pending_update"
                     class="inline-flex items-center text-red-600 text-xs ml-2"
                   >
                     <span class="w-2 h-2 bg-red-600 rounded-full mr-1"></span>
-                    cliente cadastrado via site
+                    cliente cadastrado via site - pendente atualização
                   </span>
                 </td>
                 <td class="px-4 py-2">{{ client.email }}</td>
@@ -113,11 +113,11 @@
             {{ modalMode === 'new' ? 'Adicionar Cliente' : 'Cadastro do Cliente' }}
           </h3>
           <div
-            v-if="currentClient && currentClient.from_site"
+            v-if="currentClient && currentClient.from_site && currentClient.pending_update"
             class="flex items-center text-red-600 text-sm mb-4"
           >
             <span class="w-3 h-3 bg-red-600 rounded-full mr-2"></span>
-            cliente cadastrado via site
+            cliente cadastrado via site - pendente atualização
           </div>
           <div v-if="editingId" class="border-b mb-4">
             <nav class="flex space-x-4">
