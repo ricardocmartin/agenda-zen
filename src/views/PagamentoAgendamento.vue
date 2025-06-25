@@ -1,6 +1,13 @@
 <template>
   <div class="flex flex-col min-h-screen">
-    <Navbar />
+    <section v-if="profile" class="bg-blue-600 text-white py-12">
+      <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+        <img :src="profile.image_url || '/hero-illustration.png'" alt="Banner" class="w-32 h-32 mx-auto rounded-full shadow-lg" />
+        <h1 class="text-4xl font-bold">{{ profile.business_name }}</h1>
+        <p v-if="profile.area_atuacao" class="text-sm">{{ profile.area_atuacao }}</p>
+        <p class="text-lg">{{ profile.description }}</p>
+      </div>
+    </section>
     <section class="flex-1 flex items-center justify-center bg-gray-100 px-4">
       <div class="bg-white p-8 rounded-lg shadow w-full max-w-md space-y-4 text-center mt-8" v-if="profile && service">
         <img src="/logo_pix.png" alt="Pix" class="mx-auto w-44 h-auto" />
@@ -13,20 +20,17 @@
       </div>
       <div v-else class="text-gray-500">Carregando...</div>
     </section>
-    <Footer />
   </div>
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue'
-import Footer from '../components/Footer.vue'
+
 import { supabase } from '../supabase'
 import { generatePixPayload } from '../utils/pix'
 import { phoneMask } from '../utils/phone'
 
 export default {
   name: 'PagamentoAgendamento',
-  components: { Navbar, Footer },
   data() {
     return {
       profile: null,
@@ -79,7 +83,7 @@ export default {
       this.service = service
       const { data: profile } = await supabase
         .from('profiles')
-        .select('pix_key,business_name,whatsapp')
+        .select('pix_key,business_name,whatsapp,image_url,area_atuacao,description')
         .eq('id', appt.user_id)
         .single()
       this.profile = profile
