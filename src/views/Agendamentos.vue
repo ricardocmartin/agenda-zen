@@ -129,12 +129,14 @@
             <template #actions>
               <div
                 v-if="selectedAppointment && selectedAppointment.from_site && !selectedAppointment.confirmed"
-                class="mb-4 text-center"
+                class="mt-4"
               >
                 <h4 class="font-medium mb-2">Ações Financeiras</h4>
-                <button @click="confirmPayment" class="btn btn-primary">
-                  Confirmar pagamento
-                </button>
+                <div class="flex flex-wrap justify-center gap-2">
+                  <button @click="confirmPayment" class="btn btn-primary">
+                    Confirmar pagamento
+                  </button>
+                </div>
               </div>
               <div class="mt-4">
                 <h4 class="font-medium mb-2">Ações de atendimento</h4>
