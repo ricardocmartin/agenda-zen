@@ -19,6 +19,7 @@
               <p class="text-sm text-gray-600">{{ service.description }}</p>
               <p class="text-sm text-gray-500 mt-1">Duração: {{ service.duration }} minutos</p>
               <p class="text-sm text-gray-500">Valor: {{ formatPrice(service.price) }}</p>
+              <button class="btn mt-2" @click="openModal(service)">Agendar</button>
             </li>
           </ul>
           <p v-else class="text-gray-500">Nenhum serviço cadastrado.</p>
@@ -50,6 +51,36 @@
       <p>Carregando perfil...</p>
     </div>
 
+    <Modal v-if="showModal" @close="closeModal">
+      <h3 class="text-lg font-semibold mb-4">Agendar {{ selectedService?.name }}</h3>
+      <form @submit.prevent="handleSchedule" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nome</label>
+          <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">E-mail</label>
+          <input type="email" v-model="form.email" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Telefone</label>
+          <input type="text" v-model="form.phone" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Data</label>
+          <input type="date" v-model="form.date" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Hora</label>
+          <input type="time" step="60" v-model="form.time" class="w-full mt-1 px-4 py-2 border rounded-md" />
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
+          <button type="submit" class="btn">Agendar</button>
+        </div>
+      </form>
+    </Modal>
+
     <footer v-if="profile" class="bg-gray-100 py-6">
       <div class="max-w-5xl mx-auto px-4 text-center space-y-2">
         <div class="space-x-4 text-blue-600">
@@ -66,13 +97,24 @@
 
 <script>
 import { supabase } from '../supabase'
+import Modal from '../components/Modal.vue'
 
 export default {
   name: 'PublicPage',
+  components: { Modal },
   data() {
     return {
       profile: null,
-      services: []
+      services: [],
+      showModal: false,
+      selectedService: null,
+      form: { name: '', email: '', phone: '', date: '', time: '' },
+      schedule: {
+        startTime: '',
+        endTime: '',
+        weekDays: [],
+        dailySchedule: null
+      }
     }
   },
   computed: {
@@ -89,6 +131,96 @@ export default {
         style: 'currency',
         currency: 'BRL'
       })
+    },
+    openModal(service) {
+      this.selectedService = service
+      this.showModal = true
+    },
+    closeModal() {
+      this.showModal = false
+      this.selectedService = null
+      this.form = { name: '', email: '', phone: '', date: '', time: '' }
+    },
+    isSlotAllowed(dateStr, timeStr) {
+      if (!dateStr || !timeStr) return false
+      const day = new Date(dateStr + 'T12:00:00').getDay().toString()
+      if (this.schedule.dailySchedule) {
+        const cfg = this.schedule.dailySchedule[day]
+        if (!cfg || !cfg.enabled || !cfg.start || !cfg.end) return false
+        return timeStr >= cfg.start && timeStr <= cfg.end
+      }
+      if (this.schedule.weekDays.length) {
+        if (!this.schedule.weekDays.includes(day)) return false
+        if (this.schedule.startTime && timeStr < this.schedule.startTime) return false
+        if (this.schedule.endTime && timeStr > this.schedule.endTime) return false
+      }
+      return true
+    },
+    async handleSchedule() {
+      if (!this.isSlotAllowed(this.form.date, this.form.time)) {
+        alert('Horário indisponível')
+        return
+      }
+      const { data: exists } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('user_id', this.profile.id)
+        .eq('date', this.form.date)
+        .eq('time', this.form.time)
+        .limit(1)
+      if (exists && exists.length) {
+        alert('Horário não disponível')
+        return
+      }
+
+      let clientId
+      if (this.form.email) {
+        const { data: client } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('user_id', this.profile.id)
+          .eq('email', this.form.email)
+          .maybeSingle()
+        if (client) clientId = client.id
+      }
+      if (!clientId) {
+        const { data: newClient, error: clientErr } = await supabase
+          .from('clients')
+          .insert({
+            user_id: this.profile.id,
+            name: this.form.name,
+            email: this.form.email,
+            phone: this.form.phone
+          })
+          .select()
+          .single()
+        if (clientErr) {
+          alert('Erro ao cadastrar cliente: ' + clientErr.message)
+          return
+        }
+        clientId = newClient.id
+      }
+
+      const { data: appt, error } = await supabase
+        .from('appointments')
+        .insert({
+          user_id: this.profile.id,
+          client_id: clientId,
+          service_id: this.selectedService.id,
+          date: this.form.date,
+          time: this.form.time,
+          duration: this.selectedService.duration,
+          confirmed: false,
+          from_site: true
+        })
+        .select()
+        .single()
+      if (error) {
+        alert('Erro ao agendar: ' + error.message)
+        return
+      }
+      this.closeModal()
+      this.$router.push({ name: 'PagamentoAgendamento', params: { id: appt.id } })
     }
   },
   async mounted() {
@@ -108,6 +240,14 @@ export default {
         .eq('user_id', data.id)
 
       this.services = servicesData || []
+      this.schedule.startTime = data.start_time || ''
+      this.schedule.endTime = data.end_time || ''
+      this.schedule.weekDays = data.week_days ? data.week_days.split(',') : []
+      this.schedule.dailySchedule = data.daily_schedule
+        ? typeof data.daily_schedule === 'string'
+          ? JSON.parse(data.daily_schedule)
+          : data.daily_schedule
+        : null
     }
   }
 }
