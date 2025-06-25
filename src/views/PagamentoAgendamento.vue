@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-screen">
     <Navbar />
     <section class="flex-1 flex items-center justify-center bg-gray-100 px-4">
-      <div class="bg-white p-8 rounded-lg shadow w-full max-w-md space-y-4 text-center" v-if="profile && service">
+      <div class="bg-white p-8 rounded-lg shadow w-full max-w-md space-y-4 text-center mt-8" v-if="profile && service">
         <img src="/logo_pix.png" alt="Pix" class="mx-auto w-44 h-auto" />
         <img v-if="pixQrCode" :src="pixQrCode" alt="QR Code Pix" class="mx-auto w-40 h-auto" />
         <p class="font-semibold">Código de pagamento</p>
