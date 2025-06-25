@@ -40,6 +40,7 @@ que o endpoint seja disponibilizado:
 
 ```bash
 supabase functions deploy send-appointment-email
+supabase functions deploy notify-pending-payment
 ```
 
 No painel do Supabase você consegue acompanhar os logs e confirmar se as
