@@ -34,6 +34,7 @@
             v-for="appt in getAppointmentsForDay(day)"
             :key="appt.id"
             class="text-xs truncate cursor-pointer"
+            :class="appt.from_site && !appt.confirmed ? 'text-red-600' : ''"
             @click="$emit('select', appt)"
           >
             {{ addHoursToTime(appt.time) }} - {{ getClientName(appt.client_id) }}
