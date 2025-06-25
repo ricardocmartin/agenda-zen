@@ -318,7 +318,9 @@ export default {
           complement: '',
           neighborhood: '',
           stateId: '',
-          cityId: ''
+          cityId: '',
+          from_site: false,
+          pending_update: false
         },
         states: [],
         cities: [],
@@ -394,14 +396,16 @@ export default {
           complement: client.complement,
           neighborhood: client.neighborhood,
           stateId: client.state_id,
-          cityId: client.city_id
+          cityId: client.city_id,
+          from_site: client.from_site,
+          pending_update: client.pending_update
         }
         this.originalForm = { ...this.form }
         await this.fetchClientAppointments()
         await this.fetchClientHistory()
       } else {
         this.editingId = null
-        this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '' }
+        this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '', from_site: false, pending_update: false }
         this.originalForm = { ...this.form }
         this.clientAppointments = []
         this.history = []
@@ -418,7 +422,7 @@ export default {
       this.showModal = false
       this.modalMode = 'new'
       this.editingId = null
-      this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '' }
+      this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '', from_site: false, pending_update: false }
       this.activeTab = 'cadastro'
       this.clientAppointments = []
       this.history = []
@@ -457,9 +461,8 @@ export default {
             number: this.form.number,
             complement: this.form.complement,
             neighborhood: this.form.neighborhood,
-            state_id: this.form.stateId,
+          state_id: this.form.stateId,
           city_id: this.form.cityId,
-          from_site: false,
           pending_update: false
         })
           .eq('id', this.editingId)
@@ -480,9 +483,11 @@ export default {
             number: this.form.number,
             complement: this.form.complement,
             neighborhood: this.form.neighborhood,
-            state_id: this.form.stateId,
+          state_id: this.form.stateId,
           city_id: this.form.cityId,
-          user_id: this.userId
+          user_id: this.userId,
+          from_site: this.form.from_site,
+          pending_update: this.form.pending_update
         })
           .select()
           .single())
