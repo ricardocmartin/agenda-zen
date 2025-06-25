@@ -76,6 +76,7 @@ export default {
     }
   },
   methods: {
+    addHoursToTime,
     prevMonth() {
       if (this.currentMonth === 0) {
         this.currentMonth = 11

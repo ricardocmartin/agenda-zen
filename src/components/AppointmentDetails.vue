@@ -33,6 +33,9 @@ export default {
     getServiceName: { type: Function, required: true },
     getRoomName: { type: Function, default: () => '' },
     getRoomLink: { type: Function, default: () => '' }
+  },
+  methods: {
+    addHoursToTime
   }
 }
 </script>
