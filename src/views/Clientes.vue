@@ -275,7 +275,7 @@ import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
 import { phoneMask, digitsOnly } from '../utils/phone'
-import { fetchStates, fetchCities } from '../utils/locations'
+import { fetchStates, fetchCities, fetchAddress } from '../utils/locations'
 import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
 import { addHoursToTime } from '../utils/datetime'
 import { sendAppointmentEmail } from '../utils/email'
@@ -344,6 +344,20 @@ export default {
     },
     async fetchCitiesList() {
       this.cities = await fetchCities(this.form.stateId)
+    },
+    async fillAddressByCep() {
+      const addr = await fetchAddress(this.form.cep)
+      if (!addr) return
+      this.form.street = addr.street || ''
+      this.form.complement = addr.complement || ''
+      this.form.neighborhood = addr.neighborhood || ''
+      const state = this.states.find(s => s.sigla === addr.state)
+      if (state) {
+        this.form.stateId = state.id
+        await this.fetchCitiesList()
+        const city = this.cities.find(c => c.nome.toLowerCase() === addr.city.toLowerCase())
+        if (city) this.form.cityId = city.id
+      }
     },
     async openModal(client, mode = 'new') {
       this.modalMode = mode
@@ -573,6 +587,12 @@ export default {
     },
     'form.stateId'() {
       this.fetchCitiesList()
+    },
+    'form.cep'(val) {
+      const digits = val.replace(/\D/g, '')
+      if (digits.length === 8) {
+        this.fillAddressByCep()
+      }
     }
   },
   async mounted() {
