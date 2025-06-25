@@ -241,7 +241,7 @@ import AppointmentDetails from '../components/AppointmentDetails.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
 import { phoneMask, digitsOnly } from '../utils/phone'
-import { fetchStates, fetchCities } from '../utils/locations'
+import { fetchStates, fetchCities, fetchAddress } from '../utils/locations'
 import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
 import { addHoursToTime } from '../utils/datetime'
 
@@ -305,6 +305,20 @@ export default {
     },
     async fetchCitiesList() {
       this.cities = await fetchCities(this.clientForm.stateId)
+    },
+    async fillAddressByCep() {
+      const addr = await fetchAddress(this.clientForm.cep)
+      if (!addr) return
+      this.clientForm.street = addr.street || ''
+      this.clientForm.complement = addr.complement || ''
+      this.clientForm.neighborhood = addr.neighborhood || ''
+      const state = this.states.find(s => s.sigla === addr.state)
+      if (state) {
+        this.clientForm.stateId = state.id
+        await this.fetchCitiesList()
+        const city = this.cities.find(c => c.nome.toLowerCase() === addr.city.toLowerCase())
+        if (city) this.clientForm.cityId = city.id
+      }
     },
     async openClientModal() {
       await this.fetchStatesList()
@@ -679,6 +693,12 @@ export default {
     },
     'clientForm.stateId'() {
       this.fetchCitiesList()
+    },
+    'clientForm.cep'(val) {
+      const digits = val.replace(/\D/g, '')
+      if (digits.length === 8) {
+        this.fillAddressByCep()
+      }
     }
   },
   async mounted() {
