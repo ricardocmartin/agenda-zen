@@ -196,16 +196,45 @@ export default {
       }
 
       let clientId
+      let existingClient = null
+
+      // Busca cliente pelo e-mail informado
       if (this.form.email) {
-        const { data: client } = await supabase
+        const { data } = await supabase
           .from('clients')
           .select('id')
           .eq('user_id', this.profile.id)
           .eq('email', this.form.email)
           .maybeSingle()
-        if (client) clientId = client.id
+        if (data) existingClient = data
       }
-      if (!clientId) {
+
+      // Caso não tenha e-mail, tenta localizar pelo telefone
+      if (!existingClient && this.form.phone) {
+        const { data } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('user_id', this.profile.id)
+          .eq('phone', this.form.phone)
+          .maybeSingle()
+        if (data) existingClient = data
+      }
+
+      if (existingClient) {
+        clientId = existingClient.id
+        const { error: updateErr } = await supabase
+          .from('clients')
+          .update({
+            name: this.form.name,
+            email: this.form.email,
+            phone: this.form.phone
+          })
+          .eq('id', clientId)
+        if (updateErr) {
+          alert('Erro ao atualizar cliente: ' + updateErr.message)
+          return
+        }
+      } else {
         const { data: newClient, error: clientErr } = await supabase
           .from('clients')
           .insert({
