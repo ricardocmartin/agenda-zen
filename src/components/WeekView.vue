@@ -172,11 +172,10 @@ export default {
       const startInMinutes = startHour * 60 + startMinute;
       const endInMinutes = endHour * 60 + endMinute;
       const gridStart = this.computedStartHour * 60;
-
       const minuteHeight = this.minuteHeight;
 
-      const top = (startInMinutes - gridStart) * minuteHeight;
-      const height = (endInMinutes - startInMinutes) * minuteHeight;
+      const top = ((startInMinutes - gridStart) * minuteHeight) + 60;
+      const height = ((endInMinutes - startInMinutes) * minuteHeight);
 
       const colWidth = '(100% - 64px) / 7'
       const laneWidth = `calc((${colWidth}) / ${event.totalLanes})`
