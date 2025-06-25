@@ -20,7 +20,7 @@
       </div>
       <div v-else class="text-gray-500">Carregando...</div>
     </section>
-    <Footer />
+    <ProfileFooter v-if="profile" :profile="profile" />
   </div>
 </template>
 
@@ -29,11 +29,11 @@
 import { supabase } from '../supabase'
 import { generatePixPayload } from '../utils/pix'
 import { phoneMask } from '../utils/phone'
-import Footer from '../components/Footer.vue'
+import ProfileFooter from '../components/ProfileFooter.vue'
 
 export default {
   name: 'PagamentoAgendamento',
-  components: { Footer },
+  components: { ProfileFooter },
   data() {
     return {
       profile: null,

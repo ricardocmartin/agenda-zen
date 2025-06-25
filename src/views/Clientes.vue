@@ -46,7 +46,16 @@
                 :key="client.id"
                 class="border-b last:border-b-0"
               >
-                <td class="px-4 py-2">{{ client.name }}</td>
+                <td class="px-4 py-2">
+                  <span>{{ client.name }}</span>
+                  <span
+                    v-if="client.from_site"
+                    class="inline-flex items-center text-red-600 text-xs ml-2"
+                  >
+                    <span class="w-2 h-2 bg-red-600 rounded-full mr-1"></span>
+                    cliente cadastrado via site
+                  </span>
+                </td>
                 <td class="px-4 py-2">{{ client.email }}</td>
                 <td class="px-4 py-2">{{ phoneMask(client.phone) }}</td>
                 <td class="px-4 py-2 text-right space-x-2">
@@ -103,6 +112,13 @@
           <h3 class="text-lg font-semibold mb-4">
             {{ modalMode === 'new' ? 'Adicionar Cliente' : 'Cadastro do Cliente' }}
           </h3>
+          <div
+            v-if="currentClient && currentClient.from_site"
+            class="flex items-center text-red-600 text-sm mb-4"
+          >
+            <span class="w-3 h-3 bg-red-600 rounded-full mr-2"></span>
+            cliente cadastrado via site
+          </div>
           <div v-if="editingId" class="border-b mb-4">
             <nav class="flex space-x-4">
               <button
@@ -315,7 +331,8 @@ export default {
         clientAppointments: [],
         history: [],
         services: [],
-        rooms: []
+        rooms: [],
+        currentClient: null
     }
   },
   methods: {
@@ -359,9 +376,10 @@ export default {
         if (city) this.form.cityId = city.id
       }
     },
-    async openModal(client, mode = 'new') {
+   async openModal(client, mode = 'new') {
       this.modalMode = mode
       this.activeTab = 'cadastro'
+      this.currentClient = client || null
       if (client) {
         this.editingId = client.id
         this.form = {
@@ -396,7 +414,7 @@ export default {
       await this.fetchRoomsList()
       this.showModal = true
     },
-    closeModal() {
+  closeModal() {
       this.showModal = false
       this.modalMode = 'new'
       this.editingId = null
@@ -404,6 +422,7 @@ export default {
       this.activeTab = 'cadastro'
       this.clientAppointments = []
       this.history = []
+      this.currentClient = null
     },
     handleClose() {
       if (this.modalMode === 'view') {
@@ -439,7 +458,9 @@ export default {
             complement: this.form.complement,
             neighborhood: this.form.neighborhood,
             state_id: this.form.stateId,
-          city_id: this.form.cityId
+          city_id: this.form.cityId,
+          from_site: false,
+          pending_update: false
         })
           .eq('id', this.editingId)
           .select()
@@ -478,6 +499,7 @@ export default {
           this.clients.push(data)
         }
         this.closeModal()
+        this.currentClient = null
       }
     },
     async handleDeleteClient(id) {
