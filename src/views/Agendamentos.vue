@@ -132,7 +132,7 @@
                 class="mt-4"
               >
                 <h4 class="font-medium mb-2">Ações Financeiras</h4>
-                <div class="flex flex-wrap justify-center gap-2">
+                <div class="flex flex-wrap justify-start gap-2">
                   <button @click="confirmPayment" class="btn btn-primary">
                     Confirmar pagamento
                   </button>
@@ -140,7 +140,7 @@
               </div>
               <div class="mt-4">
                 <h4 class="font-medium mb-2">Ações de atendimento</h4>
-                <div class="flex flex-wrap justify-center gap-2">
+                <div class="flex flex-wrap justify-start gap-2">
                   <button @click="sendConfirmationWhatsApp" class="btn btn-success">Enviar confirmação</button>
                   <button @click="cancelAppointment" class="btn btn-warning">Desmarcou</button>
                   <button @click="markNoShow" class="btn btn-secondary">Faltou</button>
@@ -150,7 +150,7 @@
 
               <div class="mt-4">
                 <h4 class="font-medium mb-2">Ações de cadastro</h4>
-                <div class="flex flex-wrap justify-center gap-2">
+                <div class="flex flex-wrap justify-start gap-2">
                   <button @click="editFromDetails" class="btn">Editar</button>
                   <button @click="handleDeleteAppointment(selectedAppointment.id)" class="btn btn-danger">Excluir</button>
                 </div>
