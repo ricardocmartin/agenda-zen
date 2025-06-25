@@ -118,7 +118,7 @@
         </Modal>
 
         <Modal v-if="showDetailsModal" @close="closeDetails">
-          <AppointmentDetails
+        <AppointmentDetails
             :appointment="selectedAppointment"
             :getClientName="getClientName"
             :getServiceName="getServiceName"
@@ -127,6 +127,14 @@
             @close="closeDetails"
           >
             <template #actions>
+              <div
+                v-if="selectedAppointment && selectedAppointment.from_site && !selectedAppointment.confirmed"
+                class="mb-4 text-center"
+              >
+                <button @click="confirmPayment" class="btn btn-primary">
+                  Confirmar pagamento
+                </button>
+              </div>
               <div class="mt-4">
                 <h4 class="font-medium mb-2">Ações de atendimento</h4>
                 <div class="flex flex-wrap justify-center gap-2">
@@ -436,7 +444,9 @@ export default {
             room_id: this.form.roomId || null,
             duration: this.form.duration,
             description: this.form.description,
-            user_id: this.userId
+            user_id: this.userId,
+            confirmed: true,
+            from_site: false
           })
           .select()
           .single()
@@ -562,6 +572,36 @@ export default {
           `${appt.description ? `Observações: ${appt.description}\n` : ''}` +
           `\nE-mail enviado automaticamente.`
       })
+    },
+    async confirmPayment() {
+      const appt = this.selectedAppointment
+      if (!appt) return
+      const { data, error } = await supabase
+        .from('appointments')
+        .update({ confirmed: true })
+        .eq('id', appt.id)
+        .select()
+        .single()
+
+      if (error) {
+        alert('Erro ao confirmar pagamento: ' + error.message)
+        return
+      }
+      Object.assign(appt, data)
+      const client = this.clients.find(c => c.id === appt.client_id)
+      const service = this.services.find(s => s.id === appt.service_id)
+      const room = this.rooms.find(r => r.id === appt.room_id)
+      await sendAppointmentEmail({
+        to: client?.email,
+        subject: 'Agendamento confirmado',
+        text:
+          `Olá ${client?.name},\n\n` +
+          `Seu agendamento para ${service?.name} foi confirmado para ${formatDateBR(appt.date)} às ${addHoursToTime(appt.time)}.\n` +
+          `${room ? `Sala: ${room.name}\n` : ''}` +
+          `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
+          `${appt.description ? `Observações: ${appt.description}\n` : ''}` +
+          `\nE-mail enviado automaticamente.`
+      }, false)
     },
     sendConfirmationWhatsApp() {
       const appt = this.selectedAppointment

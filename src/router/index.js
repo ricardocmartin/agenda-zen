@@ -23,6 +23,7 @@ import Faq from '../views/Faq.vue'
 import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
 import TermosDeUso from '../views/TermosDeUso.vue'
 import PagamentoPlus from '../views/PagamentoPlus.vue'
+import PagamentoAgendamento from '../views/PagamentoAgendamento.vue'
 import Confirmacao from '../views/Confirmacao.vue'
 import LinkExpirado from '../views/LinkExpirado.vue'
 import { supabase } from '../supabase'
@@ -54,6 +55,7 @@ const routes = [
   { path: '/politica-de-privacidade', name: 'PoliticaDePrivacidade', component: PoliticaPrivacidade },
   { path: '/termos-de-uso', name: 'TermosDeUso', component: TermosDeUso },
   { path: '/atendimento/:id', name: 'Atendimento', component: Atendimento },
+  { path: '/pagar-agendamento/:id', name: 'PagamentoAgendamento', component: PagamentoAgendamento },
   { path: '/:slug', name: 'PublicPage', component: PublicPage },
 ]
 
