@@ -92,22 +92,10 @@ export default {
   },
   computed: {
     computedStartHour() {
-      const hours = this.appointments.map(a => parseInt(a.time.split(':')[0]))
-      const minAppt = hours.length ? Math.min(...hours) : this.startHour
-      const start = Math.min(this.startHour, minAppt)
-      return isNaN(start) ? this.startHour : start
+      return this.startHour
     },
     computedEndHour() {
-      const hours = this.appointments.map(a => {
-        const startDate = parseBrazilDateTime(a.date, a.time)
-        const endDate = new Date(startDate.getTime() + Number(a.duration || 0) * 60000)
-        return endDate.getMinutes() > 0 ? endDate.getHours() + 1 : endDate.getHours()
-      })
-      const maxAppt = hours.length ? Math.max(...hours) : this.endHour
-      let end = Math.max(this.endHour, maxAppt)
-      if (isNaN(end)) end = this.startHour
-      if (end < this.startHour) end = this.startHour
-      return end
+      return this.endHour
     },
     totalHours() {
       return Math.max(0, this.computedEndHour - this.computedStartHour + 1)

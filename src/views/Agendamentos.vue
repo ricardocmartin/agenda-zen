@@ -329,11 +329,13 @@ export default {
     },
     scheduleStartHour() {
       const t = this.schedule.startTime
-      return t ? parseInt(t.split(':')[0]) : 6
+      const hour = t ? parseInt(t.split(':')[0]) : 6
+      return Math.max(0, hour - 1)
     },
     scheduleEndHour() {
       const t = this.schedule.endTime
-      return t ? parseInt(t.split(':')[0]) : 23
+      const hour = t ? parseInt(t.split(':')[0]) : 23
+      return Math.min(23, hour + 1)
     }
   },
   methods: {
