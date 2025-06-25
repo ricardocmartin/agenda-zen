@@ -86,7 +86,9 @@ export default {
       this.service = service
       const { data: profile } = await supabase
         .from('profiles')
-        .select('pix_key,business_name,whatsapp,image_url,area_atuacao,description')
+        .select(
+          'pix_key,business_name,whatsapp,image_url,area_atuacao,description,instagram,facebook,youtube,x'
+        )
         .eq('id', appt.user_id)
         .single()
       this.profile = profile
