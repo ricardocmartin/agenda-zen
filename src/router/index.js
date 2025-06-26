@@ -20,6 +20,8 @@ import Templates from '../views/Templates.vue'
 import Contato from '../views/Contato.vue'
 import MinhaAssinatura from '../views/MinhaAssinatura.vue'
 import Faturamento from '../views/Faturamento.vue'
+import RelatorioAgendamentos from '../views/RelatorioAgendamentos.vue'
+import Recebimento from '../views/Recebimento.vue'
 import Faq from '../views/Faq.vue'
 import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
 import TermosDeUso from '../views/TermosDeUso.vue'
@@ -51,6 +53,8 @@ const routes = [
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
   { path: '/minha-assinatura', name: 'MinhaAssinatura', component: MinhaAssinatura },
   { path: '/assinatura-plus', name: 'PagamentoPlus', component: PagamentoPlus },
+  { path: '/relatorio-agendamentos', name: 'RelatorioAgendamentos', component: RelatorioAgendamentos },
+  { path: '/recebimento', name: 'Recebimento', component: Recebimento },
   { path: '/faturamento', name: 'Faturamento', component: Faturamento },
   { path: '/buscar', name: 'SearchProfiles', component: SearchProfiles },
   { path: '/planos', name: 'Planos', component: Planos },
