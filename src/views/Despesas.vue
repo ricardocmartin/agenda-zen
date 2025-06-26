@@ -21,7 +21,7 @@
               placeholder="Buscar..."
               class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
             />
-            <button @click="openModal" class="btn w-full sm:w-auto">Nova Despesa</button>
+            <button @click="openModal()" class="btn w-full sm:w-auto">Nova Despesa</button>
           </div>
         </div>
 
@@ -34,6 +34,7 @@
                 <th class="px-4 py-2 font-medium text-gray-700">Vencimento</th>
                 <th class="px-4 py-2 font-medium text-gray-700">Pagamento</th>
                 <th class="px-4 py-2 font-medium text-gray-700">Tipo</th>
+                <th class="px-4 py-2"></th>
               </tr>
             </thead>
             <tbody>
@@ -43,9 +44,12 @@
                 <td class="px-4 py-2">{{ formatDateBR(e.due_date) }}</td>
                 <td class="px-4 py-2">{{ e.paid_date ? formatDateBR(e.paid_date) : '-' }}</td>
                 <td class="px-4 py-2">{{ e.fixed ? 'Fixa' : 'Variável' }}</td>
+                <td class="px-4 py-2 text-right">
+                  <button @click="openModal(e)" class="btn btn-sm">Editar</button>
+                </td>
               </tr>
               <tr v-if="filteredExpenses.length === 0">
-                <td colspan="5" class="px-4 py-6 text-center text-gray-500">Nenhuma despesa</td>
+                <td colspan="6" class="px-4 py-6 text-center text-gray-500">Nenhuma despesa</td>
               </tr>
             </tbody>
           </table>
@@ -53,7 +57,7 @@
       </section>
 
       <Modal v-if="showModal" @close="closeModal">
-        <h3 class="text-lg font-semibold mb-4">Nova Despesa</h3>
+        <h3 class="text-lg font-semibold mb-4">{{ editingId ? 'Editar Despesa' : 'Nova Despesa' }}</h3>
         <form @submit.prevent="handleSaveExpense" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Título da despesa</label>
@@ -61,7 +65,12 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Valor da despesa</label>
-            <input type="number" step="0.01" v-model="form.amount" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input
+              type="text"
+              v-model="form.amount"
+              @input="form.amount = currencyMask(form.amount)"
+              class="w-full mt-1 px-4 py-2 border rounded-md"
+            />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Data de Vencimento</label>
@@ -98,7 +107,8 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
-import { formatDateBR } from '../utils/format'
+import { formatDateBR, currencyMask, currencyToNumber } from '../utils/format'
+import { addMonths } from '../utils/datetime'
 
 export default {
   name: 'Despesas',
@@ -110,6 +120,7 @@ export default {
       search: '',
       expenses: [],
       showModal: false,
+      editingId: null,
       form: {
         title: '',
         amount: '',
@@ -131,11 +142,33 @@ export default {
     }
   },
   methods: {
-    openModal() {
+    openModal(expense) {
+      if (expense) {
+        this.editingId = expense.id
+        this.form = {
+          title: expense.title,
+          amount: this.formatPrice(expense.amount),
+          dueDate: expense.due_date,
+          paidDate: expense.paid_date || '',
+          fixed: expense.fixed,
+          repeat: expense.repeat_months || 1
+        }
+      } else {
+        this.editingId = null
+        this.form = {
+          title: '',
+          amount: '',
+          dueDate: '',
+          paidDate: '',
+          fixed: false,
+          repeat: 1
+        }
+      }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
+      this.editingId = null
       this.form = {
         title: '',
         amount: '',
@@ -154,26 +187,59 @@ export default {
     },
     formatDateBR,
     async handleSaveExpense() {
-      const { data, error } = await supabase
-        .from('expenses')
-        .insert({
+      const amount = currencyToNumber(this.form.amount)
+      if (this.editingId) {
+        const { data, error } = await supabase
+          .from('expenses')
+          .update({
+            title: this.form.title,
+            amount,
+            due_date: this.form.dueDate,
+            paid_date: this.form.paidDate || null,
+            fixed: this.form.fixed,
+            repeat_months: this.form.fixed ? this.form.repeat : null
+          })
+          .eq('id', this.editingId)
+          .select()
+          .single()
+        if (error) {
+          alert('Erro ao salvar despesa: ' + error.message)
+          return
+        }
+        const index = this.expenses.findIndex(e => e.id === this.editingId)
+        if (index !== -1) this.expenses[index] = data
+      } else {
+        const base = {
           title: this.form.title,
-          amount: parseFloat(this.form.amount),
+          amount,
           due_date: this.form.dueDate,
           paid_date: this.form.paidDate || null,
           fixed: this.form.fixed,
           repeat_months: this.form.fixed ? this.form.repeat : null,
           user_id: this.userId
-        })
-        .select()
-        .single()
-
-      if (error) {
-        alert('Erro ao salvar despesa: ' + error.message)
-      } else {
-        this.expenses.push(data)
-        this.closeModal()
+        }
+        const inserts = [base]
+        if (this.form.fixed && this.form.repeat > 1) {
+          for (let i = 1; i < this.form.repeat; i++) {
+            inserts.push({
+              ...base,
+              due_date: addMonths(this.form.dueDate, i),
+              paid_date: this.form.paidDate ? addMonths(this.form.paidDate, i) : null,
+              repeat_months: null
+            })
+          }
+        }
+        const { data, error } = await supabase
+          .from('expenses')
+          .insert(inserts)
+          .select()
+        if (error) {
+          alert('Erro ao salvar despesa: ' + error.message)
+          return
+        }
+        this.expenses.push(...data)
       }
+      this.closeModal()
     }
   },
   async mounted() {
