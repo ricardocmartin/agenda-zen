@@ -153,7 +153,7 @@
           >
             <template #actions>
               <div
-                v-if="selectedAppointment && selectedAppointment.from_site && !selectedAppointment.confirmed"
+                v-if="selectedAppointment && selectedAppointment.from_site && !selectedAppointment.paid"
                 class="mt-4"
               >
                 <h4 class="font-medium mb-2">Ações Financeiras</h4>
@@ -666,7 +666,7 @@ export default {
       if (!appt) return
       const { data, error } = await supabase
         .from('appointments')
-        .update({ confirmed: true })
+        .update({ confirmed: true, paid: true })
         .eq('id', appt.id)
         .select()
         .single()
