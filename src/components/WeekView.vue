@@ -2,7 +2,17 @@
 <template>
   <div class="bg-white rounded-lg shadow overflow-hidden">
     <div class="flex justify-between items-center px-4 py-2 border-b bg-gray-50">
+      <button @click="prevWeek" class="p-1 rounded hover:bg-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
       <div class="font-semibold">{{ formatDate(weekStart) }} - {{ formatDate(weekEnd) }}</div>
+      <button @click="nextWeek" class="p-1 rounded hover:bg-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
 
     <div class="relative overflow-x-auto">
@@ -194,6 +204,22 @@ export default {
         return formatDateBR(date.toISOString().split('T')[0])
       }
       return date
+    },
+    prevWeek() {
+      const start = new Date(this.weekStart)
+      start.setDate(start.getDate() - 7)
+      const end = new Date(this.weekEnd)
+      end.setDate(end.getDate() - 7)
+      this.weekStart = start
+      this.weekEnd = end
+    },
+    nextWeek() {
+      const start = new Date(this.weekStart)
+      start.setDate(start.getDate() + 7)
+      const end = new Date(this.weekEnd)
+      end.setDate(end.getDate() + 7)
+      this.weekStart = start
+      this.weekEnd = end
     }
   },
   watch: {
