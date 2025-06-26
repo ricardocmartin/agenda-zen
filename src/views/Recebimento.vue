@@ -55,6 +55,7 @@
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-4 py-2 font-medium text-gray-700">Data/Horário do Atendimento</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Cliente</th>
                 <th class="px-4 py-2 font-medium text-gray-700">Serviço</th>
                 <th class="px-4 py-2 font-medium text-gray-700">Valor</th>
                 <th class="px-4 py-2 font-medium text-gray-700">Status</th>
@@ -63,12 +64,13 @@
             <tbody>
               <tr v-for="a in appointments" :key="a.id" class="border-b last:border-b-0">
                 <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}</td>
+                <td class="px-4 py-2">{{ getClientName(a.client_id) }}</td>
                 <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
                 <td class="px-4 py-2">{{ formatPrice(getServicePrice(a.service_id)) }}</td>
                 <td class="px-4 py-2">{{ a.paid ? 'Pago' : 'pagamento em aberto' }}</td>
               </tr>
               <tr v-if="appointments.length === 0">
-                <td colspan="4" class="px-4 py-6 text-center text-gray-500">Nenhum registro</td>
+                <td colspan="5" class="px-4 py-6 text-center text-gray-500">Nenhum registro</td>
               </tr>
             </tbody>
           </table>
@@ -107,6 +109,10 @@ export default {
     addHoursToTime,
     formatPrice(value) {
       return Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+    },
+    getClientName(id) {
+      const c = this.clients.find(cl => cl.id === id)
+      return c ? c.name : ''
     },
     getServiceName(id) {
       const s = this.services.find(sv => sv.id === id)
