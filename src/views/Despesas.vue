@@ -44,8 +44,11 @@
                 <td class="px-4 py-2">{{ formatDateBR(e.due_date) }}</td>
                 <td class="px-4 py-2">{{ e.paid_date ? formatDateBR(e.paid_date) : '-' }}</td>
                 <td class="px-4 py-2">{{ e.fixed ? 'Fixa' : 'Variável' }}</td>
-                <td class="px-4 py-2 text-right">
+                <td class="px-4 py-2 text-right space-x-2">
                   <button @click="openModal(e)" class="btn btn-sm">Editar</button>
+                  <button @click="handleDeleteExpense(e.id)" class="btn btn-sm btn-danger">
+                    Excluir
+                  </button>
                 </td>
               </tr>
               <tr v-if="filteredExpenses.length === 0">
@@ -240,6 +243,21 @@ export default {
         this.expenses.push(...data)
       }
       this.closeModal()
+    },
+    async handleDeleteExpense(id) {
+      const confirmed = confirm('Tem certeza que deseja excluir esta despesa?')
+      if (!confirmed) return
+
+      const { error } = await supabase
+        .from('expenses')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        alert('Erro ao excluir despesa: ' + error.message)
+      } else {
+        this.expenses = this.expenses.filter(e => e.id !== id)
+      }
     }
   },
   async mounted() {
