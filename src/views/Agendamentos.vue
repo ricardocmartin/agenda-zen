@@ -103,7 +103,7 @@
             <label class="block text-sm font-medium text-gray-700">Cliente</label>
             <select v-model="form.clientId" class="w-full mt-1 px-4 py-2 border rounded-lg">
               <option disabled value="">Selecione um cliente</option>
-              <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}</option>
+              <option v-for="client in activeClients" :key="client.id" :value="client.id">{{ client.name }}</option>
             </select>
           </div>
           <div>
@@ -378,6 +378,9 @@ export default {
       const t = this.schedule.endTime
       const hour = t ? parseInt(t.split(':')[0]) : 23
       return Math.min(23, hour + 1)
+    },
+    activeClients() {
+      return this.clients.filter(c => c.active)
     }
   },
   methods: {
