@@ -32,10 +32,10 @@
             @click="clearFilters"
             class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
           >Limpar</button>
-          <button
-            @click="openModal()"
+          <router-link
+            to="/agendamentos/novo"
             class="btn sm:ml-auto w-full sm:w-auto"
-          >Novo</button>
+          >Novo</router-link>
           <button
             @click="exportCSV"
             class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-auto"
