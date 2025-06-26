@@ -34,7 +34,7 @@
             v-for="appt in getAppointmentsForDay(day)"
             :key="appt.id"
             class="text-xs truncate cursor-pointer"
-            :class="appt.from_site && !appt.confirmed ? 'text-red-600' : ''"
+            :class="getStatusClass(appt)"
             @click="$emit('select', appt)"
           >
             {{ addHoursToTime(appt.time) }} - {{ getClientName(appt.client_id) }}
@@ -112,6 +112,12 @@ export default {
         this.currentMonth === today.getMonth() &&
         day === today.getDate()
       )
+    },
+    getStatusClass(appt) {
+      if (appt.from_site && !appt.confirmed) return 'text-red-600'
+      if (appt.status === 'completed') return 'text-green-600'
+      if (appt.status === 'no_show') return 'text-gray-600'
+      return 'text-blue-600'
     }
   }
 }

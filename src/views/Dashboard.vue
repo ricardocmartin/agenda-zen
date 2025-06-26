@@ -291,7 +291,8 @@ export default {
         clientId: '',
         serviceId: '',
         duration: '',
-        description: ''
+        description: '',
+        status: 'confirmed'
       },
       selectedAppointment: null
     }
@@ -571,17 +572,18 @@ export default {
           clientId: appt.client_id,
           serviceId: appt.service_id,
           duration: appt.duration,
-          description: appt.description
+          description: appt.description,
+          status: appt.status || 'confirmed'
         }
       } else {
         this.editingId = null
-        this.appointmentForm = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
+        this.appointmentForm = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '', status: 'confirmed' }
       }
       this.showAppointmentModal = true
     },
     closeAppointmentModal() {
       this.showAppointmentModal = false
-      this.appointmentForm = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '' }
+      this.appointmentForm = { date: '', time: '', clientId: '', serviceId: '', duration: '', description: '', status: 'confirmed' }
       this.editingId = null
     },
     editFromDetails() {
@@ -603,7 +605,23 @@ export default {
       this.closeDetails()
     },
     markNoShow() {
-      alert('Falta registrada para este atendimento.')
+      if (!this.selectedAppointment) return
+      supabase
+        .from('appointments')
+        .update({ status: 'no_show' })
+        .eq('id', this.selectedAppointment.id)
+        .select()
+        .single()
+        .then(({ data, error }) => {
+          if (error) {
+            alert('Erro ao marcar falta: ' + error.message)
+            return
+          }
+          Object.assign(this.selectedAppointment, data)
+          const idx = this.upcomingAppointments.findIndex(a => a.id === data.id)
+          if (idx !== -1) this.upcomingAppointments[idx] = data
+          alert('Falta registrada para este atendimento.')
+        })
     },
     sendConfirmationWhatsApp() {
       const appt = this.selectedAppointment
@@ -637,7 +655,8 @@ export default {
             client_id: this.appointmentForm.clientId,
             service_id: this.appointmentForm.serviceId,
             duration: this.appointmentForm.duration,
-            description: this.appointmentForm.description
+            description: this.appointmentForm.description,
+            status: this.appointmentForm.status
           })
           .eq('id', this.editingId)
           .select()
@@ -662,7 +681,8 @@ export default {
             service_id: this.appointmentForm.serviceId,
             duration: this.appointmentForm.duration,
             description: this.appointmentForm.description,
-            user_id: this.userId
+            user_id: this.userId,
+            status: this.appointmentForm.status
           })
           .select()
           .single()

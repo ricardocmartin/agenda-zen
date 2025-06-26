@@ -183,8 +183,9 @@ export default {
         }
       }
     },
-    async saveNote() {
+   async saveNote() {
       if (!this.note.trim() && !this.files.length && !this.editingAttachments.length) return
+      const wasEditing = this.isEditing
 
       const uploadedUrls = []
       for (const file of this.files) {
@@ -240,6 +241,17 @@ export default {
         this.isEditing = false
         this.editingNoteId = null
         this.editingAttachments = []
+        if (!wasEditing) {
+          const { data: appt, error: statusError } = await supabase
+            .from('appointments')
+            .update({ status: 'completed' })
+            .eq('id', this.$route.params.id)
+            .select()
+            .single()
+          if (!statusError && this.appointment) {
+            this.appointment.status = appt.status
+          }
+        }
       } else {
         alert('Erro ao salvar atendimento: ' + error.message)
       }
