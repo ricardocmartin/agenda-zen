@@ -26,3 +26,14 @@ export function addHoursToTime(timeStr, hours = 1) {
   const newM = String(date.getMinutes()).padStart(2, '0')
   return `${newH}:${newM}`
 }
+
+export function addDays(dateStr, days = 1) {
+  if (!dateStr) return ''
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const date = new Date(y, m - 1, d)
+  date.setDate(date.getDate() + days)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
