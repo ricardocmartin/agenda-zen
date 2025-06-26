@@ -1,5 +1,5 @@
 export function phoneMask(value) {
-  const digits = value.replace(/\D/g, '').slice(0, 11)
+  const digits = String(value ?? '').replace(/\D/g, '').slice(0, 11)
   const ddd = digits.slice(0, 2)
 
   if (digits.length <= 2) {
@@ -23,5 +23,5 @@ export function phoneMask(value) {
 }
 
 export function digitsOnly(value) {
-  return value.replace(/\D/g, '')
+  return String(value ?? '').replace(/\D/g, '')
 }

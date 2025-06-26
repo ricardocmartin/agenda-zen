@@ -616,7 +616,7 @@ export default {
       this.fetchCitiesList()
     },
     'form.cep'(val) {
-      const digits = val.replace(/\D/g, '')
+      const digits = (val || '').toString().replace(/\D/g, '')
       if (digits.length === 8) {
         this.fillAddressByCep()
       }
