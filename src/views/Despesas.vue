@@ -222,8 +222,8 @@ export default {
           user_id: this.userId
         }
         const inserts = [base]
-        if (this.form.fixed && this.form.repeat > 1) {
-          for (let i = 1; i < this.form.repeat; i++) {
+        if (this.form.fixed && this.form.repeat >= 1) {
+          for (let i = 1; i <= this.form.repeat; i++) {
             inserts.push({
               ...base,
               due_date: addMonths(this.form.dueDate, i),
