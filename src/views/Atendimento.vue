@@ -262,6 +262,7 @@ export default {
           if (!statusError && this.appointment) {
             this.appointment.status = appt.status
           }
+          this.$router.push('/agendamentos')
         }
       } else {
         alert('Erro ao salvar atendimento: ' + error.message)
