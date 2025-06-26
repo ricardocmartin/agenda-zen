@@ -189,6 +189,7 @@ export default {
       })
     },
     formatDateBR,
+    currencyMask,
     async handleSaveExpense() {
       const amount = currencyToNumber(this.form.amount)
       if (this.editingId) {
