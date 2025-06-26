@@ -86,6 +86,15 @@
           </router-link>
         </div>
         <div class="space-y-2">
+          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Centro Financeiro</h3>
+          <router-link to="/despesas" class="flex items-center text-gray-700 hover:text-blue-600">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 8c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0-4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+            </svg>
+            <span>Despesas</span>
+          </router-link>
+        </div>
+        <div class="space-y-2">
           <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Conta</h3>
           <router-link to="/configuracao" class="flex items-center text-gray-700 hover:text-blue-600">
             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
