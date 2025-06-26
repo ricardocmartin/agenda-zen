@@ -12,7 +12,7 @@
       <HeaderUser title="Relatório de Recebimento" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
             <select v-model="clientId" class="w-full px-4 py-2 border rounded-md">
@@ -43,6 +43,15 @@
               <option value="open">Em aberto</option>
             </select>
           </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Agrupar por</label>
+              <select v-model="groupBy" class="w-full px-4 py-2 border rounded-md">
+                <option value="none">Nenhum</option>
+                <option value="client">Cliente</option>
+                <option value="service">Serviço</option>
+                <option value="status">Status</option>
+              </select>
+            </div>
         </div>
         <div class="flex justify-end">
           <button @click="fetchAppointments" class="btn">Aplicar</button>
@@ -62,17 +71,22 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="a in appointments" :key="a.id" class="border-b last:border-b-0">
-                <td class="px-4 py-2">{{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}</td>
-                <td class="px-4 py-2">{{ getClientName(a.client_id) }}</td>
-                <td class="px-4 py-2">{{ getServiceName(a.service_id) }}</td>
-                <td class="px-4 py-2">{{ formatPrice(getServicePrice(a.service_id)) }}</td>
-                <td class="px-4 py-2">{{ a.paid ? 'Pago' : 'pagamento em aberto' }}</td>
+              <tr v-for="a in displayRows" :key="a.id || a.key" class="border-b last:border-b-0">
+                <td class="px-4 py-2"><span v-if="groupBy === 'none'">{{ formatDateBR(a.date) }} {{ addHoursToTime(a.time) }}</span></td>
+                <td class="px-4 py-2"><span v-if="groupBy === 'none' || groupBy === 'client'">{{ getClientName(a.client_id) }}</span></td>
+                <td class="px-4 py-2"><span v-if="groupBy === 'none' || groupBy === 'service'">{{ getServiceName(a.service_id) }}</span></td>
+                <td class="px-4 py-2">{{ formatPrice(groupBy === 'none' ? getServicePrice(a.service_id) : a.total) }}</td>
+                <td class="px-4 py-2"><span v-if="groupBy === 'none' || groupBy === 'status'">{{ (groupBy === 'status' ? a.status : a.paid) ? 'Pago' : 'pagamento em aberto' }}</span></td>
               </tr>
-              <tr v-if="appointments.length === 0">
+              <tr v-if="displayRows.length === 0">
                 <td colspan="5" class="px-4 py-6 text-center text-gray-500">Nenhum registro</td>
               </tr>
-            </tbody>
+              <tr>
+                <td colspan="3" class="px-4 py-2 text-right font-semibold">Total</td>
+                <td class="px-4 py-2 font-semibold">{{ formatPrice(totalAmount) }}</td>
+                <td></td>
+              </tr>
+              </tbody>
           </table>
         </div>
       </section>
@@ -100,8 +114,45 @@ export default {
       clientId: '',
       serviceId: '',
       filterStart: '',
+      groupBy: "none",
       filterEnd: '',
       paidFilter: 'all'
+    }
+  },
+  computed: {
+    displayRows() {
+      if (this.groupBy === "none") {
+        return this.appointments
+      }
+      const groups = {}
+      this.appointments.forEach(a => {
+        const price = this.getServicePrice(a.service_id)
+        let key = ""
+        if (this.groupBy === "client") {
+          key = `c${a.client_id}`
+        } else if (this.groupBy === "service") {
+          key = `s${a.service_id}`
+        } else if (this.groupBy === "status") {
+          key = a.paid ? "paid" : "open"
+        }
+        if (!groups[key]) {
+          groups[key] = {
+            key,
+            client_id: this.groupBy === "client" ? a.client_id : null,
+            service_id: this.groupBy === "service" ? a.service_id : null,
+            status: this.groupBy === "status" ? a.paid : null,
+            total: 0
+          }
+        }
+        groups[key].total += price
+      })
+      return Object.values(groups)
+    },
+    totalAmount() {
+      if (this.groupBy === "none") {
+        return this.appointments.reduce((sum, a) => sum + this.getServicePrice(a.service_id), 0)
+      }
+      return this.displayRows.reduce((sum, g) => sum + g.total, 0)
     }
   },
   methods: {
