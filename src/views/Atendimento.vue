@@ -19,6 +19,7 @@
         </div>
         <div v-if="activeTab === 'current'">
           <p class="mb-2 text-sm text-gray-600">Data/hora: {{ appointmentDateTime }}</p>
+          <p class="mb-2 text-sm text-gray-600">Cliente: {{ clientName }}</p>
           <textarea v-model="note" class="w-full border rounded p-2 mb-4" rows="6" placeholder="Descreva o atendimento"></textarea>
           <div v-if="isEditing && editingAttachments.length" class="mb-4 space-y-1">
             <div v-for="(url, index) in editingAttachments" :key="index" class="flex items-center space-x-2">
@@ -67,6 +68,7 @@ export default {
       sidebarOpen: window.innerWidth >= 768,
       activeTab: 'current',
       appointment: null,
+      clientName: '',
       note: '',
       files: [],
       notes: [],
@@ -155,6 +157,15 @@ export default {
         .eq('id', this.$route.params.id)
         .single()
       this.appointment = appt
+      this.clientName = ''
+      if (appt) {
+        const { data: client } = await supabase
+          .from('clients')
+          .select('name')
+          .eq('id', appt.client_id)
+          .single()
+        if (client) this.clientName = client.name
+      }
 
       let appointmentIds = [this.$route.params.id]
       if (appt) {
