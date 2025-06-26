@@ -119,6 +119,17 @@
               <option :value="false">Não</option>
             </select>
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">É pacote?</label>
+            <select v-model="form.isPackage" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
+          </div>
+          <div v-if="form.isPackage">
+            <label class="block text-sm font-medium text-gray-700">Quantidade de sessões</label>
+            <input type="number" v-model="form.sessions" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="btn">Salvar</button>
@@ -150,7 +161,9 @@ export default {
         description: '',
         duration: '',
         price: '',
-        allowOnlineBooking: true
+        allowOnlineBooking: true,
+        isPackage: false,
+        sessions: null
       },
       services: [],
       page: 1,
@@ -166,7 +179,9 @@ export default {
           description: service.description,
           duration: service.duration,
           price: service.price,
-          allowOnlineBooking: service.allow_online_booking
+          allowOnlineBooking: service.allow_online_booking,
+          isPackage: service.is_package,
+          sessions: service.session_count
         }
       } else {
         this.editingId = null
@@ -175,7 +190,9 @@ export default {
           description: '',
           duration: '',
           price: '',
-          allowOnlineBooking: true
+          allowOnlineBooking: true,
+          isPackage: false,
+          sessions: null
         }
       }
       this.showModal = true
@@ -187,7 +204,9 @@ export default {
         description: '',
         duration: '',
         price: '',
-        allowOnlineBooking: true
+        allowOnlineBooking: true,
+        isPackage: false,
+        sessions: null
       }
       this.editingId = null
     },
@@ -201,7 +220,9 @@ export default {
             description: this.form.description,
             duration: this.form.duration,
             price: parseFloat(this.form.price),
-            allow_online_booking: this.form.allowOnlineBooking
+            allow_online_booking: this.form.allowOnlineBooking,
+            is_package: this.form.isPackage,
+            session_count: this.form.sessions
           })
           .eq('id', this.editingId)
           .select()
@@ -215,6 +236,8 @@ export default {
             duration: this.form.duration,
             price: parseFloat(this.form.price),
             allow_online_booking: this.form.allowOnlineBooking,
+            is_package: this.form.isPackage,
+            session_count: this.form.sessions,
             user_id: this.userId
           })
           .select()
