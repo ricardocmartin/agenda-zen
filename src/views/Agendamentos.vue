@@ -67,8 +67,26 @@
                 class="block w-full text-left px-4 py-2 hover:bg-gray-100"
               >Semana</button>
             </div>
-          </div>
         </div>
+      </div>
+      <div class="flex space-x-4 text-sm mb-4 ml-6">
+        <div class="flex items-center space-x-1">
+          <span class="w-3 h-3 bg-gray-400 rounded-full inline-block"></span>
+          <span>Faltou</span>
+        </div>
+        <div class="flex items-center space-x-1">
+          <span class="w-3 h-3 bg-blue-500 rounded-full inline-block"></span>
+          <span>Confirmado</span>
+        </div>
+        <div class="flex items-center space-x-1">
+          <span class="w-3 h-3 bg-green-500 rounded-full inline-block"></span>
+          <span>Finalizado</span>
+        </div>
+        <div class="flex items-center space-x-1">
+          <span class="w-3 h-3 bg-red-500 rounded-full inline-block"></span>
+          <span>Pendente pagamento</span>
+        </div>
+      </div>
 
         <Modal v-if="showModal" @close="closeModal">
           <h3 class="text-lg font-semibold mb-4">{{ editingId ? 'Editar Agendamento' : 'Adicionar Agendamento' }}</h3>
@@ -201,10 +219,7 @@
                 <tr
                   v-for="appointment in processedAppointments"
                   :key="appointment.id"
-                  :class="[
-                    'border-b last:border-b-0',
-                    appointment.from_site && !appointment.confirmed ? 'text-red-600' : ''
-                  ]"
+                  :class="['border-b last:border-b-0', getRowClass(appointment)]"
                 >
                   <td class="px-4 py-2">{{ formatDateBR(appointment.date) }} {{ addHoursToTime(appointment.time) }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>
@@ -280,7 +295,8 @@ export default {
         roomId: '',
         duration: '',
         description: '',
-        paid: false
+        paid: false,
+        status: 'confirmed'
       },
       clients: [],
       services: [],
@@ -378,17 +394,18 @@ export default {
           roomId: appointment.room_id || '',
           duration: appointment.duration,
           description: appointment.description,
-          paid: !!appointment.paid
+          paid: !!appointment.paid,
+          status: appointment.status || 'confirmed'
         }
       } else {
         this.editingId = null
-        this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '', paid: false }
+        this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '', paid: false, status: 'confirmed' }
       }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '', paid: false }
+      this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '', paid: false, status: 'confirmed' }
       this.editingId = null
     },
     editFromDetails() {
@@ -440,7 +457,8 @@ export default {
             room_id: this.form.roomId || null,
             duration: this.form.duration,
             description: this.form.description,
-            paid: this.form.paid
+            paid: this.form.paid,
+            status: this.form.status
           })
           .eq('id', this.editingId)
           .select()
@@ -467,7 +485,8 @@ export default {
             paid: this.form.paid,
             user_id: this.userId,
             confirmed: true,
-            from_site: false
+            from_site: false,
+            status: this.form.status
           })
           .select()
           .single()
@@ -491,7 +510,8 @@ export default {
                 paid: this.form.paid,
                 user_id: this.userId,
                 confirmed: true,
-                from_site: false
+                from_site: false,
+                status: this.form.status
               })
             }
             if (extra.length) {
@@ -561,6 +581,12 @@ export default {
       const room = this.rooms.find(r => r.id === roomId)
       return room ? room.google_meet_link : ''
     },
+    getRowClass(appt) {
+      if (appt.from_site && !appt.confirmed) return 'text-red-600'
+      if (appt.status === 'completed') return 'text-green-600'
+      if (appt.status === 'no_show') return 'text-gray-600'
+      return ''
+    },
     sortBy(column) {
       if (this.sortColumn === column) {
         this.sortAsc = !this.sortAsc
@@ -596,7 +622,22 @@ export default {
       )
       this.closeDetails()
     },
-    markNoShow() {
+    async markNoShow() {
+      if (!this.selectedAppointment) return
+      const { data, error } = await supabase
+        .from('appointments')
+        .update({ status: 'no_show' })
+        .eq('id', this.selectedAppointment.id)
+        .select()
+        .single()
+
+      if (error) {
+        alert('Erro ao marcar falta: ' + error.message)
+        return
+      }
+      Object.assign(this.selectedAppointment, data)
+      const idx = this.appointments.findIndex(a => a.id === data.id)
+      if (idx !== -1) this.appointments[idx] = data
       alert('Falta registrada para este atendimento.')
     },
     async sendConfirmationEmail() {
