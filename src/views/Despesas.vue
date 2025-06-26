@@ -1,0 +1,195 @@
+<template>
+  <div class="min-h-screen flex bg-gray-100 relative">
+    <Sidebar :is-open="sidebarOpen" @close="sidebarOpen = false" />
+    <main class="flex-1 p-4 md:p-8 space-y-6">
+      <div v-if="!sidebarOpen" class="flex items-center mb-4">
+        <button @click="sidebarOpen = true" class="text-gray-600 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+      <HeaderUser title="Despesas" />
+
+      <section class="bg-white p-4 rounded-lg shadow">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-4 sm:space-y-0">
+          <h3 class="text-lg font-medium">Despesas cadastradas</h3>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-3">
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Buscar..."
+              class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+            />
+            <button @click="openModal" class="btn w-full sm:w-auto">Nova Despesa</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-left">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 font-medium text-gray-700">Título</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Valor</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Vencimento</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Pagamento</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Tipo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="e in filteredExpenses" :key="e.id" class="border-b last:border-b-0">
+                <td class="px-4 py-2">{{ e.title }}</td>
+                <td class="px-4 py-2">{{ formatPrice(e.amount) }}</td>
+                <td class="px-4 py-2">{{ formatDateBR(e.due_date) }}</td>
+                <td class="px-4 py-2">{{ e.paid_date ? formatDateBR(e.paid_date) : '-' }}</td>
+                <td class="px-4 py-2">{{ e.fixed ? 'Fixa' : 'Variável' }}</td>
+              </tr>
+              <tr v-if="filteredExpenses.length === 0">
+                <td colspan="5" class="px-4 py-6 text-center text-gray-500">Nenhuma despesa</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <Modal v-if="showModal" @close="closeModal">
+        <h3 class="text-lg font-semibold mb-4">Nova Despesa</h3>
+        <form @submit.prevent="handleSaveExpense" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Título da despesa</label>
+            <input type="text" v-model="form.title" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Valor da despesa</label>
+            <input type="number" step="0.01" v-model="form.amount" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Data de Vencimento</label>
+            <input type="date" v-model="form.dueDate" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Data de Pagamento</label>
+            <input type="date" v-model="form.paidDate" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Fixa ou Variável?</label>
+            <select v-model="form.fixed" class="w-full px-4 py-2 border rounded-md">
+              <option :value="false">Variável</option>
+              <option :value="true">Fixa</option>
+            </select>
+          </div>
+          <div v-if="form.fixed">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Replicar por</label>
+            <select v-model="form.repeat" class="w-full px-4 py-2 border rounded-md">
+              <option v-for="n in 12" :key="n" :value="n">{{ n }} mês{{ n > 1 ? 'es' : '' }}</option>
+            </select>
+          </div>
+          <div class="text-right">
+            <button type="submit" class="btn">Salvar</button>
+          </div>
+        </form>
+      </Modal>
+    </main>
+  </div>
+</template>
+
+<script>
+import Sidebar from '../components/Sidebar.vue'
+import HeaderUser from '../components/HeaderUser.vue'
+import Modal from '../components/Modal.vue'
+import { supabase } from '../supabase'
+import { formatDateBR } from '../utils/format'
+
+export default {
+  name: 'Despesas',
+  components: { Sidebar, HeaderUser, Modal },
+  data() {
+    return {
+      sidebarOpen: window.innerWidth >= 768,
+      userId: null,
+      search: '',
+      expenses: [],
+      showModal: false,
+      form: {
+        title: '',
+        amount: '',
+        dueDate: '',
+        paidDate: '',
+        fixed: false,
+        repeat: 1
+      }
+    }
+  },
+  computed: {
+    filteredExpenses() {
+      const term = this.search.toLowerCase()
+      return this.expenses.filter(
+        e =>
+          e.title.toLowerCase().includes(term) ||
+          (e.amount !== null && e.amount.toString().includes(term))
+      )
+    }
+  },
+  methods: {
+    openModal() {
+      this.showModal = true
+    },
+    closeModal() {
+      this.showModal = false
+      this.form = {
+        title: '',
+        amount: '',
+        dueDate: '',
+        paidDate: '',
+        fixed: false,
+        repeat: 1
+      }
+    },
+    formatPrice(value) {
+      if (value === null || value === undefined || value === '') return ''
+      return Number(value).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      })
+    },
+    formatDateBR,
+    async handleSaveExpense() {
+      const { data, error } = await supabase
+        .from('expenses')
+        .insert({
+          title: this.form.title,
+          amount: parseFloat(this.form.amount),
+          due_date: this.form.dueDate,
+          paid_date: this.form.paidDate || null,
+          fixed: this.form.fixed,
+          repeat_months: this.form.fixed ? this.form.repeat : null,
+          user_id: this.userId
+        })
+        .select()
+        .single()
+
+      if (error) {
+        alert('Erro ao salvar despesa: ' + error.message)
+      } else {
+        this.expenses.push(data)
+        this.closeModal()
+      }
+    }
+  },
+  async mounted() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      this.$router.push('/login')
+      return
+    }
+    this.userId = user.id
+
+    const { data } = await supabase
+      .from('expenses')
+      .select()
+      .eq('user_id', this.userId)
+
+    if (data) this.expenses = data
+  }
+}
+</script>
