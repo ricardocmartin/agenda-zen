@@ -106,14 +106,21 @@
             <label class="block text-sm font-medium text-gray-700">Duração (minutos)</label>
             <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-lg" />
           </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Descrição</label>
-              <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-lg"></textarea>
-            </div>
-            <div class="flex justify-end space-x-2">
-              <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-              <button type="submit" class="btn">Salvar</button>
-            </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Descrição</label>
+            <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-lg"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Pago?</label>
+            <select v-model="form.paid" class="w-full mt-1 px-4 py-2 border rounded-lg">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
+            <button type="submit" class="btn">Salvar</button>
+          </div>
           </form>
         </Modal>
 
@@ -254,7 +261,7 @@ import { supabase } from '../supabase'
 import { sendAppointmentEmail } from '../utils/email'
 import { digitsOnly } from '../utils/phone'
 import { formatDateBR } from '../utils/format'
-import { getBrazilNow, parseBrazilDateTime, addHoursToTime } from '../utils/datetime'
+import { getBrazilNow, parseBrazilDateTime, addHoursToTime, addDays } from '../utils/datetime'
 
 export default {
   name: 'Agendamentos',
@@ -272,7 +279,8 @@ export default {
         serviceId: '',
         roomId: '',
         duration: '',
-        description: ''
+        description: '',
+        paid: false
       },
       clients: [],
       services: [],
@@ -369,17 +377,18 @@ export default {
           serviceId: appointment.service_id,
           roomId: appointment.room_id || '',
           duration: appointment.duration,
-          description: appointment.description
+          description: appointment.description,
+          paid: !!appointment.paid
         }
       } else {
         this.editingId = null
-        this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '' }
+        this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '', paid: false }
       }
       this.showModal = true
     },
     closeModal() {
       this.showModal = false
-      this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '' }
+      this.form = { date: '', time: '', clientId: '', serviceId: '', roomId: '', duration: '', description: '', paid: false }
       this.editingId = null
     },
     editFromDetails() {
@@ -430,7 +439,8 @@ export default {
             service_id: this.form.serviceId,
             room_id: this.form.roomId || null,
             duration: this.form.duration,
-            description: this.form.description
+            description: this.form.description,
+            paid: this.form.paid
           })
           .eq('id', this.editingId)
           .select()
@@ -454,6 +464,7 @@ export default {
             room_id: this.form.roomId || null,
             duration: this.form.duration,
             description: this.form.description,
+            paid: this.form.paid,
             user_id: this.userId,
             confirmed: true,
             from_site: false
@@ -465,6 +476,29 @@ export default {
           alert('Erro ao salvar agendamento: ' + error.message)
         } else {
           this.appointments.push(data)
+          const serviceInfo = this.services.find(s => s.id === this.form.serviceId)
+          if (serviceInfo && serviceInfo.is_package && serviceInfo.session_count && serviceInfo.session_count > 1) {
+            const extra = []
+            for (let i = 1; i < serviceInfo.session_count; i++) {
+              extra.push({
+                date: addDays(this.form.date, 7 * i),
+                time: this.form.time,
+                client_id: this.form.clientId,
+                service_id: this.form.serviceId,
+                room_id: this.form.roomId || null,
+                duration: this.form.duration,
+                description: this.form.description,
+                paid: this.form.paid,
+                user_id: this.userId,
+                confirmed: true,
+                from_site: false
+              })
+            }
+            if (extra.length) {
+              const { data: extras } = await supabase.from('appointments').insert(extra).select()
+              if (extras) this.appointments.push(...extras)
+            }
+          }
           const client = this.clients.find(c => c.id === this.form.clientId)
           const service = this.services.find(s => s.id === this.form.serviceId)
           const room = this.rooms.find(r => r.id === this.form.roomId)
