@@ -30,3 +30,19 @@ export function formatDateBR(dateStr) {
   const [year, month, day] = parts
   return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`
 }
+
+export function currencyMask(value) {
+  const digits = String(value ?? '').replace(/\D/g, '')
+  if (!digits) return ''
+  const number = parseInt(digits, 10) / 100
+  return number.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
+}
+
+export function currencyToNumber(value) {
+  const digits = String(value ?? '').replace(/\D/g, '')
+  if (!digits) return 0
+  return parseInt(digits, 10) / 100
+}
