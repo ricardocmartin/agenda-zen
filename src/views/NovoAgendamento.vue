@@ -73,7 +73,7 @@ import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
 import { sendAppointmentEmail } from '../utils/email'
 import { formatDateBR } from '../utils/format'
-import { addDays } from '../utils/datetime'
+import { addHoursToTime, addDays } from '../utils/datetime'
 
 export default {
   name: 'NovoAgendamento',
