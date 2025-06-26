@@ -7,6 +7,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Configuracao from '../views/Configuracao.vue'
 import Clientes from '../views/Clientes.vue'
 import Agendamentos from '../views/Agendamentos.vue'
+import NovoAgendamento from '../views/NovoAgendamento.vue'
 import Servicos from '../views/Servicos.vue'
 import Usuarios from '../views/Usuarios.vue'
 import SearchProfiles from '../views/SearchProfiles.vue'
@@ -42,6 +43,7 @@ const routes = [
   { path: '/clientes', name: 'Clientes', component: Clientes },
   { path: '/servicos', name: 'Servicos', component: Servicos },
   { path: '/salas', name: 'Salas', component: Salas },
+  { path: '/agendamentos/novo', name: 'NovoAgendamento', component: NovoAgendamento },
   { path: '/agendamentos', name: 'Agendamentos', component: Agendamentos },
   { path: '/comprovantes', name: 'Comprovantes', component: Comprovantes },
   { path: '/despesas', name: 'Despesas', component: Despesas },
