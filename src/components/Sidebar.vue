@@ -91,6 +91,21 @@
           <!-- Relatórios -->
           <div class="space-y-2">
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Relatórios</h3>
+            <router-link to="/relatorio-agendamentos" class="flex items-center text-gray-700 hover:text-blue-600">
+              <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-width="2"/>
+                <line x1="16" y1="2" x2="16" y2="6" stroke-width="2"/>
+                <line x1="8" y1="2" x2="8" y2="6" stroke-width="2"/>
+                <line x1="3" y1="10" x2="21" y2="10" stroke-width="2"/>
+              </svg>
+              <span>Agendamentos</span>
+            </router-link>
+            <router-link to="/recebimento" class="flex items-center text-gray-700 hover:text-blue-600">
+              <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 8c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0-4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+              </svg>
+              <span>Recebimento</span>
+            </router-link>
             <router-link to="/faturamento" class="flex items-center text-gray-700 hover:text-blue-600">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3v18h18M9 17v-4M13 17v-8M17 17V7" />
