@@ -211,7 +211,7 @@ export default {
       if (this.form.email) {
         const { data } = await supabase
           .from('clients')
-          .select('id')
+          .select('id, active')
           .eq('user_id', this.profile.id)
           .eq('email', this.form.email)
           .maybeSingle()
@@ -222,7 +222,7 @@ export default {
       if (!existingClient && this.form.cpf) {
         const { data } = await supabase
           .from('clients')
-          .select('id')
+          .select('id, active')
           .eq('user_id', this.profile.id)
           .eq('cpf', this.form.cpf)
           .maybeSingle()
@@ -233,7 +233,7 @@ export default {
       if (!existingClient && this.form.phone) {
         const { data } = await supabase
           .from('clients')
-          .select('id')
+          .select('id, active')
           .eq('user_id', this.profile.id)
           .eq('phone', this.form.phone)
           .maybeSingle()
@@ -241,6 +241,10 @@ export default {
       }
 
       if (existingClient) {
+        if (existingClient.active === false) {
+          alert('Seu cadastro está inativo. Entre em contato com o consultório.')
+          return
+        }
         clientId = existingClient.id
         // Atualiza cadastro caso dados diferentes sejam informados
         const { error: updateErr } = await supabase
@@ -267,7 +271,8 @@ export default {
             phone: this.form.phone,
             cpf: this.form.cpf,
             from_site: true,
-            pending_update: true
+            pending_update: true,
+            active: true
           })
           .select()
           .single()

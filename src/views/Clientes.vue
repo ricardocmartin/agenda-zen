@@ -205,7 +205,14 @@
               <option v-for="c in cities" :key="c.id" :value="c.id">{{ c.nome }}</option>
             </select>
           </div>
-            <div class="flex justify-end space-x-2 md:col-span-2">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Ativo?</label>
+            <select v-model="form.active" :disabled="isReadOnly" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
+          </div>
+          <div class="flex justify-end space-x-2 md:col-span-2">
             <button type="button" @click="handleClose" class="px-4 py-2 rounded border">Fechar</button>
             <button v-if="modalMode === 'view'" type="button" @click="enableEdit" class="btn btn-success">Editar</button>
             <button type="submit" class="btn" :disabled="isReadOnly">Salvar</button>
@@ -320,7 +327,8 @@ export default {
           stateId: '',
           cityId: '',
           from_site: false,
-          pending_update: false
+          pending_update: false,
+          active: true
         },
         states: [],
         cities: [],
@@ -398,14 +406,15 @@ export default {
           stateId: client.state_id,
           cityId: client.city_id,
           from_site: client.from_site,
-          pending_update: client.pending_update
+          pending_update: client.pending_update,
+          active: client.active
         }
         this.originalForm = { ...this.form }
         await this.fetchClientAppointments()
         await this.fetchClientHistory()
       } else {
         this.editingId = null
-        this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '', from_site: false, pending_update: false }
+        this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '', from_site: false, pending_update: false, active: true }
         this.originalForm = { ...this.form }
         this.clientAppointments = []
         this.history = []
@@ -422,7 +431,7 @@ export default {
       this.showModal = false
       this.modalMode = 'new'
       this.editingId = null
-      this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '', from_site: false, pending_update: false }
+      this.form = { name: '', email: '', phone: '', birthdate: '', cpf: '', cep: '', street: '', number: '', complement: '', neighborhood: '', stateId: '', cityId: '', from_site: false, pending_update: false, active: true }
       this.activeTab = 'cadastro'
       this.clientAppointments = []
       this.history = []
@@ -460,10 +469,11 @@ export default {
             street: this.form.street,
             number: this.form.number,
             complement: this.form.complement,
-            neighborhood: this.form.neighborhood,
+          neighborhood: this.form.neighborhood,
           state_id: this.form.stateId,
           city_id: this.form.cityId,
-          pending_update: false
+          pending_update: false,
+          active: this.form.active
         })
           .eq('id', this.editingId)
           .select()
@@ -482,12 +492,13 @@ export default {
             street: this.form.street,
             number: this.form.number,
             complement: this.form.complement,
-            neighborhood: this.form.neighborhood,
+          neighborhood: this.form.neighborhood,
           state_id: this.form.stateId,
           city_id: this.form.cityId,
           user_id: this.userId,
           from_site: this.form.from_site,
-          pending_update: this.form.pending_update
+          pending_update: this.form.pending_update,
+          active: this.form.active
         })
           .select()
           .single())
@@ -510,6 +521,17 @@ export default {
     async handleDeleteClient(id) {
       const confirmed = confirm('Tem certeza que deseja excluir este cliente?')
       if (!confirmed) return
+
+      const { data: appts } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('client_id', id)
+        .limit(1)
+
+      if (appts && appts.length) {
+        alert('Não é possível excluir cliente com atendimentos. Inative o cliente.')
+        return
+      }
 
       const { error } = await supabase
         .from('clients')
