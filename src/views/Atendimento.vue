@@ -28,7 +28,7 @@
           </div>
           <input type="file" multiple @change="handleFileChange" class="mb-4" accept=".pdf,.doc,.txt,.png,.jpeg,.jpg" />
           <div class="space-x-2">
-            <button @click="saveNote" class="btn">{{ isEditing ? 'Atualizar' : 'Salvar' }}</button>
+            <button @click="saveNote" class="btn">{{ isEditing ? 'Atualizar' : 'Finalizar atendimento' }}</button>
             <button v-if="isEditing" @click="cancelEdit" class="btn btn-danger">Cancelar</button>
           </div>
         </div>
