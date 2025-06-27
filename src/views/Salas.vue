@@ -22,7 +22,7 @@
               class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
-              @click="openModal()"
+              @click="openModal"
               class="btn"
             >
               Nova Sala
@@ -108,15 +108,22 @@
               <button type="button" @click="generateMeetLink" :disabled="viewMode" class="btn">Gerar</button>
               <button type="button" @click="pasteFromClipboard" :disabled="viewMode" class="btn">Paste</button>
             </div>
-            <p class="text-xs text-gray-500 mt-2">
-              Após abrir a nova aba, copie o link da reunião e cole no campo acima.
-            </p>
-          </div>
-          <div class="flex justify-end space-x-2">
-            <button type="button" @click="closeModal" class="px-4 py-2 rounded border">{{ viewMode ? 'Fechar' : 'Cancelar' }}</button>
-            <button v-if="viewMode" type="button" @click="enableEditing" class="btn">Editar</button>
-            <button v-else type="submit" class="btn">Salvar</button>
-          </div>
+          <p class="text-xs text-gray-500 mt-2">
+            Após abrir a nova aba, copie o link da reunião e cole no campo acima.
+          </p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Ativo?</label>
+          <select v-model="form.active" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <option :value="true">Sim</option>
+            <option :value="false">Não</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="button" @click="closeModal" class="px-4 py-2 rounded border">{{ viewMode ? 'Fechar' : 'Cancelar' }}</button>
+          <button v-if="viewMode" type="button" @click="enableEditing" class="btn">Editar</button>
+          <button v-else type="submit" class="btn">Salvar</button>
+        </div>
         </form>
       </Modal>
     </main>
@@ -141,7 +148,8 @@ export default {
       search: '',
       form: {
         name: '',
-        googleMeetLink: ''
+        googleMeetLink: '',
+        active: true
       },
       rooms: [],
       sidebarOpen: window.innerWidth >= 768,
@@ -156,11 +164,12 @@ export default {
         this.editingId = room.id
         this.form = {
           name: room.name,
-          googleMeetLink: room.google_meet_link
+          googleMeetLink: room.google_meet_link,
+          active: room.active
         }
       } else {
         this.editingId = null
-        this.form = { name: '', googleMeetLink: '' }
+        this.form = { name: '', googleMeetLink: '', active: true }
       }
       this.showModal = true
     },
@@ -186,7 +195,7 @@ export default {
     closeModal() {
       this.showModal = false
       this.viewMode = false
-      this.form = { name: '', googleMeetLink: '' }
+      this.form = { name: '', googleMeetLink: '', active: true }
       this.editingId = null
     },
     enableEditing() {
@@ -199,7 +208,8 @@ export default {
           .from('rooms')
           .update({
             name: this.form.name,
-            google_meet_link: this.form.googleMeetLink
+            google_meet_link: this.form.googleMeetLink,
+            active: this.form.active
           })
           .eq('id', this.editingId)
           .select()
@@ -210,7 +220,8 @@ export default {
           .insert({
             name: this.form.name,
             google_meet_link: this.form.googleMeetLink,
-            user_id: this.userId
+            user_id: this.userId,
+            active: this.form.active
           })
           .select()
           .single())
@@ -231,6 +242,28 @@ export default {
     async handleDeleteRoom(id) {
       const confirmed = confirm('Tem certeza que deseja excluir esta sala?')
       if (!confirmed) return
+
+      const { data: appts } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('room_id', id)
+        .limit(1)
+
+      if (appts && appts.length) {
+        const { error: updError } = await supabase
+          .from('rooms')
+          .update({ active: false })
+          .eq('id', id)
+
+        if (updError) {
+          alert('Erro ao inativar sala: ' + updError.message)
+        } else {
+          const idx = this.rooms.findIndex(r => r.id === id)
+          if (idx !== -1) this.rooms[idx].active = false
+          alert('Sala inativada.')
+        }
+        return
+      }
 
       const { error } = await supabase
         .from('rooms')

@@ -106,6 +106,7 @@ export default {
         .from('services')
         .select()
         .eq('user_id', this.userId)
+        .eq('active', true)
       this.services = data || []
       this.selectedServices = this.services.map(s => s.id)
     },

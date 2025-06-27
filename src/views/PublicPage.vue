@@ -322,6 +322,7 @@ export default {
         .select()
         .eq('user_id', data.id)
         .eq('allow_online_booking', true)
+        .eq('active', true)
 
       this.services = servicesData || []
       this.schedule.startTime = data.start_time || ''

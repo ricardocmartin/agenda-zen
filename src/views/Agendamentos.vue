@@ -771,6 +771,7 @@ export default {
       .from('services')
       .select()
       .eq('user_id', this.userId)
+      .eq('active', true)
 
     if (serviceData) {
       this.services = serviceData
@@ -780,6 +781,7 @@ export default {
       .from('rooms')
       .select()
       .eq('user_id', this.userId)
+      .eq('active', true)
 
     if (roomsData) {
       this.rooms = roomsData

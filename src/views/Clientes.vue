@@ -357,6 +357,7 @@ export default {
         .from('services')
         .select()
         .eq('user_id', this.userId)
+        .eq('active', true)
       if (data) this.services = data
     },
     async fetchRoomsList() {
@@ -364,6 +365,7 @@ export default {
         .from('rooms')
         .select()
         .eq('user_id', this.userId)
+        .eq('active', true)
       if (data) this.rooms = data
     },
     async fetchStatesList() {
@@ -529,7 +531,18 @@ export default {
         .limit(1)
 
       if (appts && appts.length) {
-        alert('Não é possível excluir cliente com atendimentos. Inative o cliente.')
+        const { error: updError } = await supabase
+          .from('clients')
+          .update({ active: false })
+          .eq('id', id)
+
+        if (updError) {
+          alert('Erro ao inativar cliente: ' + updError.message)
+        } else {
+          const idx = this.clients.findIndex(c => c.id === id)
+          if (idx !== -1) this.clients[idx].active = false
+          alert('Cliente inativado.')
+        }
         return
       }
 
