@@ -22,6 +22,11 @@
   @apply bg-green-600 text-white hover:bg-green-700;
 }
 
+/* Secondary style variant */
+.btn-secondary {
+  @apply bg-gray-600 text-white hover:bg-gray-700;
+}
+
 /* Disabled state for buttons */
 button:disabled,
 .btn:disabled {
