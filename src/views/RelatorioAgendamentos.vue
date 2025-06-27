@@ -155,6 +155,7 @@ export default {
       .from('services')
       .select()
       .eq('user_id', this.userId)
+      .eq('active', true)
     if (serviceData) this.services = serviceData
 
     const today = new Date()

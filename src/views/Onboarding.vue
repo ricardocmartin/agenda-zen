@@ -189,7 +189,8 @@ export default {
           name: s.name,
           duration: s.duration,
           price: parseFloat(s.price),
-          user_id: this.userId
+          user_id: this.userId,
+          active: true
         })
       }
     },
