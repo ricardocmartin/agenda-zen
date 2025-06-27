@@ -150,6 +150,13 @@
               <option :value="false">Não</option>
             </select>
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Ativo?</label>
+            <select v-model="form.active" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">{{ viewMode ? 'Fechar' : 'Cancelar' }}</button>
             <button v-if="viewMode" type="button" @click="enableEditing" class="btn">Editar</button>
