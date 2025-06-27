@@ -106,14 +106,21 @@
               <button type="button" @click="generateMeetLink" class="btn">Gerar</button>
               <button type="button" @click="pasteFromClipboard" class="btn">Paste</button>
             </div>
-            <p class="text-xs text-gray-500 mt-2">
-              Após abrir a nova aba, copie o link da reunião e cole no campo acima.
-            </p>
-          </div>
-          <div class="flex justify-end space-x-2">
-            <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="btn">Salvar</button>
-          </div>
+          <p class="text-xs text-gray-500 mt-2">
+            Após abrir a nova aba, copie o link da reunião e cole no campo acima.
+          </p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Ativo?</label>
+          <select v-model="form.active" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <option :value="true">Sim</option>
+            <option :value="false">Não</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
+          <button type="submit" class="btn">Salvar</button>
+        </div>
         </form>
       </Modal>
     </main>
@@ -136,7 +143,8 @@ export default {
       search: '',
       form: {
         name: '',
-        googleMeetLink: ''
+        googleMeetLink: '',
+        active: true
       },
       rooms: [],
       sidebarOpen: window.innerWidth >= 768,
@@ -146,6 +154,7 @@ export default {
   },
   methods: {
     openModal() {
+      this.form = { name: '', googleMeetLink: '', active: true }
       this.showModal = true
     },
     generateMeetLink() {
@@ -169,7 +178,7 @@ export default {
     },
     closeModal() {
       this.showModal = false
-      this.form = { name: '', googleMeetLink: '' }
+      this.form = { name: '', googleMeetLink: '', active: true }
     },
     async handleAddRoom() {
       const { data, error } = await supabase
@@ -177,7 +186,8 @@ export default {
         .insert({
           name: this.form.name,
           google_meet_link: this.form.googleMeetLink,
-          user_id: this.userId
+          user_id: this.userId,
+          active: this.form.active
         })
         .select()
         .single()
@@ -192,6 +202,28 @@ export default {
     async handleDeleteRoom(id) {
       const confirmed = confirm('Tem certeza que deseja excluir esta sala?')
       if (!confirmed) return
+
+      const { data: appts } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('room_id', id)
+        .limit(1)
+
+      if (appts && appts.length) {
+        const { error: updError } = await supabase
+          .from('rooms')
+          .update({ active: false })
+          .eq('id', id)
+
+        if (updError) {
+          alert('Erro ao inativar sala: ' + updError.message)
+        } else {
+          const idx = this.rooms.findIndex(r => r.id === id)
+          if (idx !== -1) this.rooms[idx].active = false
+          alert('Sala inativada.')
+        }
+        return
+      }
 
       const { error } = await supabase
         .from('rooms')

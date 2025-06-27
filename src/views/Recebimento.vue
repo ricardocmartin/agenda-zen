@@ -203,6 +203,7 @@ export default {
     if (clients) this.clients = clients
 
     const { data: services } = await supabase.from('services').select().eq('user_id', this.userId)
+      .eq('active', true)
     if (services) this.services = services
 
     const today = new Date()

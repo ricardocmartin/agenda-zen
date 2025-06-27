@@ -130,6 +130,13 @@
             <label class="block text-sm font-medium text-gray-700">Quantidade de sessões</label>
             <input type="number" v-model="form.sessions" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Ativo?</label>
+            <select v-model="form.active" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
+          </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
             <button type="submit" class="btn">Salvar</button>
@@ -163,7 +170,8 @@ export default {
         price: '',
         allowOnlineBooking: true,
         isPackage: false,
-        sessions: null
+        sessions: null,
+        active: true
       },
       services: [],
       page: 1,
@@ -181,7 +189,8 @@ export default {
           price: service.price,
           allowOnlineBooking: service.allow_online_booking,
           isPackage: service.is_package,
-          sessions: service.session_count
+          sessions: service.session_count,
+          active: service.active
         }
       } else {
         this.editingId = null
@@ -192,7 +201,8 @@ export default {
           price: '',
           allowOnlineBooking: true,
           isPackage: false,
-          sessions: null
+          sessions: null,
+          active: true
         }
       }
       this.showModal = true
@@ -206,7 +216,8 @@ export default {
         price: '',
         allowOnlineBooking: true,
         isPackage: false,
-        sessions: null
+        sessions: null,
+        active: true
       }
       this.editingId = null
     },
@@ -219,11 +230,12 @@ export default {
             name: this.form.name,
             description: this.form.description,
             duration: this.form.duration,
-            price: parseFloat(this.form.price),
-            allow_online_booking: this.form.allowOnlineBooking,
-            is_package: this.form.isPackage,
-            session_count: this.form.sessions
-          })
+          price: parseFloat(this.form.price),
+          allow_online_booking: this.form.allowOnlineBooking,
+          is_package: this.form.isPackage,
+          session_count: this.form.sessions,
+          active: this.form.active
+        })
           .eq('id', this.editingId)
           .select()
           .single())
@@ -236,10 +248,11 @@ export default {
             duration: this.form.duration,
             price: parseFloat(this.form.price),
             allow_online_booking: this.form.allowOnlineBooking,
-            is_package: this.form.isPackage,
-            session_count: this.form.sessions,
-            user_id: this.userId
-          })
+          is_package: this.form.isPackage,
+          session_count: this.form.sessions,
+          active: this.form.active,
+          user_id: this.userId
+        })
           .select()
           .single())
       }
@@ -259,6 +272,28 @@ export default {
     async handleDeleteService(id) {
       const confirmed = confirm('Tem certeza que deseja excluir este serviço?')
       if (!confirmed) return
+
+      const { data: appts } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('service_id', id)
+        .limit(1)
+
+      if (appts && appts.length) {
+        const { error: updError } = await supabase
+          .from('services')
+          .update({ active: false })
+          .eq('id', id)
+
+        if (updError) {
+          alert('Erro ao inativar serviço: ' + updError.message)
+        } else {
+          const idx = this.services.findIndex(s => s.id === id)
+          if (idx !== -1) this.services[idx].active = false
+          alert('Serviço inativado.')
+        }
+        return
+      }
 
       const { error } = await supabase
         .from('services')
