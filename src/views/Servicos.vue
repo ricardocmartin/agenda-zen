@@ -51,7 +51,7 @@
                 <td class="px-4 py-2">{{ service.description }}</td>
                 <td class="px-4 py-2">{{ service.duration }} minutos</td>
                 <td class="px-4 py-2">{{ formatPrice(service.price) }}</td>
-                <td class="px-4 py-2 text-right space-x-2">
+                <td class="px-4 py-2 text-right space-x-2 whitespace-nowrap">
                   <button
                     @click="openModal(service)"
                     class="btn btn-sm"
