@@ -22,7 +22,7 @@
               class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
-              @click="openModal"
+              @click="openModal()"
               class="btn"
             >
               Nova Sala
@@ -56,7 +56,9 @@
                     Link
                   </a>
                 </td>
-                <td class="px-4 py-2 text-right">
+                <td class="px-4 py-2 text-right space-x-2 whitespace-nowrap">
+                  <button @click="openModal(room, true)" class="btn btn-sm btn-secondary">Visualizar</button>
+                  <button @click="openModal(room)" class="btn btn-sm">Editar</button>
                   <button
                     @click="handleDeleteRoom(room.id)"
                     class="btn btn-sm btn-danger"
@@ -93,18 +95,18 @@
       </section>
 
       <Modal v-if="showModal" @close="closeModal">
-        <h3 class="text-lg font-semibold mb-4">Adicionar Sala</h3>
-        <form @submit.prevent="handleAddRoom" class="space-y-6">
+        <h3 class="text-lg font-semibold mb-4">{{ viewMode ? 'Visualizar Sala' : (editingId ? 'Editar Sala' : 'Adicionar Sala') }}</h3>
+        <form @submit.prevent="handleSaveRoom" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
-            <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.name" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Link do Google Meet</label>
             <div class="flex space-x-2 mt-1">
-              <input type="text" v-model="form.googleMeetLink" class="flex-grow px-4 py-2 border rounded-md" />
-              <button type="button" @click="generateMeetLink" class="btn">Gerar</button>
-              <button type="button" @click="pasteFromClipboard" class="btn">Paste</button>
+              <input type="text" v-model="form.googleMeetLink" :disabled="viewMode" class="flex-grow px-4 py-2 border rounded-md" />
+              <button type="button" @click="generateMeetLink" :disabled="viewMode" class="btn">Gerar</button>
+              <button type="button" @click="pasteFromClipboard" :disabled="viewMode" class="btn">Paste</button>
             </div>
           <p class="text-xs text-gray-500 mt-2">
             Após abrir a nova aba, copie o link da reunião e cole no campo acima.
@@ -112,14 +114,15 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Ativo?</label>
-          <select v-model="form.active" class="w-full mt-1 px-4 py-2 border rounded-md">
+          <select v-model="form.active" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md">
             <option :value="true">Sim</option>
             <option :value="false">Não</option>
           </select>
         </div>
         <div class="flex justify-end space-x-2">
-          <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-          <button type="submit" class="btn">Salvar</button>
+          <button type="button" @click="closeModal" class="px-4 py-2 rounded border">{{ viewMode ? 'Fechar' : 'Cancelar' }}</button>
+          <button v-if="viewMode" type="button" @click="enableEditing" class="btn">Editar</button>
+          <button v-else type="submit" class="btn">Salvar</button>
         </div>
         </form>
       </Modal>
@@ -140,6 +143,8 @@ export default {
     return {
       userId: null,
       showModal: false,
+      editingId: null,
+      viewMode: false,
       search: '',
       form: {
         name: '',
@@ -153,8 +158,19 @@ export default {
     }
   },
   methods: {
-    openModal() {
-      this.form = { name: '', googleMeetLink: '', active: true }
+    openModal(room, view = false) {
+      this.viewMode = view
+      if (room) {
+        this.editingId = room.id
+        this.form = {
+          name: room.name,
+          googleMeetLink: room.google_meet_link,
+          active: room.active
+        }
+      } else {
+        this.editingId = null
+        this.form = { name: '', googleMeetLink: '', active: true }
+      }
       this.showModal = true
     },
     generateMeetLink() {
@@ -178,24 +194,48 @@ export default {
     },
     closeModal() {
       this.showModal = false
+      this.viewMode = false
       this.form = { name: '', googleMeetLink: '', active: true }
+      this.editingId = null
     },
-    async handleAddRoom() {
-      const { data, error } = await supabase
-        .from('rooms')
-        .insert({
-          name: this.form.name,
-          google_meet_link: this.form.googleMeetLink,
-          user_id: this.userId,
-          active: this.form.active
-        })
-        .select()
-        .single()
+    enableEditing() {
+      this.viewMode = false
+    },
+    async handleSaveRoom() {
+      let data, error
+      if (this.editingId) {
+        ;({ data, error } = await supabase
+          .from('rooms')
+          .update({
+            name: this.form.name,
+            google_meet_link: this.form.googleMeetLink,
+            active: this.form.active
+          })
+          .eq('id', this.editingId)
+          .select()
+          .single())
+      } else {
+        ;({ data, error } = await supabase
+          .from('rooms')
+          .insert({
+            name: this.form.name,
+            google_meet_link: this.form.googleMeetLink,
+            user_id: this.userId,
+            active: this.form.active
+          })
+          .select()
+          .single())
+      }
 
       if (error) {
         alert('Erro ao salvar sala: ' + error.message)
       } else {
-        this.rooms.push(data)
+        if (this.editingId) {
+          const index = this.rooms.findIndex(r => r.id === this.editingId)
+          if (index !== -1) this.rooms[index] = data
+        } else {
+          this.rooms.push(data)
+        }
         this.closeModal()
       }
     },

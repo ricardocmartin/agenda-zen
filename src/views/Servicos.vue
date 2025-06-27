@@ -53,6 +53,12 @@
                 <td class="px-4 py-2">{{ formatPrice(service.price) }}</td>
                 <td class="px-4 py-2 text-right space-x-2 whitespace-nowrap">
                   <button
+                    @click="openModal(service, true)"
+                    class="btn btn-sm btn-secondary"
+                  >
+                    Visualizar
+                  </button>
+                  <button
                     @click="openModal(service)"
                     class="btn btn-sm"
                   >
@@ -94,41 +100,55 @@
       </section>
 
       <Modal v-if="showModal" @close="closeModal">
-        <h3 class="text-lg font-semibold mb-4">{{ editingId ? 'Editar Serviço' : 'Adicionar Serviço' }}</h3>
+        <h3 class="text-lg font-semibold mb-4">{{ viewMode ? 'Visualizar Serviço' : (editingId ? 'Editar Serviço' : 'Adicionar Serviço') }}</h3>
         <form @submit.prevent="handleSaveService" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
-            <input type="text" v-model="form.name" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.name" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Descrição</label>
-            <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
+            <textarea v-model="form.description" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Tempo de duração</label>
-            <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="text" v-model="form.duration" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Valor</label>
-            <input type="number" step="0.01" v-model="form.price" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="number" step="0.01" v-model="form.price" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Agendável pelo site?</label>
-            <select v-model="form.allowOnlineBooking" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <select v-model="form.allowOnlineBooking" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md">
               <option :value="true">Sim</option>
               <option :value="false">Não</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">É pacote?</label>
-            <select v-model="form.isPackage" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <select v-model="form.isPackage" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md">
               <option :value="true">Sim</option>
               <option :value="false">Não</option>
             </select>
           </div>
           <div v-if="form.isPackage">
             <label class="block text-sm font-medium text-gray-700">Quantidade de sessões</label>
-            <input type="number" v-model="form.sessions" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <input type="number" v-model="form.sessions" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Ativo?</label>
+            <select v-model="form.active" :disabled="viewMode" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Ativo?</label>
+            <select v-model="form.active" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option :value="true">Sim</option>
+              <option :value="false">Não</option>
+            </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Ativo?</label>
@@ -138,8 +158,9 @@
             </select>
           </div>
           <div class="flex justify-end space-x-2">
-            <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="btn">Salvar</button>
+            <button type="button" @click="closeModal" class="px-4 py-2 rounded border">{{ viewMode ? 'Fechar' : 'Cancelar' }}</button>
+            <button v-if="viewMode" type="button" @click="enableEditing" class="btn">Editar</button>
+            <button v-else type="submit" class="btn">Salvar</button>
           </div>
         </form>
       </Modal>
@@ -161,6 +182,7 @@ export default {
       userId: null,
       showModal: false,
       editingId: null,
+      viewMode: false,
       search: '',
       sidebarOpen: window.innerWidth >= 768,
       form: {
@@ -179,7 +201,8 @@ export default {
     }
   },
   methods: {
-    openModal(service) {
+    openModal(service, view = false) {
+      this.viewMode = view
       if (service) {
         this.editingId = service.id
         this.form = {
@@ -209,6 +232,7 @@ export default {
     },
     closeModal() {
       this.showModal = false
+      this.viewMode = false
       this.form = {
         name: '',
         description: '',
@@ -220,6 +244,9 @@ export default {
         active: true
       }
       this.editingId = null
+    },
+    enableEditing() {
+      this.viewMode = false
     },
     async handleSaveService() {
       let data, error
