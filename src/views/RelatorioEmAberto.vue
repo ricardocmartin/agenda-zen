@@ -96,7 +96,7 @@ export default {
             const key = `${cl.id}-${svc.id}`
             const data = stats[key]
             if (!data) return
-            const packages = Math.floor(data.total / svc.session_count)
+            const packages = Math.ceil(data.total / svc.session_count)
             const remaining = packages * svc.session_count - data.active
             if (remaining > 0) {
               rows.push({ client_id: cl.id, service_id: svc.id, remaining })
