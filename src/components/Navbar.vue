@@ -1,6 +1,7 @@
 <template>
-  <nav class="flex items-center justify-between px-6 md:px-10 py-4 bg-white border-b sticky top-0 z-40">
-    <router-link to="/" class="text-xl font-semibold text-primary">Agenda Zen</router-link>
+  <nav class="bg-white border-b sticky top-0 z-40">
+    <div class="container mx-auto flex items-center justify-between px-6 md:px-10 py-4">
+      <router-link to="/" class="text-xl font-semibold text-primary">Agenda Zen</router-link>
 
     <!-- Botão hambúrguer visível apenas no mobile -->
     <button @click="toggleMenu" class="md:hidden focus:outline-none">
@@ -23,6 +24,7 @@
       <router-link @click="open = false" to="/planos" class="text-primary hover:underline">Planos</router-link>
       <router-link @click="open = false" to="/contato" class="text-primary hover:underline">Contato</router-link>
       <router-link @click="open = false" to="/login" class="btn">Login</router-link>
+    </div>
     </div>
   </nav>
 </template>
