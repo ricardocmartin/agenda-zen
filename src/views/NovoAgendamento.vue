@@ -154,7 +154,7 @@ export default {
           this.form.roomId = canceled.room_id || ''
           this.form.description = canceled.description || ''
           this.form.paid = !!canceled.paid
-          this.form.status = canceled.status || this.form.status
+          this.form.status = 'confirmed'
           this.fieldsDisabled = true
           return
         }
@@ -203,7 +203,7 @@ export default {
               this.form.description = last.description || ''
               this.form.paid = !!last.paid
               this.form.duration = last.duration || this.form.duration
-              this.form.status = last.status || this.form.status
+              this.form.status = 'confirmed'
             }
             this.fieldsDisabled = true
             break
@@ -230,6 +230,7 @@ export default {
         existingCount = count || 0
       }
 
+      const isRescheduling = !!this.reschedulingId
       const { data, error } = await supabase
         .from('appointments')
         .insert({
@@ -264,9 +265,9 @@ export default {
           serviceInfo.is_package &&
           serviceInfo.session_count &&
           serviceInfo.session_count > 1 &&
-          (!this.reschedulingId ||
-            (!this.fieldsDisabled &&
-              existingCount % serviceInfo.session_count === 0))
+          !isRescheduling &&
+          (!this.fieldsDisabled &&
+            existingCount % serviceInfo.session_count === 0)
         ) {
           const extra = []
           for (let i = 1; i < serviceInfo.session_count; i++) {
