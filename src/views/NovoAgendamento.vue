@@ -103,7 +103,8 @@ export default {
         cancelLimitHours: 0
       },
       fieldsDisabled: false,
-      sidebarOpen: window.innerWidth >= 768
+      sidebarOpen: window.innerWidth >= 768,
+      reschedulingId: null
     }
   },
   methods: {
@@ -133,10 +134,11 @@ export default {
 
       const { data: canceled } = await supabase
         .from('appointments')
-        .select('service_id, room_id, description, paid, status, duration')
+        .select('id, service_id, room_id, description, paid, status, duration')
         .eq('user_id', this.userId)
         .eq('client_id', clientId)
         .eq('status', 'canceled')
+        .eq('rescheduled', false)
         .order('created_at', { ascending: true })
         .order('date', { ascending: true })
         .order('time', { ascending: true })
@@ -146,6 +148,7 @@ export default {
       if (canceled) {
         const svc = this.services.find(s => s.id === canceled.service_id)
         if (svc && svc.is_package && svc.session_count) {
+          this.reschedulingId = canceled.id
           this.form.serviceId = svc.id
           this.form.duration = canceled.duration || svc.duration || ''
           this.form.roomId = canceled.room_id || ''
@@ -156,6 +159,7 @@ export default {
           return
         }
       }
+      this.reschedulingId = null
 
       const { data: appts } = await supabase
         .from('appointments')
@@ -248,6 +252,13 @@ export default {
       if (error) {
         alert('Erro ao salvar agendamento: ' + error.message)
       } else {
+        if (this.reschedulingId) {
+          await supabase
+            .from('appointments')
+            .update({ rescheduled: true })
+            .eq('id', this.reschedulingId)
+          this.reschedulingId = null
+        }
         if (
           serviceInfo &&
           serviceInfo.is_package &&
