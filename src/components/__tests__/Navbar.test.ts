@@ -13,7 +13,13 @@ vi.mock('../../supabase', () => ({
 
 describe('Navbar', () => {
   it('renders brand name', () => {
-    const { getByText } = render(Navbar, { global: { stubs: ['router-link'] } })
+    const { getByText } = render(Navbar, {
+      global: {
+        stubs: {
+          'router-link': { template: '<a><slot /></a>' }
+        }
+      }
+    })
     expect(getByText('Agenda Zen')).toBeTruthy()
   })
 })
