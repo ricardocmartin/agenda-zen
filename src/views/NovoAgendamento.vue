@@ -165,17 +165,19 @@ export default {
 
       const grouped = {}
       ;(appts || []).forEach(a => {
-        if (!grouped[a.service_id]) grouped[a.service_id] = { total: 0, active: 0 }
-        grouped[a.service_id].total += 1
-        if (a.status !== 'canceled') grouped[a.service_id].active += 1
+        if (!grouped[a.service_id]) grouped[a.service_id] = { done: 0, pending: 0 }
+        if (a.status === 'completed' || a.status === 'no_show') {
+          grouped[a.service_id].done += 1
+        } else if (a.status !== 'canceled') {
+          grouped[a.service_id].pending += 1
+        }
       })
 
       for (const svc of this.services.filter(s => s.is_package && s.session_count)) {
         const data = grouped[svc.id]
         if (!data) continue
-        const valid = data.active
-        const remainder = valid % svc.session_count
-        const remaining = remainder === 0 ? 0 : svc.session_count - remainder
+        const cycleRemaining = svc.session_count - (data.done % svc.session_count)
+        const remaining = Math.max(cycleRemaining - data.pending, 0)
         if (remaining > 0) {
           const confirmMsg = `O cliente possui sessões pendentes do serviço ${svc.name}. Deseja agendar para este serviço?`
           if (confirm(confirmMsg)) {
@@ -219,7 +221,7 @@ export default {
           .eq('user_id', this.userId)
           .eq('client_id', this.form.clientId)
           .eq('service_id', this.form.serviceId)
-          .neq('status', 'canceled')
+          .in('status', ['completed', 'no_show'])
         existingCount = count || 0
       }
 
