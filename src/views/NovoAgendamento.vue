@@ -137,8 +137,9 @@ export default {
         .eq('user_id', this.userId)
         .eq('client_id', clientId)
         .eq('status', 'canceled')
-        .order('date', { ascending: false })
-        .order('time', { ascending: false })
+        .order('created_at', { ascending: true })
+        .order('date', { ascending: true })
+        .order('time', { ascending: true })
         .limit(1)
         .maybeSingle()
 
