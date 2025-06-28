@@ -486,6 +486,7 @@ export default {
             .eq('client_id', this.form.clientId)
             .eq('service_id', this.form.serviceId)
             .neq('status', 'canceled')
+            .neq('status', 'deleted')
           existingCount = count || 0
         }
 
@@ -567,10 +568,12 @@ export default {
       const confirmed = confirm(confirmMessage)
       if (!confirmed) return
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('appointments')
-        .delete()
+        .update({ status: 'deleted' })
         .eq('id', id)
+        .select()
+        .single()
 
       if (error) {
         alert('Erro ao excluir agendamento: ' + error.message)
@@ -606,7 +609,7 @@ export default {
       if (appt.from_site && !appt.confirmed) return 'text-red-600'
       if (appt.status === 'completed') return 'text-green-600'
       if (appt.status === 'no_show') return 'text-gray-600'
-      if (appt.status === 'canceled') return 'line-through'
+      if (appt.status === 'canceled' || appt.status === 'deleted') return 'line-through'
       return ''
     },
     sortBy(column) {
@@ -650,8 +653,7 @@ export default {
         return
       }
       Object.assign(this.selectedAppointment, data)
-      const idx = this.appointments.findIndex(a => a.id === data.id)
-      if (idx !== -1) this.appointments[idx] = data
+      this.appointments = this.appointments.filter(a => a.id !== data.id)
       this.closeDetails()
     },
     async markNoShow() {
@@ -840,6 +842,8 @@ export default {
       .from('appointments')
       .select()
       .eq('user_id', this.userId)
+      .neq('status', 'canceled')
+      .neq('status', 'deleted')
 
     if (appointmentData) {
       this.appointments = appointmentData

@@ -353,6 +353,8 @@ export default {
         .eq('user_id', this.userId)
         .gte('date', startWeek)
         .lte('date', endWeek)
+        .neq('status', 'canceled')
+        .neq('status', 'deleted')
 
       this.stats.week = weekData ? weekData.length : 0
       const counts = [0, 0, 0, 0, 0, 0, 0]
@@ -370,6 +372,8 @@ export default {
         .eq('user_id', this.userId)
         .gte('date', startMonth)
         .lte('date', endMonth)
+        .neq('status', 'canceled')
+        .neq('status', 'deleted')
 
       this.stats.month = monthData ? monthData.length : 0
 
@@ -408,6 +412,8 @@ export default {
         .eq('user_id', this.userId)
         .gte('date', startWeek)
         .lte('date', endWeek)
+        .neq('status', 'canceled')
+        .neq('status', 'deleted')
         .order('date', { ascending: true })
         .order('time', { ascending: true })
 
@@ -418,6 +424,8 @@ export default {
         .from('appointments')
         .select('client_id')
         .eq('user_id', this.userId)
+        .neq('status', 'canceled')
+        .neq('status', 'deleted')
 
       const counts = {}
       if (data) {
@@ -493,7 +501,7 @@ export default {
 
         const { error } = await supabase
           .from('appointments')
-          .delete()
+          .update({ status: 'deleted' })
           .eq('id', id)
 
         if (error) {
@@ -598,11 +606,21 @@ export default {
     },
     async cancelAppointment() {
       if (!this.selectedAppointment) return
-      await this.handleDeleteAppointment(
-        this.selectedAppointment.id,
-        'Tem certeza que deseja desmarcar este atendimento?'
-      )
+      const confirmed = confirm('Tem certeza que deseja desmarcar este atendimento?')
+      if (!confirmed) return
+      const { error } = await supabase
+        .from('appointments')
+        .update({ status: 'canceled' })
+        .eq('id', this.selectedAppointment.id)
+      if (error) {
+        alert('Erro ao desmarcar atendimento: ' + error.message)
+        return
+      }
+      this.upcomingAppointments = this.upcomingAppointments.filter(a => a.id !== this.selectedAppointment.id)
       this.closeDetails()
+      await this.fetchStats()
+      await this.fetchTopClients()
+      await this.fetchUpcomingAppointments()
     },
     markNoShow() {
       if (!this.selectedAppointment) return

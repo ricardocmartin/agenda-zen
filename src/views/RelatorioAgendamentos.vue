@@ -125,6 +125,8 @@ export default {
         .eq('user_id', this.userId)
         .gte('date', this.filterStart)
         .lte('date', this.filterEnd)
+        .neq('status', 'canceled')
+        .neq('status', 'deleted')
 
       if (this.clientId) {
         query = query.eq('client_id', this.clientId)

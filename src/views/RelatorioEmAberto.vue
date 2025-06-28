@@ -85,9 +85,9 @@ export default {
         if (!stats[key]) stats[key] = { done: 0, pending: 0, canceled: 0 }
         if (a.status === 'completed' || a.status === 'no_show') {
           stats[key].done += 1
-        } else if (a.status === 'canceled' && !a.rescheduled) {
+        } else if ((a.status === 'canceled' || a.status === 'deleted') && !a.rescheduled) {
           stats[key].canceled += 1
-        } else if (a.status !== 'canceled') {
+        } else if (a.status !== 'canceled' && a.status !== 'deleted') {
           stats[key].pending += 1
         }
       })
@@ -114,6 +114,7 @@ export default {
         .from('appointments')
         .select('client_id, service_id, status, rescheduled')
         .eq('user_id', this.userId)
+        .neq('status', 'deleted')
       if (this.clientId) query = query.eq('client_id', this.clientId)
       const { data } = await query
       this.appointments = data || []
