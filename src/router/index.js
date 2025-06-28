@@ -22,6 +22,7 @@ import MinhaAssinatura from '../views/MinhaAssinatura.vue'
 import Faturamento from '../views/Faturamento.vue'
 import RelatorioAgendamentos from '../views/RelatorioAgendamentos.vue'
 import Recebimento from '../views/Recebimento.vue'
+import RelatorioEmAberto from '../views/RelatorioEmAberto.vue'
 import Faq from '../views/Faq.vue'
 import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
 import TermosDeUso from '../views/TermosDeUso.vue'
@@ -53,6 +54,7 @@ const routes = [
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
   { path: '/minha-assinatura', name: 'MinhaAssinatura', component: MinhaAssinatura },
   { path: '/assinatura-plus', name: 'PagamentoPlus', component: PagamentoPlus },
+  { path: '/relatorio-em-aberto', name: 'RelatorioEmAberto', component: RelatorioEmAberto },
   { path: '/relatorio-agendamentos', name: 'RelatorioAgendamentos', component: RelatorioAgendamentos },
   { path: '/recebimento', name: 'Recebimento', component: Recebimento },
   { path: '/faturamento', name: 'Faturamento', component: Faturamento },
