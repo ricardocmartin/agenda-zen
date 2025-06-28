@@ -4,7 +4,7 @@
 
 /* Base button style used across the application */
 .btn {
-  @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700;
+  @apply bg-primary text-white px-5 py-2 rounded-md font-medium shadow hover:bg-primary-dark transition-colors;
 }
 
 /* Smaller variant for table actions */
@@ -14,17 +14,17 @@
 
 /* Danger style for destructive actions */
 .btn-danger {
-  @apply bg-red-600 text-white hover:bg-red-700;
+  @apply bg-red-600 text-white hover:bg-red-700 px-5 py-2 rounded-md transition-colors;
 }
 
 /* Success style variant */
 .btn-success {
-  @apply bg-green-600 text-white hover:bg-green-700;
+  @apply bg-green-600 text-white hover:bg-green-700 px-5 py-2 rounded-md transition-colors;
 }
 
 /* Secondary style variant */
 .btn-secondary {
-  @apply bg-gray-600 text-white hover:bg-gray-700;
+  @apply bg-gray-600 text-white hover:bg-gray-700 px-5 py-2 rounded-md transition-colors;
 }
 
 /* Disabled state for buttons */
@@ -42,4 +42,10 @@ input:disabled,
 select:disabled,
 textarea:disabled {
   @apply bg-gray-200 text-gray-500 cursor-not-allowed;
+}
+
+input,
+select,
+textarea {
+  @apply border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary;
 }

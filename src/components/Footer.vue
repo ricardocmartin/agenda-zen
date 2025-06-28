@@ -1,6 +1,6 @@
 <template>
-  <footer class="bg-gray-100 text-center text-sm text-gray-500 py-6 space-y-4">
-    <div class="space-x-4 text-blue-600">
+  <footer class="bg-gray-100 text-center text-sm text-gray-500 py-6 space-y-4 border-t">
+    <div class="space-x-4 text-primary">
       <a href="https://www.instagram.com/agendazen_" target="_blank" class="hover:underline">Instagram</a>
       <a href="https://www.facebook.com/agenda.zen" target="_blank" class="hover:underline">Facebook</a>
       <a href="https://x.com/agenda_zen" target="_blank" class="hover:underline">X</a>
