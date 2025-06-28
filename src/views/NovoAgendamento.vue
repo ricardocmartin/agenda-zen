@@ -230,7 +230,6 @@ export default {
             `Seu agendamento para ${service?.name} foi confirmado para ${formatDateBR(this.form.date)} às ${this.form.time}.\n` +
             `${room ? `Sala: ${room.name}\n` : ''}` +
             `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
-            `${this.form.description ? `Observações: ${this.form.description}\n` : ''}` +
             `\nE-mail enviado automaticamente.`
         }, false)
         this.$router.push('/agendamentos')
