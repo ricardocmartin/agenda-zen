@@ -135,6 +135,7 @@ export default {
         .select('service_id')
         .eq('user_id', this.userId)
         .eq('client_id', clientId)
+        .neq('status', 'canceled')
 
       const grouped = {}
       ;(appts || []).forEach(a => {
@@ -187,6 +188,7 @@ export default {
           .eq('user_id', this.userId)
           .eq('client_id', this.form.clientId)
           .eq('service_id', this.form.serviceId)
+          .neq('status', 'canceled')
         existingCount = count || 0
       }
 

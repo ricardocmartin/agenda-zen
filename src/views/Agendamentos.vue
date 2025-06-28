@@ -485,6 +485,7 @@ export default {
             .eq('user_id', this.userId)
             .eq('client_id', this.form.clientId)
             .eq('service_id', this.form.serviceId)
+            .neq('status', 'canceled')
           existingCount = count || 0
         }
 
@@ -599,6 +600,7 @@ export default {
       if (appt.from_site && !appt.confirmed) return 'text-red-600'
       if (appt.status === 'completed') return 'text-green-600'
       if (appt.status === 'no_show') return 'text-gray-600'
+      if (appt.status === 'canceled') return 'line-through'
       return ''
     },
     sortBy(column) {
@@ -630,10 +632,20 @@ export default {
         alert('Agendamento fora da política de cancelamento.')
         return
       }
-      await this.handleDeleteAppointment(
-        this.selectedAppointment.id,
-        'Tem certeza que deseja desmarcar este atendimento?'
-      )
+      const { data, error } = await supabase
+        .from('appointments')
+        .update({ status: 'canceled' })
+        .eq('id', this.selectedAppointment.id)
+        .select()
+        .single()
+
+      if (error) {
+        alert('Erro ao desmarcar atendimento: ' + error.message)
+        return
+      }
+      Object.assign(this.selectedAppointment, data)
+      const idx = this.appointments.findIndex(a => a.id === data.id)
+      if (idx !== -1) this.appointments[idx] = data
       this.closeDetails()
     },
     async markNoShow() {
