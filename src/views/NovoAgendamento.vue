@@ -177,6 +177,19 @@ export default {
         alert('Horário fora do horário de trabalho configurado')
         return
       }
+      const serviceInfo = this.services.find(s => s.id === this.form.serviceId)
+
+      let existingCount = 0
+      if (serviceInfo && serviceInfo.is_package && serviceInfo.session_count && serviceInfo.session_count > 1) {
+        const { count } = await supabase
+          .from('appointments')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', this.userId)
+          .eq('client_id', this.form.clientId)
+          .eq('service_id', this.form.serviceId)
+        existingCount = count || 0
+      }
+
       const { data, error } = await supabase
         .from('appointments')
         .insert({
@@ -199,8 +212,7 @@ export default {
       if (error) {
         alert('Erro ao salvar agendamento: ' + error.message)
       } else {
-        const serviceInfo = this.services.find(s => s.id === this.form.serviceId)
-        if (serviceInfo && serviceInfo.is_package && serviceInfo.session_count && serviceInfo.session_count > 1) {
+        if (serviceInfo && serviceInfo.is_package && serviceInfo.session_count && serviceInfo.session_count > 1 && existingCount % serviceInfo.session_count === 0) {
           const extra = []
           for (let i = 1; i < serviceInfo.session_count; i++) {
             extra.push({
