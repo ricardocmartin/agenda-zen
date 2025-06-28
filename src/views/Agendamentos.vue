@@ -512,7 +512,7 @@ export default {
           alert('Erro ao salvar agendamento: ' + error.message)
         } else {
           this.appointments.push(data)
-          if (serviceInfo && serviceInfo.is_package && serviceInfo.session_count && serviceInfo.session_count > 1 && existingCount % serviceInfo.session_count === 0) {
+          if (serviceInfo && serviceInfo.is_package && serviceInfo.session_count && serviceInfo.session_count > 1 && existingCount === 0) {
             const extra = []
             for (let i = 1; i < serviceInfo.session_count; i++) {
               extra.push({
