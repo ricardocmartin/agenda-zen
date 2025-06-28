@@ -29,10 +29,7 @@ describe('AppointmentDetails', () => {
       }
     })
     expect(getByText('Detalhes do Agendamento')).toBeTruthy()
-    expect(
-      getByText((content, element) =>
-        /Cliente:\s*Cliente 1/.test(element?.textContent || '')
-      )
-    ).toBeTruthy()
+    expect(getByText('Cliente:')).toBeTruthy()
+    expect(getByText('Cliente 1')).toBeTruthy()
   })
 })
