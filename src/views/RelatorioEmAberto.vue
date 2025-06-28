@@ -79,32 +79,36 @@ export default {
       return s ? s.name : ''
     },
     computeRows() {
-      const grouped = {}
+      const total = {}
+      const active = {}
       this.appointments.forEach(a => {
         const key = `${a.client_id}-${a.service_id}`
-        if (!grouped[key]) grouped[key] = 0
-        grouped[key] += 1
+        total[key] = (total[key] || 0) + 1
+        if (a.status !== 'canceled') {
+          active[key] = (active[key] || 0) + 1
+        }
       })
+
       const rows = []
-      this.services.filter(s => s.is_package && s.session_count).forEach(svc => {
-        this.clients.forEach(cl => {
-          if (this.clientId && cl.id !== this.clientId) return
-          const key = `${cl.id}-${svc.id}`
-          const cnt = grouped[key] || 0
-          const rem = cnt % svc.session_count
-          if (rem > 0) {
-            rows.push({ client_id: cl.id, service_id: svc.id, remaining: svc.session_count - rem })
-          }
+      this.services
+        .filter(s => s.is_package && s.session_count)
+        .forEach(svc => {
+          this.clients.forEach(cl => {
+            if (this.clientId && cl.id !== this.clientId) return
+            const key = `${cl.id}-${svc.id}`
+            const remaining = (total[key] || 0) - (active[key] || 0)
+            if (remaining > 0) {
+              rows.push({ client_id: cl.id, service_id: svc.id, remaining })
+            }
+          })
         })
-      })
       this.rows = rows
     },
     async fetchAppointments() {
       let query = supabase
         .from('appointments')
-        .select('client_id, service_id')
+        .select('client_id, service_id, status')
         .eq('user_id', this.userId)
-        .neq('status', 'canceled')
       if (this.clientId) query = query.eq('client_id', this.clientId)
       const { data } = await query
       this.appointments = data || []
