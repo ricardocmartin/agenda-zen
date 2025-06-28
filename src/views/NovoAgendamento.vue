@@ -130,6 +130,32 @@ export default {
     },
     async checkPendingSessionsForClient(clientId) {
       if (!clientId) return
+
+      const { data: canceled } = await supabase
+        .from('appointments')
+        .select('service_id, room_id, description, paid, status, duration')
+        .eq('user_id', this.userId)
+        .eq('client_id', clientId)
+        .eq('status', 'canceled')
+        .order('date', { ascending: false })
+        .order('time', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (canceled) {
+        const svc = this.services.find(s => s.id === canceled.service_id)
+        if (svc && svc.is_package && svc.session_count) {
+          this.form.serviceId = svc.id
+          this.form.duration = canceled.duration || svc.duration || ''
+          this.form.roomId = canceled.room_id || ''
+          this.form.description = canceled.description || ''
+          this.form.paid = !!canceled.paid
+          this.form.status = canceled.status || this.form.status
+          this.fieldsDisabled = true
+          return
+        }
+      }
+
       const { data: appts } = await supabase
         .from('appointments')
         .select('service_id')
