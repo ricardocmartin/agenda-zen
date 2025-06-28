@@ -137,7 +137,7 @@ export default {
         .select('id, service_id, room_id, description, paid, status, duration')
         .eq('user_id', this.userId)
         .eq('client_id', clientId)
-        .eq('status', 'canceled')
+        .in('status', ['canceled', 'deleted'])
         .eq('rescheduled', false)
         .order('created_at', { ascending: true })
         .order('date', { ascending: true })
@@ -254,10 +254,14 @@ export default {
         alert('Erro ao salvar agendamento: ' + error.message)
       } else {
         if (this.reschedulingId) {
-          await supabase
+          const { error: updError } = await supabase
             .from('appointments')
             .update({ rescheduled: true })
             .eq('id', this.reschedulingId)
+            .eq('user_id', this.userId)
+          if (updError) {
+            console.error('Erro ao atualizar agendamento remarcado:', updError)
+          }
           this.reschedulingId = null
         }
         if (
