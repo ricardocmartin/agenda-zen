@@ -132,6 +132,8 @@ export default {
         .eq('client_id', this.generateForm.clientId)
         .gte('date', this.generateForm.startDate)
         .lte('date', this.generateForm.endDate)
+        .neq('status', 'canceled')
+        .neq('status', 'deleted')
         .order('date', { ascending: true })
         .order('time', { ascending: true })
 
