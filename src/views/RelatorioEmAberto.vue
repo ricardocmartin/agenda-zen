@@ -85,9 +85,9 @@ export default {
         if (!stats[key]) stats[key] = { done: 0, pending: 0, canceled: 0 }
         if (a.status === 'completed' || a.status === 'no_show') {
           stats[key].done += 1
-        } else if (a.status === 'canceled') {
+        } else if (a.status === 'canceled' && !a.rescheduled) {
           stats[key].canceled += 1
-        } else {
+        } else if (a.status !== 'canceled') {
           stats[key].pending += 1
         }
       })
@@ -112,7 +112,7 @@ export default {
     async fetchAppointments() {
       let query = supabase
         .from('appointments')
-        .select('client_id, service_id, status')
+        .select('client_id, service_id, status, rescheduled')
         .eq('user_id', this.userId)
       if (this.clientId) query = query.eq('client_id', this.clientId)
       const { data } = await query
