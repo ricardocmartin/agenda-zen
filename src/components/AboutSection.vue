@@ -1,6 +1,6 @@
 <template>
     <section class="px-8 py-16">
-      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div class="container mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
           <img src="/about-illustration.png" alt="Ilustração sobre agendamento" class="w-full h-auto mx-auto" />
         </div>

@@ -1,6 +1,6 @@
 <template>
     <section class="text-center py-20 bg-gradient-to-b from-white via-indigo-50 to-white">
-      <div class="max-w-4xl mx-auto px-4">
+      <div class="container mx-auto max-w-4xl px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
           <div>
             <h1 class="text-4xl font-bold text-primary mb-4">Sua agenda digital simples e profissional</h1>
