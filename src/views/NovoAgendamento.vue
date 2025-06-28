@@ -126,6 +126,49 @@ export default {
       }
       return true
     },
+    async checkPendingSessionsForClient(clientId) {
+      if (!clientId) return
+      const { data: appts } = await supabase
+        .from('appointments')
+        .select('service_id')
+        .eq('user_id', this.userId)
+        .eq('client_id', clientId)
+
+      const grouped = {}
+      ;(appts || []).forEach(a => {
+        grouped[a.service_id] = (grouped[a.service_id] || 0) + 1
+      })
+
+      for (const svc of this.services.filter(s => s.is_package && s.session_count)) {
+        const cnt = grouped[svc.id] || 0
+        const rem = cnt % svc.session_count
+        if (rem > 0) {
+          const confirmMsg = `O cliente possui sessões pendentes do serviço ${svc.name}. Deseja agendar para este serviço?`
+          if (confirm(confirmMsg)) {
+            this.form.serviceId = svc.id
+            this.form.duration = svc.duration || ''
+            const { data: last } = await supabase
+              .from('appointments')
+              .select('room_id, description, paid, status, duration')
+              .eq('user_id', this.userId)
+              .eq('client_id', clientId)
+              .eq('service_id', svc.id)
+              .order('date', { ascending: false })
+              .order('time', { ascending: false })
+              .limit(1)
+              .maybeSingle()
+            if (last) {
+              this.form.roomId = last.room_id || ''
+              this.form.description = last.description || ''
+              this.form.paid = !!last.paid
+              this.form.duration = last.duration || this.form.duration
+              this.form.status = last.status || this.form.status
+            }
+            break
+          }
+        }
+      }
+    },
     async handleSaveAppointment() {
       if (!this.isSlotAllowed(this.form.date, this.form.time)) {
         alert('Horário fora do horário de trabalho configurado')
@@ -200,6 +243,11 @@ export default {
     }
   },
   watch: {
+    async 'form.clientId'(val) {
+      if (val) {
+        await this.checkPendingSessionsForClient(val)
+      }
+    },
     'form.serviceId'(val) {
       const service = this.services.find(s => s.id === val)
       if (service) {
