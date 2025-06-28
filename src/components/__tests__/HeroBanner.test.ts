@@ -13,7 +13,13 @@ vi.mock('../../supabase', () => ({
 
 describe('HeroBanner', () => {
   it('renders call to action', () => {
-    const { getByText } = render(HeroBanner, { global: { stubs: ['router-link'] } })
+    const { getByText } = render(HeroBanner, {
+      global: {
+        stubs: {
+          'router-link': { template: '<a><slot /></a>' }
+        }
+      }
+    })
     expect(getByText(/agenda digital simples/i)).toBeTruthy()
     expect(getByText('Criar conta')).toBeTruthy()
   })

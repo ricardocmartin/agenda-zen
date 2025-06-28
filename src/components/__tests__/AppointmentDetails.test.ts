@@ -22,7 +22,11 @@ describe('AppointmentDetails', () => {
         getRoomName: () => 'Sala 1',
         getRoomLink: () => 'https://meet.google.com/test'
       },
-      global: { stubs: ['router-link'] }
+      global: {
+        stubs: {
+          'router-link': { template: '<a><slot /></a>' }
+        }
+      }
     })
     expect(getByText('Detalhes do Agendamento')).toBeTruthy()
     expect(getByText('Cliente: Cliente 1')).toBeTruthy()
