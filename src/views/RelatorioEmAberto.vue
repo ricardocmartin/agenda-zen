@@ -79,15 +79,13 @@ export default {
       return s ? s.name : ''
     },
     computeRows() {
-      const total = {}
-      const active = {}
-      this.appointments.forEach(a => {
-        const key = `${a.client_id}-${a.service_id}`
-        total[key] = (total[key] || 0) + 1
-        if (a.status !== 'canceled') {
-          active[key] = (active[key] || 0) + 1
-        }
-      })
+      const activeCounts = {}
+      this.appointments
+        .filter(a => a.status !== 'canceled')
+        .forEach(a => {
+          const key = `${a.client_id}-${a.service_id}`
+          activeCounts[key] = (activeCounts[key] || 0) + 1
+        })
 
       const rows = []
       this.services
@@ -96,8 +94,10 @@ export default {
           this.clients.forEach(cl => {
             if (this.clientId && cl.id !== this.clientId) return
             const key = `${cl.id}-${svc.id}`
-            const remaining = (total[key] || 0) - (active[key] || 0)
-            if (remaining > 0) {
+            const count = activeCounts[key] || 0
+            const remainder = count % svc.session_count
+            if (remainder > 0) {
+              const remaining = svc.session_count - remainder
               rows.push({ client_id: cl.id, service_id: svc.id, remaining })
             }
           })
