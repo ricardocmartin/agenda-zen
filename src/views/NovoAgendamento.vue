@@ -173,8 +173,9 @@ export default {
       for (const svc of this.services.filter(s => s.is_package && s.session_count)) {
         const data = grouped[svc.id]
         if (!data) continue
-        const packages = Math.ceil(data.total / svc.session_count)
-        const remaining = packages * svc.session_count - data.active
+        const valid = data.active
+        const remainder = valid % svc.session_count
+        const remaining = remainder === 0 ? 0 : svc.session_count - remainder
         if (remaining > 0) {
           const confirmMsg = `O cliente possui sessões pendentes do serviço ${svc.name}. Deseja agendar para este serviço?`
           if (confirm(confirmMsg)) {
