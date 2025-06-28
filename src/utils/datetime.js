@@ -1,20 +1,17 @@
 export function getBrazilNow() {
-  return new Date(
-    new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' })
-  )
+  const str = new Date().toLocaleString('sv-SE', {
+    timeZone: 'America/Sao_Paulo'
+  })
+  return new Date(str.replace(' ', 'T') + '-03:00')
 }
 
 export function parseBrazilDateTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return new Date(
-    new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' })
-  )
-  const iso = `${dateStr}T${timeStr}`
-  return new Date(
-    new Date(iso).toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' })
-  )
+  if (!dateStr || !timeStr) return getBrazilNow()
+  const iso = `${dateStr}T${timeStr}-03:00`
+  return new Date(iso)
 }
 
-export function addHoursToTime(timeStr, hours = 1) {
+export function addHoursToTime(timeStr, hours = 0) {
   if (!timeStr) return ''
   const [h, m] = timeStr.split(':').map(Number)
   const date = new Date()
