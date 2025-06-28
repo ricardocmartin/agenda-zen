@@ -265,7 +265,7 @@ export default {
           serviceInfo.session_count &&
           serviceInfo.session_count > 1 &&
           !this.fieldsDisabled &&
-          existingCount === 0
+          existingCount % serviceInfo.session_count === 0
         ) {
           const extra = []
           for (let i = 1; i < serviceInfo.session_count; i++) {
