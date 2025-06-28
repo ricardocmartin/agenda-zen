@@ -165,10 +165,12 @@ export default {
 
       const grouped = {}
       ;(appts || []).forEach(a => {
-        if (!grouped[a.service_id]) grouped[a.service_id] = { done: 0, pending: 0 }
+        if (!grouped[a.service_id]) grouped[a.service_id] = { done: 0, pending: 0, canceled: 0 }
         if (a.status === 'completed' || a.status === 'no_show') {
           grouped[a.service_id].done += 1
-        } else if (a.status !== 'canceled') {
+        } else if (a.status === 'canceled') {
+          grouped[a.service_id].canceled += 1
+        } else {
           grouped[a.service_id].pending += 1
         }
       })
@@ -176,8 +178,7 @@ export default {
       for (const svc of this.services.filter(s => s.is_package && s.session_count)) {
         const data = grouped[svc.id]
         if (!data) continue
-        const cycleRemaining = svc.session_count - (data.done % svc.session_count)
-        const remaining = Math.max(cycleRemaining - data.pending, 0)
+        const remaining = data.canceled
         if (remaining > 0) {
           const confirmMsg = `O cliente possui sessões pendentes do serviço ${svc.name}. Deseja agendar para este serviço?`
           if (confirm(confirmMsg)) {

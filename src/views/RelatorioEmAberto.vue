@@ -82,10 +82,12 @@ export default {
       const stats = {}
       this.appointments.forEach(a => {
         const key = `${a.client_id}-${a.service_id}`
-        if (!stats[key]) stats[key] = { done: 0, pending: 0 }
+        if (!stats[key]) stats[key] = { done: 0, pending: 0, canceled: 0 }
         if (a.status === 'completed' || a.status === 'no_show') {
           stats[key].done += 1
-        } else if (a.status !== 'canceled') {
+        } else if (a.status === 'canceled') {
+          stats[key].canceled += 1
+        } else {
           stats[key].pending += 1
         }
       })
@@ -99,8 +101,7 @@ export default {
             const key = `${cl.id}-${svc.id}`
             const data = stats[key]
             if (!data) return
-            const cycleRemaining = svc.session_count - (data.done % svc.session_count)
-            const remaining = Math.max(cycleRemaining - data.pending, 0)
+            const remaining = data.canceled
             if (remaining > 0) {
               rows.push({ client_id: cl.id, service_id: svc.id, remaining })
             }
