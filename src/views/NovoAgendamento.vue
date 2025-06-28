@@ -23,36 +23,36 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Cliente</label>
-            <select v-model="form.clientId" class="w-full mt-1 px-4 py-2 border rounded-lg">
+            <select v-model="form.clientId" :disabled="fieldsDisabled" class="w-full mt-1 px-4 py-2 border rounded-lg">
               <option disabled value="">Selecione um cliente</option>
               <option v-for="client in activeClients" :key="client.id" :value="client.id">{{ client.name }}</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Serviço</label>
-            <select v-model="form.serviceId" class="w-full mt-1 px-4 py-2 border rounded-lg">
+            <select v-model="form.serviceId" :disabled="fieldsDisabled" class="w-full mt-1 px-4 py-2 border rounded-lg">
               <option disabled value="">Selecione um serviço</option>
               <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Sala de Reunião</label>
-            <select v-model="form.roomId" class="w-full mt-1 px-4 py-2 border rounded-lg">
+            <select v-model="form.roomId" :disabled="fieldsDisabled" class="w-full mt-1 px-4 py-2 border rounded-lg">
               <option disabled value="">Selecione uma sala</option>
               <option v-for="room in rooms" :key="room.id" :value="room.id">{{ room.name }}</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Duração (minutos)</label>
-            <input type="text" v-model="form.duration" class="w-full mt-1 px-4 py-2 border rounded-lg" />
+            <input type="text" v-model="form.duration" :disabled="fieldsDisabled" class="w-full mt-1 px-4 py-2 border rounded-lg" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Descrição</label>
-            <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-lg"></textarea>
+            <textarea v-model="form.description" :disabled="fieldsDisabled" class="w-full mt-1 px-4 py-2 border rounded-lg"></textarea>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Pago?</label>
-            <select v-model="form.paid" class="w-full mt-1 px-4 py-2 border rounded-lg">
+            <select v-model="form.paid" :disabled="fieldsDisabled" class="w-full mt-1 px-4 py-2 border rounded-lg">
               <option :value="true">Sim</option>
               <option :value="false">Não</option>
             </select>
@@ -102,6 +102,7 @@ export default {
         dailySchedule: null,
         cancelLimitHours: 0
       },
+      fieldsDisabled: false,
       sidebarOpen: window.innerWidth >= 768
     }
   },
@@ -109,6 +110,7 @@ export default {
     formatDateBR,
     addHoursToTime,
     cancel() {
+      this.fieldsDisabled = false
       this.$router.push('/agendamentos')
     },
     isSlotAllowed(dateStr, timeStr) {
@@ -164,6 +166,7 @@ export default {
               this.form.duration = last.duration || this.form.duration
               this.form.status = last.status || this.form.status
             }
+            this.fieldsDisabled = true
             break
           }
         }
