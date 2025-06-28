@@ -90,7 +90,13 @@
 
           <!-- Relatórios -->
           <div class="space-y-2">
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Relatórios</h3>
+          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Relatórios</h3>
+            <router-link to="/relatorio-em-aberto" class="flex items-center text-gray-700 hover:text-blue-600">
+              <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Em Aberto</span>
+            </router-link>
             <router-link to="/relatorio-agendamentos" class="flex items-center text-gray-700 hover:text-blue-600">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-width="2"/>
