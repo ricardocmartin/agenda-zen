@@ -42,7 +42,6 @@
         <div class="md:col-span-8">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-medium">Agenda da Semana</h3>
-            <button @click="openAppointmentModal()" class="btn">Novo Agendamento</button>
           </div>
           <WeekView
             :appointments="upcomingAppointments"
@@ -52,8 +51,6 @@
         </div>
         <div class="md:col-span-4 space-y-4">
           <!-- Cadastro rápido de clientes -->
-          <button @click="openClientModal" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Novo Cliente</button>
-
           <div class="bg-white p-4 rounded-lg shadow">
             <h4 class="font-medium mb-2">Clientes com mais agendamentos</h4>
             <div class="overflow-x-auto">
