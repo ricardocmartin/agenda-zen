@@ -163,7 +163,7 @@ export default {
 
       const { data: appts } = await supabase
         .from('appointments')
-        .select('service_id, status')
+        .select('service_id, status, rescheduled')
         .eq('user_id', this.userId)
         .eq('client_id', clientId)
 
@@ -172,9 +172,9 @@ export default {
         if (!grouped[a.service_id]) grouped[a.service_id] = { done: 0, pending: 0, canceled: 0 }
         if (a.status === 'completed' || a.status === 'no_show') {
           grouped[a.service_id].done += 1
-        } else if (a.status === 'canceled') {
+        } else if (a.status === 'canceled' && !a.rescheduled) {
           grouped[a.service_id].canceled += 1
-        } else {
+        } else if (a.status !== 'canceled') {
           grouped[a.service_id].pending += 1
         }
       })
