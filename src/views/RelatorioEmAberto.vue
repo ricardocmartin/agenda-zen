@@ -104,6 +104,7 @@ export default {
         .from('appointments')
         .select('client_id, service_id')
         .eq('user_id', this.userId)
+        .neq('status', 'canceled')
       if (this.clientId) query = query.eq('client_id', this.clientId)
       const { data } = await query
       this.appointments = data || []
