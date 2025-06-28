@@ -137,7 +137,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="closeModal" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="btn">Salvar</button>
+            <button type="submit" class="btn" :disabled="isSaving">Salvar</button>
           </div>
           </form>
         </Modal>
@@ -318,7 +318,8 @@ export default {
         dailySchedule: null,
         cancelLimitHours: 0
       },
-      profileWhatsapp: ''
+      profileWhatsapp: '',
+      isSaving: false
     }
   },
   computed: {
@@ -444,9 +445,11 @@ export default {
       const diffHours = (apptTime - getBrazilNow()) / 36e5
       return diffHours >= limit
     },
-    async handleSaveAppointment() {
+   async handleSaveAppointment() {
+      this.isSaving = true
       if (!this.isSlotAllowed(this.form.date, this.form.time)) {
         alert('Horário fora do horário de trabalho configurado')
+        this.isSaving = false
         return
       }
       if (this.editingId) {
@@ -469,9 +472,11 @@ export default {
 
         if (error) {
           alert('Erro ao atualizar agendamento: ' + error.message)
+          this.isSaving = false
         } else {
           const index = this.appointments.findIndex(a => a.id === this.editingId)
           if (index !== -1) this.appointments[index] = data
+          this.isSaving = false
           this.closeModal()
         }
       } else {
@@ -511,6 +516,7 @@ export default {
 
         if (error) {
           alert('Erro ao salvar agendamento: ' + error.message)
+          this.isSaving = false
         } else {
           this.appointments.push(data)
           if (
@@ -555,6 +561,7 @@ export default {
               `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
               `\nE-mail enviado automaticamente.`
           }, false)
+          this.isSaving = false
           this.closeModal()
         }
       }
