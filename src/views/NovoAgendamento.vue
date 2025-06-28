@@ -148,15 +148,18 @@ export default {
       if (canceled) {
         const svc = this.services.find(s => s.id === canceled.service_id)
         if (svc && svc.is_package && svc.session_count) {
-          this.reschedulingId = canceled.id
-          this.form.serviceId = svc.id
-          this.form.duration = canceled.duration || svc.duration || ''
-          this.form.roomId = canceled.room_id || ''
-          this.form.description = canceled.description || ''
-          this.form.paid = !!canceled.paid
-          this.form.status = 'confirmed'
-          this.fieldsDisabled = true
-          return
+          const confirmMsg = `O cliente possui um agendamento cancelado do serviço ${svc.name}. Deseja reagendar?`
+          if (confirm(confirmMsg)) {
+            this.reschedulingId = canceled.id
+            this.form.serviceId = svc.id
+            this.form.duration = canceled.duration || svc.duration || ''
+            this.form.roomId = canceled.room_id || ''
+            this.form.description = canceled.description || ''
+            this.form.paid = !!canceled.paid
+            this.form.status = 'confirmed'
+            this.fieldsDisabled = true
+            return
+          }
         }
       }
       this.reschedulingId = null
