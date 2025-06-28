@@ -59,7 +59,7 @@
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="cancel" class="px-4 py-2 rounded border">Cancelar</button>
-            <button type="submit" class="btn">Salvar</button>
+            <button type="submit" class="btn" :disabled="isSaving">Salvar</button>
           </div>
         </form>
       </section>
@@ -102,6 +102,7 @@ export default {
         dailySchedule: null,
         cancelLimitHours: 0
       },
+      isSaving: false,
       fieldsDisabled: false,
       sidebarOpen: window.innerWidth >= 768,
       reschedulingId: null
@@ -214,9 +215,11 @@ export default {
         }
       }
     },
-    async handleSaveAppointment() {
+   async handleSaveAppointment() {
+      this.isSaving = true
       if (!this.isSlotAllowed(this.form.date, this.form.time)) {
         alert('Horário fora do horário de trabalho configurado')
+        this.isSaving = false
         return
       }
       const serviceInfo = this.services.find(s => s.id === this.form.serviceId)
@@ -255,6 +258,7 @@ export default {
 
       if (error) {
         alert('Erro ao salvar agendamento: ' + error.message)
+        this.isSaving = false
       } else {
         if (this.reschedulingId) {
           const { error: updError } = await supabase
@@ -310,6 +314,7 @@ export default {
             `${room?.google_meet_link ? `Link: ${room.google_meet_link}\n` : ''}` +
             `\nE-mail enviado automaticamente.`
         }, false)
+        this.isSaving = false
         this.$router.push('/agendamentos')
       }
     }
