@@ -264,8 +264,9 @@ export default {
           serviceInfo.is_package &&
           serviceInfo.session_count &&
           serviceInfo.session_count > 1 &&
-          !this.fieldsDisabled &&
-          existingCount % serviceInfo.session_count === 0
+          (!this.reschedulingId ||
+            (!this.fieldsDisabled &&
+              existingCount % serviceInfo.session_count === 0))
         ) {
           const extra = []
           for (let i = 1; i < serviceInfo.session_count; i++) {
