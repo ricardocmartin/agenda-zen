@@ -159,20 +159,23 @@ export default {
 
       const { data: appts } = await supabase
         .from('appointments')
-        .select('service_id')
+        .select('service_id, status')
         .eq('user_id', this.userId)
         .eq('client_id', clientId)
-        .neq('status', 'canceled')
 
       const grouped = {}
       ;(appts || []).forEach(a => {
-        grouped[a.service_id] = (grouped[a.service_id] || 0) + 1
+        if (!grouped[a.service_id]) grouped[a.service_id] = { total: 0, active: 0 }
+        grouped[a.service_id].total += 1
+        if (a.status !== 'canceled') grouped[a.service_id].active += 1
       })
 
       for (const svc of this.services.filter(s => s.is_package && s.session_count)) {
-        const cnt = grouped[svc.id] || 0
-        const rem = cnt % svc.session_count
-        if (rem > 0) {
+        const data = grouped[svc.id]
+        if (!data) continue
+        const packages = Math.floor(data.total / svc.session_count)
+        const remaining = packages * svc.session_count - data.active
+        if (remaining > 0) {
           const confirmMsg = `O cliente possui sessões pendentes do serviço ${svc.name}. Deseja agendar para este serviço?`
           if (confirm(confirmMsg)) {
             this.form.serviceId = svc.id

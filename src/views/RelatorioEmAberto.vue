@@ -79,13 +79,13 @@ export default {
       return s ? s.name : ''
     },
     computeRows() {
-      const activeCounts = {}
-      this.appointments
-        .filter(a => a.status !== 'canceled')
-        .forEach(a => {
-          const key = `${a.client_id}-${a.service_id}`
-          activeCounts[key] = (activeCounts[key] || 0) + 1
-        })
+      const stats = {}
+      this.appointments.forEach(a => {
+        const key = `${a.client_id}-${a.service_id}`
+        if (!stats[key]) stats[key] = { total: 0, active: 0 }
+        stats[key].total += 1
+        if (a.status !== 'canceled') stats[key].active += 1
+      })
 
       const rows = []
       this.services
@@ -94,10 +94,11 @@ export default {
           this.clients.forEach(cl => {
             if (this.clientId && cl.id !== this.clientId) return
             const key = `${cl.id}-${svc.id}`
-            const count = activeCounts[key] || 0
-            const remainder = count % svc.session_count
-            if (remainder > 0) {
-              const remaining = svc.session_count - remainder
+            const data = stats[key]
+            if (!data) return
+            const packages = Math.floor(data.total / svc.session_count)
+            const remaining = packages * svc.session_count - data.active
+            if (remaining > 0) {
               rows.push({ client_id: cl.id, service_id: svc.id, remaining })
             }
           })
