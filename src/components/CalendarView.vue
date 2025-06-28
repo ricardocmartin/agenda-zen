@@ -1,13 +1,13 @@
 <template>
   <div class="bg-white rounded-lg shadow overflow-hidden">
-    <div class="flex justify-between items-center px-4 py-2 border-b bg-gray-50">
-      <button @click="prevMonth" class="p-1 rounded hover:bg-gray-200">
+    <div class="flex justify-between items-center px-4 py-2 border-b bg-blue-600 text-white">
+      <button @click="prevMonth" class="p-1 rounded hover:bg-blue-500">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <div class="font-semibold">{{ monthNames[currentMonth] }} {{ currentYear }}</div>
-      <button @click="nextMonth" class="p-1 rounded hover:bg-gray-200">
+      <button @click="nextMonth" class="p-1 rounded hover:bg-blue-500">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
@@ -15,7 +15,7 @@
     </div>
     <div class="grid grid-cols-7 gap-px text-sm bg-gray-100">
       <div
-        class="font-semibold text-center bg-gray-50 p-1"
+        class="font-semibold text-center bg-blue-50 text-blue-700 p-1"
         v-for="day in daysOfWeek"
         :key="day"
       >
@@ -25,7 +25,7 @@
       <div
         v-for="day in daysInMonth"
         :key="day"
-        class="border border-gray-200 h-24 p-1 overflow-auto bg-white"
+        class="border border-gray-200 h-24 p-1 overflow-auto bg-white hover:bg-blue-50"
         :class="{ 'bg-blue-50 border-l-4 border-blue-500': isToday(day) }"
       >
         <div class="text-center font-medium">{{ day }}</div>
@@ -33,7 +33,7 @@
           <li
             v-for="appt in getAppointmentsForDay(day)"
             :key="appt.id"
-            class="text-xs truncate cursor-pointer"
+            class="text-xs truncate cursor-pointer hover:underline"
             :class="getStatusClass(appt)"
             @click="$emit('select', appt)"
           >

@@ -189,26 +189,26 @@
           <div class="bg-white p-4 rounded-lg shadow">
             <div class="overflow-x-auto">
               <table class="min-w-full text-left">
-              <thead class="bg-gray-50">
+              <thead class="bg-blue-600 text-white">
                 <tr>
-                  <th @click="sortBy('datetime')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                  <th @click="sortBy('datetime')" class="px-4 py-2 font-medium text-white cursor-pointer">
                     Data/Hora
                     <span v-if="sortColumn === 'datetime'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
-                  <th @click="sortBy('client')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                  <th @click="sortBy('client')" class="px-4 py-2 font-medium text-white cursor-pointer">
                     Cliente
                     <span v-if="sortColumn === 'client'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
-                 <th @click="sortBy('service')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                 <th @click="sortBy('service')" class="px-4 py-2 font-medium text-white cursor-pointer">
                     Serviço
                     <span v-if="sortColumn === 'service'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
-                  <th class="px-4 py-2 font-medium text-gray-700">Sala</th>
-                  <th @click="sortBy('duration')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                  <th class="px-4 py-2 font-medium text-white">Sala</th>
+                  <th @click="sortBy('duration')" class="px-4 py-2 font-medium text-white cursor-pointer">
                     Duração
                     <span v-if="sortColumn === 'duration'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
-                  <th @click="sortBy('description')" class="px-4 py-2 font-medium text-gray-700 cursor-pointer">
+                  <th @click="sortBy('description')" class="px-4 py-2 font-medium text-white cursor-pointer">
                     Descrição
                     <span v-if="sortColumn === 'description'">{{ sortAsc ? '▲' : '▼' }}</span>
                   </th>
@@ -219,7 +219,7 @@
                 <tr
                   v-for="appointment in processedAppointments"
                   :key="appointment.id"
-                  :class="['border-b last:border-b-0', getRowClass(appointment)]"
+                  :class="['border-b last:border-b-0 even:bg-gray-50 hover:bg-blue-50', getRowClass(appointment)]"
                 >
                   <td class="px-4 py-2">{{ formatDateBR(appointment.date) }} {{ addHoursToTime(appointment.time) }}</td>
                   <td class="px-4 py-2">{{ getClientName(appointment.client_id) }}</td>

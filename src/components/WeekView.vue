@@ -1,14 +1,14 @@
 
 <template>
   <div class="bg-white rounded-lg shadow overflow-hidden">
-    <div class="flex justify-between items-center px-4 py-2 border-b bg-gray-50">
-      <button @click="prevWeek" class="p-1 rounded hover:bg-gray-200">
+    <div class="flex justify-between items-center px-4 py-2 border-b bg-blue-600 text-white">
+      <button @click="prevWeek" class="p-1 rounded hover:bg-blue-500">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <div class="font-semibold">{{ formatDate(weekStart) }} - {{ formatDate(weekEnd) }}</div>
-      <button @click="nextWeek" class="p-1 rounded hover:bg-gray-200">
+      <button @click="nextWeek" class="p-1 rounded hover:bg-blue-500">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
@@ -42,7 +42,7 @@
           <div
             v-for="day in 7"
             :key="'cell-' + day + '-' + hour"
-            class="relative bg-white border"
+            class="relative bg-white border hover:bg-blue-50"
           ></div>
         </template>
 
@@ -50,7 +50,7 @@
         <div
           v-for="event in events"
           :key="event.id"
-          class="absolute text-white rounded px-2 py-1 event cursor-pointer"
+          class="absolute text-white rounded px-2 py-1 event cursor-pointer hover:opacity-90"
           :class="getStatusClass(event.appointment)"
           :style="getEventStyle(event)"
           :title="getStatusTitle(event.appointment)"
