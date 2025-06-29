@@ -47,13 +47,13 @@ describe('Sidebar', () => {
     role = 'user'
     vi.resetModules()
     const Sidebar = (await import('../Sidebar.vue')).default
-    const { findAllByText, queryAllByText } = render(Sidebar, {
+    const { findAllByText, queryByText } = render(Sidebar, {
       props: { isOpen: true },
       global: { stubs: ['router-link'] }
     })
     await findAllByText('Agenda Zen')
     await waitFor(() => {
-      expect(queryAllByText('Cadastros')).toHaveLength(0)
+      expect(queryByText('Cadastros')).toBeNull()
     })
   })
 })
