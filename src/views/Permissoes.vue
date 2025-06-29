@@ -111,14 +111,28 @@ export default {
     },
     async addPermission() {
       if (!this.form.profileId || this.form.screens.length === 0) return
-      const inserts = this.form.screens.map(screen => ({
-        profile_id: this.form.profileId,
-        screen,
-        can_view: this.form.canView
-      }))
-      await supabase
-        .from('screen_permissions')
-        .upsert(inserts, { onConflict: ['profile_id', 'screen'] })
+      for (const screen of this.form.screens) {
+        const { data: existing } = await supabase
+          .from('screen_permissions')
+          .select('id')
+          .eq('profile_id', this.form.profileId)
+          .eq('screen', screen)
+          .single()
+        if (existing) {
+          await supabase
+            .from('screen_permissions')
+            .update({ can_view: this.form.canView })
+            .eq('id', existing.id)
+        } else {
+          await supabase
+            .from('screen_permissions')
+            .insert({
+              profile_id: this.form.profileId,
+              screen,
+              can_view: this.form.canView
+            })
+        }
+      }
       this.form = { profileId: '', screens: [], canView: true }
       await this.fetchPermissions()
     },
