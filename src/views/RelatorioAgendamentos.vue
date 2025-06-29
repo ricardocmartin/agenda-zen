@@ -12,7 +12,7 @@
       <HeaderUser title="Relatório de Agendamentos" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div :class="['grid gap-4 items-end', compactLayout ? 'grid-cols-6' : 'grid-cols-1 md:grid-cols-6']">
+        <div :class="['grid gap-4 items-end', compactLayout ? 'grid-cols-7' : 'grid-cols-1 md:grid-cols-7']">
           <div class="flex flex-wrap gap-2 md:col-span-2">
             <button class="btn btn-sm" @click="setPeriodo('dia')">Dia</button>
             <button class="btn btn-sm" @click="setPeriodo('semana')">Semana</button>
@@ -34,9 +34,9 @@
               <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
             </select>
           </div>
-        </div>
-        <div class="flex justify-end">
-          <button @click="fetchAppointments" class="btn">Aplicar</button>
+          <div class="flex justify-end">
+            <button @click="fetchAppointments" class="btn">Aplicar</button>
+          </div>
         </div>
       </section>
 
