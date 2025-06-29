@@ -4,14 +4,30 @@ import { render } from '@testing-library/vue'
 import { describe, it, expect, vi } from 'vitest'
 import Sidebar from '../Sidebar.vue'
 
+let role = 'admin'
+
 vi.mock('../../supabase', () => ({
   supabase: {
-    from: () => ({
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValue({ data: { role: 'admin' }, error: null })
-    }),
-    auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }), signOut: vi.fn() }
+    from: (table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({ data: { role }, error: null })
+        }
+      }
+      if (table === 'screen_permissions') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockResolvedValue({ data: [], error: null })
+        }
+      }
+      return { select: vi.fn(), eq: vi.fn(), single: vi.fn() }
+    },
+    auth: {
+      getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }),
+      signOut: vi.fn()
+    }
   }
 }))
 
@@ -23,5 +39,12 @@ describe('Sidebar', () => {
   it('renders brand title', () => {
     const { getByText } = render(Sidebar, { props: { isOpen: true }, global: { stubs: ['router-link'] } })
     expect(getByText('Agenda Zen')).toBeTruthy()
+  })
+
+  it('hides section when no access', async () => {
+    role = 'user'
+    const { findByText, queryByText } = render(Sidebar, { props: { isOpen: true }, global: { stubs: ['router-link'] } })
+    await findByText('Agenda Zen')
+    expect(queryByText('Cadastros')).toBeNull()
   })
 })

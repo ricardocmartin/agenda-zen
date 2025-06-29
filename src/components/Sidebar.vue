@@ -20,7 +20,7 @@
       <h2 class="text-2xl font-bold text-primary mb-6">Agenda Zen</h2>
         <nav class="space-y-6 mt-8">
           <!-- Agendamentos -->
-          <div class="space-y-2">
+          <div class="space-y-2" v-if="hasAccess(['Dashboard', 'Agendamentos'])">
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Agendamentos</h3>
             <router-link v-if="canSee('Dashboard')" to="/dashboard" class="flex items-center text-gray-700 hover:text-primary">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,7 +40,7 @@
           </div>
 
           <!-- Cadastros -->
-          <div class="space-y-2">
+          <div class="space-y-2" v-if="hasAccess(['Clientes', 'Servicos', 'Salas'])">
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Cadastros</h3>
             <router-link v-if="canSee('Clientes')" to="/clientes" class="flex items-center text-gray-700 hover:text-primary">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +66,7 @@
           </div>
 
           <!-- Centro Financeiro -->
-          <div class="space-y-2">
+          <div class="space-y-2" v-if="hasAccess(['Despesas', 'Comprovantes', 'Templates'])">
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Centro Financeiro</h3>
             <router-link v-if="canSee('Despesas')" to="/despesas" class="flex items-center text-gray-700 hover:text-primary">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,7 +89,7 @@
           </div>
 
           <!-- Relatórios -->
-          <div class="space-y-2">
+          <div class="space-y-2" v-if="hasAccess(['RelatorioEmAberto', 'RelatorioAgendamentos', 'Recebimento', 'Faturamento'])">
           <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Relatórios</h3>
             <router-link v-if="canSee('RelatorioEmAberto')" to="/relatorio-em-aberto" class="flex items-center text-gray-700 hover:text-primary">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,7 +121,7 @@
           </div>
 
           <!-- Conta -->
-          <div class="space-y-2">
+          <div class="space-y-2" v-if="hasAccess(['Empresa', 'Configuracao', 'Usuarios', 'Permissoes', 'MinhaAssinatura'])">
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Conta</h3>
             <router-link v-if="canSee('Empresa')" to="/empresa" class="flex items-center text-gray-700 hover:text-primary">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,6 +189,9 @@ export default {
     canSee(name) {
       if (this.userRole !== 'user') return true
       return this.allowedScreens.includes(name)
+    },
+    hasAccess(screens) {
+      return screens.some(screen => this.canSee(screen))
     }
   },
   async mounted() {
