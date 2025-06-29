@@ -22,7 +22,10 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700" for="screen">Tela</label>
-            <input id="screen" type="text" v-model="form.screen" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <select id="screen" v-model="form.screen" class="w-full mt-1 px-4 py-2 border rounded-md">
+              <option value="" disabled>Selecione</option>
+              <option v-for="s in screens" :key="s" :value="s">{{ s }}</option>
+            </select>
           </div>
           <div class="flex items-center">
             <input type="checkbox" v-model="form.canView" id="canView" class="mr-2" />
@@ -68,6 +71,7 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
+import { screenNames } from '../router'
 
 export default {
   name: 'Permissoes',
@@ -77,6 +81,7 @@ export default {
       sidebarOpen: window.innerWidth >= 768,
       users: [],
       permissions: [],
+      screens: screenNames,
       form: { profileId: '', screen: '', canView: true },
       userId: null
     }
