@@ -74,6 +74,7 @@ import { supabase } from '../supabase'
 import { formatDateBR } from '../utils/format'
 import { addHoursToTime } from '../utils/datetime'
 import { canView } from '../utils/permissions'
+import { getUserCompanyId, getCompanyUserIds } from '../utils/company'
 
 export default {
   name: 'RelatorioAgendamentos',
@@ -82,6 +83,7 @@ export default {
     return {
       sidebarOpen: window.innerWidth >= 768,
       userId: null,
+      userIds: [],
       clients: [],
       services: [],
       appointments: [],
@@ -132,7 +134,7 @@ export default {
       let query = supabase
         .from('appointments')
         .select()
-        .eq('user_id', this.userId)
+        .in('user_id', this.userIds)
         .gte('date', this.filterStart)
         .lte('date', this.filterEnd)
         .neq('status', 'canceled')
@@ -160,19 +162,24 @@ export default {
     }
     this.userId = user.id
 
+    const companyId = await getUserCompanyId(this.userId)
+    this.userIds = companyId
+      ? await getCompanyUserIds(companyId)
+      : [this.userId]
+
     this.canSeeClients = await canView('Clientes')
     this.canSeeServices = await canView('Servicos')
 
     const { data: clientData } = await supabase
       .from('clients')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', this.userIds)
     if (clientData) this.clients = clientData
 
     const { data: serviceData } = await supabase
       .from('services')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', this.userIds)
       .eq('active', true)
     if (serviceData) this.services = serviceData
 
