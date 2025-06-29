@@ -129,10 +129,31 @@ export default {
       const { data: { session: currentSession } } = await supabase.auth.getSession()
 
       let profileData = null
+      const sharedFields = [
+        'business_name',
+        'description',
+        'area_atuacao',
+        'phone',
+        'whatsapp',
+        'address',
+        'instagram',
+        'facebook',
+        'youtube',
+        'x',
+        'image_url',
+        'slug',
+        'start_time',
+        'end_time',
+        'week_days',
+        'daily_schedule',
+        'cancel_limit_hours',
+        'pix_key',
+        'company_id'
+      ]
       if (currentUser) {
         const { data } = await supabase
           .from('profiles')
-          .select('company_id')
+          .select(sharedFields.join(','))
           .eq('id', currentUser.id)
           .single()
         profileData = data
@@ -154,14 +175,18 @@ export default {
         this.errorMessage = 'Erro ao cadastrar usuário: ' + error.message
       } else {
         if (signUpData?.user && profileData) {
-          await supabase.from('profiles').upsert(
-            {
-              id: signUpData.user.id,
-              company_id: profileData.company_id,
-              email: signUpData.user.email
-            },
-            { onConflict: ['id'] }
-          )
+          const newProfile = {
+            id: signUpData.user.id,
+            email: signUpData.user.email,
+            company_id: profileData.company_id,
+            onboarding_complete: true
+          }
+          for (const field of sharedFields) {
+            if (field !== 'company_id' && profileData[field] !== undefined) {
+              newProfile[field] = profileData[field]
+            }
+          }
+          await supabase.from('profiles').upsert(newProfile, { onConflict: ['id'] })
         }
         this.successMessage = 'Usuário cadastrado! Verifique o e-mail para ativar a conta.'
         this.form = { email: '', password: '' }
