@@ -1,85 +1,63 @@
-// Smoke test for Sidebar.vue
-// Verifica se o título do menu lateral é exibido
 import { render, waitFor } from '@testing-library/vue'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
-let role = 'admin'
+let role: string
 
-vi.mock('../../supabase', () => ({
-  supabase: {
-    from: (table: string) => {
-      if (table === 'profiles') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          single: vi.fn().mockImplementation(() =>
-            Promise.resolve({ data: { role }, error: null })
-          )
+function mockSupabase() {
+  vi.doMock('../../supabase', () => ({
+    supabase: {
+      from: (table: string) => {
+        if (table === 'profiles') {
+          return {
+            select: vi.fn().mockReturnThis(),
+            eq: vi.fn().mockReturnThis(),
+            single: vi.fn().mockResolvedValue({ data: { role }, error: null })
+          }
         }
-      }
-      if (table === 'screen_permissions') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockResolvedValue({ data: [], error: null })
+        if (table === 'screen_permissions') {
+          return {
+            select: vi.fn().mockReturnThis(),
+            eq: vi.fn().mockResolvedValue({ data: [], error: null })
+          }
         }
+        return { select: vi.fn(), eq: vi.fn(), single: vi.fn() }
+      },
+      auth: {
+        getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }),
+        signOut: vi.fn()
       }
-      return { select: vi.fn(), eq: vi.fn(), single: vi.fn() }
-    },
-    auth: {
-      getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }),
-      signOut: vi.fn()
     }
-  }
-}))
+  }))
+}
 
-vi.mock('../../router', () => ({
-  loggedScreenNames: []
-}))
+function mockRouter() {
+  vi.doMock('../../router', () => ({
+    loggedScreenNames: []
+  }))
+}
+
+async function renderSidebar() {
+  const Sidebar = (await import('../Sidebar.vue')).default
+  return render(Sidebar, { props: { isOpen: true }, global: { stubs: ['router-link'] } })
+}
 
 describe('Sidebar', () => {
+  beforeEach(() => {
+    vi.resetModules()
+    mockRouter()
+  })
+
   it('renders brand title', async () => {
-    const Sidebar = (await import('../Sidebar.vue')).default
-    const { getByText } = render(Sidebar, { props: { isOpen: true }, global: { stubs: ['router-link'] } })
+    role = 'admin'
+    mockSupabase()
+    const { getByText } = await renderSidebar()
     expect(getByText('Agenda Zen')).toBeTruthy()
   })
 
   it('hides section when no access', async () => {
     role = 'user'
-    vi.resetModules()
-    vi.doMock('../../supabase', () => ({
-      supabase: {
-        from: (table: string) => {
-          if (table === 'profiles') {
-            return {
-              select: vi.fn().mockReturnThis(),
-              eq: vi.fn().mockReturnThis(),
-              single: vi.fn().mockImplementation(() =>
-                Promise.resolve({ data: { role }, error: null })
-              )
-            }
-          }
-          if (table === 'screen_permissions') {
-            return {
-              select: vi.fn().mockReturnThis(),
-              eq: vi.fn().mockResolvedValue({ data: [], error: null })
-            }
-          }
-          return { select: vi.fn(), eq: vi.fn(), single: vi.fn() }
-        },
-        auth: {
-          getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }),
-          signOut: vi.fn()
-        }
-      }
-    }))
-    vi.doMock('../../router', () => ({
-      loggedScreenNames: []
-    }))
-    const Sidebar = (await import('../Sidebar.vue')).default
-    const { findAllByText, queryByText } = render(Sidebar, {
-      props: { isOpen: true },
-      global: { stubs: ['router-link'] }
-    })
+    mockSupabase()
+    const { findAllByText, queryByText } = await renderSidebar()
     await findAllByText('Agenda Zen')
     await waitFor(() => {
       expect(queryByText('Cadastros')).toBeNull()
