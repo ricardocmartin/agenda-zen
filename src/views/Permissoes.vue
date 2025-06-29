@@ -14,15 +14,15 @@
         <h3 class="text-lg font-medium mb-4">Cadastrar permissão</h3>
         <form @submit.prevent="addPermission" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700">Usuário</label>
-            <select v-model="form.profileId" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <label class="block text-sm font-medium text-gray-700" for="profileId">Usuário</label>
+            <select id="profileId" v-model="form.profileId" class="w-full mt-1 px-4 py-2 border rounded-md">
               <option value="" disabled>Selecione</option>
               <option v-for="u in users" :key="u.id" :value="u.id">{{ u.email }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Tela</label>
-            <input type="text" v-model="form.screen" class="w-full mt-1 px-4 py-2 border rounded-md" />
+            <label class="block text-sm font-medium text-gray-700" for="screen">Tela</label>
+            <input id="screen" type="text" v-model="form.screen" class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex items-center">
             <input type="checkbox" v-model="form.canView" id="canView" class="mr-2" />
