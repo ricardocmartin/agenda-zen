@@ -80,7 +80,32 @@ export default {
       }
     },
     async handleSave() {
-      if (!this.companyId) return
+      if (!this.companyId) {
+        const { data: company, error } = await supabase
+          .from('companies')
+          .insert({
+            name: this.form.name,
+            phone: this.form.phone,
+            email: this.form.email,
+            address: this.form.address
+          })
+          .select('id')
+          .single()
+        if (error) {
+          alert('Erro ao salvar dados: ' + error.message)
+          return
+        }
+        this.companyId = company.id
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await supabase
+            .from('profiles')
+            .update({ company_id: this.companyId })
+            .eq('id', user.id)
+        }
+        alert('Dados salvos com sucesso!')
+        return
+      }
       const { error } = await supabase
         .from('companies')
         .update({
