@@ -222,11 +222,17 @@ export default {
         .single()
 
       if (profile) {
-        const { data } = await supabase
+        let query = supabase
           .from('profiles')
           .select('id, email')
-          .eq('company_id', profile.company_id)
 
+        if (profile.company_id === null) {
+          query = query.is('company_id', null)
+        } else {
+          query = query.eq('company_id', profile.company_id)
+        }
+
+        const { data } = await query
         this.users = data || []
       }
     }
