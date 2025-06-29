@@ -84,6 +84,7 @@ import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
 import { formatDateBR } from '../utils/format'
 import { canView } from '../utils/permissions'
+import { getUserCompanyId, getCompanyUserIds } from '../utils/company'
 
 export default {
   name: 'Faturamento',
@@ -91,6 +92,7 @@ export default {
   data() {
     return {
       userId: null,
+      userIds: [],
       sidebarOpen: window.innerWidth >= 768,
       services: [],
       selectedServices: [],
@@ -107,7 +109,7 @@ export default {
       const { data } = await supabase
         .from('services')
         .select()
-        .eq('user_id', this.userId)
+        .in('user_id', this.userIds)
         .eq('active', true)
       this.services = data || []
       this.selectedServices = this.canSeeServices ? this.services.map(s => s.id) : []
@@ -117,7 +119,7 @@ export default {
       const { data } = await supabase
         .from('appointments')
         .select('date, service_id')
-        .eq('user_id', this.userId)
+        .in('user_id', this.userIds)
         .gte('date', this.filterStart)
         .lte('date', this.filterEnd)
       const appointments = data || []
@@ -206,6 +208,10 @@ export default {
       return
     }
     this.userId = user.id
+    const companyId = await getUserCompanyId(this.userId)
+    this.userIds = companyId
+      ? await getCompanyUserIds(companyId)
+      : [this.userId]
 
     this.canSeeServices = await canView('Servicos')
     await this.fetchServices()
