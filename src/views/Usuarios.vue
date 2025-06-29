@@ -154,10 +154,14 @@ export default {
         this.errorMessage = 'Erro ao cadastrar usuário: ' + error.message
       } else {
         if (signUpData?.user && profileData) {
-          await supabase.from('profiles').insert({
-            id: signUpData.user.id,
-            company_id: profileData.company_id
-          })
+          await supabase.from('profiles').upsert(
+            {
+              id: signUpData.user.id,
+              company_id: profileData.company_id,
+              email: signUpData.user.email
+            },
+            { onConflict: ['id'] }
+          )
         }
         this.successMessage = 'Usuário cadastrado! Verifique o e-mail para ativar a conta.'
         this.form = { email: '', password: '' }
