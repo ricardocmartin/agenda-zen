@@ -302,6 +302,7 @@ import { fetchStates, fetchCities, fetchAddress } from '../utils/locations'
 import { cpfMask, cepMask, isValidEmail, formatDateBR } from '../utils/format'
 import { addHoursToTime } from '../utils/datetime'
 import { sendAppointmentEmail } from '../utils/email'
+import { getUserCompanyId, getCompanyUserIds } from '../utils/company'
 
 export default {
   name: 'Clientes',
@@ -663,11 +664,15 @@ export default {
       return
     }
     this.userId = user.id
+    const companyId = await getUserCompanyId(this.userId)
+    const userIds = companyId
+      ? await getCompanyUserIds(companyId)
+      : [this.userId]
 
     const { data } = await supabase
       .from('clients')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', userIds)
 
     if (data) {
       this.clients = data

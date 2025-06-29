@@ -273,6 +273,7 @@ import CalendarView from '../components/CalendarView.vue'
 import WeekView from '../components/WeekView.vue'
 import AppointmentDetails from '../components/AppointmentDetails.vue'
 import { supabase } from '../supabase'
+import { getUserCompanyId, getCompanyUserIds } from '../utils/company'
 import { sendAppointmentEmail } from '../utils/email'
 import { digitsOnly } from '../utils/phone'
 import { formatDateBR } from '../utils/format'
@@ -794,11 +795,15 @@ export default {
       return
     }
     this.userId = user.id
+    const companyId = await getUserCompanyId(this.userId)
+    const userIds = companyId
+      ? await getCompanyUserIds(companyId)
+      : [this.userId]
 
     const { data: clientData } = await supabase
       .from('clients')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', userIds)
 
     if (clientData) {
       this.clients = clientData
@@ -807,7 +812,7 @@ export default {
     const { data: serviceData } = await supabase
       .from('services')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', userIds)
       .eq('active', true)
 
     if (serviceData) {
@@ -817,7 +822,7 @@ export default {
     const { data: roomsData } = await supabase
       .from('rooms')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', userIds)
       .eq('active', true)
 
     if (roomsData) {
@@ -848,7 +853,7 @@ export default {
     const { data: appointmentData } = await supabase
       .from('appointments')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', userIds)
       .neq('status', 'canceled')
       .neq('status', 'deleted')
 

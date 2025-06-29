@@ -110,6 +110,7 @@ import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import Modal from '../components/Modal.vue'
 import { supabase } from '../supabase'
+import { getUserCompanyId, getCompanyUserIds } from '../utils/company'
 import { formatDateBR, currencyMask, currencyToNumber } from '../utils/format'
 import { addMonths } from '../utils/datetime'
 
@@ -268,11 +269,15 @@ export default {
       return
     }
     this.userId = user.id
+    const companyId = await getUserCompanyId(this.userId)
+    const userIds = companyId
+      ? await getCompanyUserIds(companyId)
+      : [this.userId]
 
     const { data } = await supabase
       .from('expenses')
       .select()
-      .eq('user_id', this.userId)
+      .in('user_id', userIds)
 
     if (data) this.expenses = data
   }
