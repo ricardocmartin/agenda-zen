@@ -13,7 +13,7 @@
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="flex flex-col md:flex-row md:items-end md:space-x-4 space-y-4 md:space-y-0">
-          <div>
+          <div v-if="canSeeClients">
             <select v-model="clientId" class="border px-3 py-2 rounded">
               <option value="">Todos os clientes</option>
               <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
@@ -54,6 +54,7 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
+import { canView } from '../utils/permissions'
 
 export default {
   name: 'RelatorioEmAberto',
@@ -66,7 +67,8 @@ export default {
       services: [],
       appointments: [],
       clientId: '',
-      rows: []
+      rows: [],
+      canSeeClients: true
     }
   },
   methods: {
@@ -115,7 +117,7 @@ export default {
         .select('client_id, service_id, status, rescheduled')
         .eq('user_id', this.userId)
         .neq('status', 'deleted')
-      if (this.clientId) query = query.eq('client_id', this.clientId)
+      if (this.canSeeClients && this.clientId) query = query.eq('client_id', this.clientId)
       const { data } = await query
       this.appointments = data || []
     },
@@ -131,6 +133,8 @@ export default {
       return
     }
     this.userId = user.id
+
+    this.canSeeClients = await canView('Clientes')
 
     const { data: clientData } = await supabase
       .from('clients')

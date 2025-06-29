@@ -13,7 +13,7 @@
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
-          <div>
+          <div v-if="canSeeServices">
             <label class="block text-sm font-medium text-gray-700">Serviços</label>
             <div class="mt-1 space-y-1">
               <label v-for="s in services" :key="s.id" class="flex items-center space-x-2">
@@ -83,6 +83,7 @@ import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
 import { Chart } from 'chart.js/auto'
 import { formatDateBR } from '../utils/format'
+import { canView } from '../utils/permissions'
 
 export default {
   name: 'Faturamento',
@@ -97,11 +98,17 @@ export default {
       filterEnd: '',
       groupBy: 'mes',
       revenueData: [],
-      chart: null
+      chart: null,
+      canSeeServices: true
     }
   },
   methods: {
     async fetchServices() {
+      if (!this.canSeeServices) {
+        this.services = []
+        this.selectedServices = []
+        return
+      }
       const { data } = await supabase
         .from('services')
         .select()
@@ -204,6 +211,8 @@ export default {
       return
     }
     this.userId = user.id
+
+    this.canSeeServices = await canView('Servicos')
     await this.fetchServices()
     const today = new Date()
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
