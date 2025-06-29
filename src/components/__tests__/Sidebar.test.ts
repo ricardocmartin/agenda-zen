@@ -32,7 +32,7 @@ vi.mock('../../supabase', () => ({
   }
 }))
 
-vi.mock('../../router', () => ({
+vi.mock('../../router/index.js', () => ({
   loggedScreenNames: []
 }))
 
