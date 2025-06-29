@@ -35,6 +35,8 @@ import Despesas from '../views/Despesas.vue'
 import Permissoes from '../views/Permissoes.vue'
 import { supabase } from '../supabase'
 
+let cachedPermissions = null
+
 
 export const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -87,9 +89,23 @@ router.beforeEach(async (to, from, next) => {
       .eq('id', user.id)
       .single()
 
-    if (to.path === '/permissoes' && data?.role === 'user') {
-      next('/dashboard')
-      return
+    if (data?.role === 'user') {
+      if (!cachedPermissions) {
+        const { data: perms } = await supabase
+          .from('screen_permissions')
+          .select('screen')
+          .eq('profile_id', user.id)
+          .eq('can_view', true)
+        cachedPermissions = perms ? perms.map(p => p.screen) : []
+      }
+      if (!cachedPermissions.includes(to.name) && loggedScreenNames.includes(to.name)) {
+        next('/dashboard')
+        return
+      }
+      if (to.path === '/permissoes') {
+        next('/dashboard')
+        return
+      }
     }
 
     if (data && !data.onboarding_complete) {
@@ -132,6 +148,10 @@ export const loggedScreenNames = routes
     'PagamentoPlus',
     'PagamentoAgendamento'
   ].includes(r.name))
+  .map(r => r.name)
+
+export const openScreenNames = routes
+  .filter(r => !loggedScreenNames.includes(r.name))
   .map(r => r.name)
 
 export default router

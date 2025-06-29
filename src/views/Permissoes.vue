@@ -22,8 +22,12 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700" for="screen">Tela</label>
-            <select id="screen" v-model="form.screen" class="w-full mt-1 px-4 py-2 border rounded-md">
-              <option value="" disabled>Selecione</option>
+            <select
+              id="screen"
+              v-model="form.screens"
+              multiple
+              class="w-full mt-1 px-4 py-2 border rounded-md"
+            >
               <option v-for="s in screens" :key="s" :value="s">{{ s }}</option>
             </select>
           </div>
@@ -82,7 +86,7 @@ export default {
       users: [],
       permissions: [],
       screens: loggedScreenNames,
-      form: { profileId: '', screen: '', canView: true },
+      form: { profileId: '', screens: [], canView: true },
       userId: null
     }
   },
@@ -106,13 +110,14 @@ export default {
       this.permissions = data || []
     },
     async addPermission() {
-      if (!this.form.profileId || !this.form.screen) return
-      await supabase.from('screen_permissions').insert({
+      if (!this.form.profileId || this.form.screens.length === 0) return
+      const inserts = this.form.screens.map(screen => ({
         profile_id: this.form.profileId,
-        screen: this.form.screen,
+        screen,
         can_view: this.form.canView
-      })
-      this.form = { profileId: '', screen: '', canView: true }
+      }))
+      await supabase.from('screen_permissions').insert(inserts)
+      this.form = { profileId: '', screens: [], canView: true }
       await this.fetchPermissions()
     },
     getUserEmail(id) {
