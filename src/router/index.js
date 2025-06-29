@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Onboarding from '../views/Onboarding.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Configuracao from '../views/Configuracao.vue'
+import Empresa from '../views/Empresa.vue'
 import Clientes from '../views/Clientes.vue'
 import Agendamentos from '../views/Agendamentos.vue'
 import NovoAgendamento from '../views/NovoAgendamento.vue'
@@ -42,6 +43,7 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/onboarding', name: 'Onboarding', component: Onboarding },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/empresa', name: 'Empresa', component: Empresa },
   { path: '/configuracao', name: 'Configuracao', component: Configuracao },
   { path: '/clientes', name: 'Clientes', component: Clientes },
   { path: '/servicos', name: 'Servicos', component: Servicos },

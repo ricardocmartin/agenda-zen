@@ -123,12 +123,18 @@
           <!-- Conta -->
           <div class="space-y-2">
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Conta</h3>
+            <router-link to="/empresa" class="flex items-center text-gray-700 hover:text-primary">
+              <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+              </svg>
+              <span>Empresa</span>
+            </router-link>
             <router-link to="/configuracao" class="flex items-center text-gray-700 hover:text-primary">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <circle cx="12" cy="8" r="4" stroke-width="2" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 21v-2a6 6 0 0112 0v2" />
               </svg>
-              <span>Perfil</span>
+              <span>Perfil/Site</span>
             </router-link>
             <router-link to="/usuarios" class="flex items-center text-gray-700 hover:text-primary">
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
