@@ -12,8 +12,8 @@
       <HeaderUser title="Empresa" />
       <form @submit.prevent="handleSave" class="bg-white p-4 rounded shadow space-y-4 max-w-xl">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Nome da Empresa</label>
-          <input v-model="form.name" type="text" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <label for="companyName" class="block text-sm font-medium text-gray-700">Nome da Empresa</label>
+          <input id="companyName" v-model="form.name" type="text" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Telefone</label>
@@ -25,12 +25,12 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">E-mail</label>
-          <input v-model="form.email" type="email" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+          <input id="email" v-model="form.email" type="email" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Endereço</label>
-          <input v-model="form.address" type="text" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <label for="address" class="block text-sm font-medium text-gray-700">Endereço</label>
+          <input id="address" v-model="form.address" type="text" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div class="text-right">
           <button type="submit" class="btn">Salvar</button>
