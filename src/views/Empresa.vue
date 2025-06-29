@@ -60,23 +60,30 @@ export default {
   methods: {
     phoneMask,
     async fetchCompany() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+        error: userError
+      } = await supabase.auth.getUser()
+      console.log('fetchCompany - user', user, userError)
       if (!user) {
         this.$router.push('/login')
         return
       }
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('company_id')
         .eq('id', user.id)
         .single()
+      console.log('fetchCompany - profile', profile, profileError)
       if (profile && profile.company_id) {
         this.companyId = profile.company_id
-        const { data: company } = await supabase
+        console.log('fetchCompany - companyId', this.companyId)
+        const { data: company, error: companyError } = await supabase
           .from('companies')
           .select('name, phone, email, address')
           .eq('id', this.companyId)
           .single()
+        console.log('fetchCompany - company', company, companyError)
         if (company) {
           this.form = {
             name: company.name || '',
