@@ -36,7 +36,7 @@ import Permissoes from '../views/Permissoes.vue'
 import { supabase } from '../supabase'
 
 
-const routes = [
+export const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/cadastro', name: 'Signup', component: Signup },
   { path: '/confirmacao', name: 'Confirmacao', component: Confirmacao },
@@ -113,5 +113,7 @@ router.afterEach((to) => {
     window.gtag('config', 'G-8DZT2EVSC7', { page_path: to.fullPath })
   }
 })
+
+export const screenNames = routes.map(r => r.name)
 
 export default router
