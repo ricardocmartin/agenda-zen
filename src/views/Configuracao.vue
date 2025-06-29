@@ -46,6 +46,10 @@
             </p>
           </div>
           <div>
+            <label class="block text-sm font-medium text-gray-700">Nome da Empresa</label>
+            <input type="text" v-model="form.companyName" class="w-full mt-1 px-4 py-2 border rounded-md">
+          </div>
+          <div>
             <label class="block text-sm font-medium text-gray-700">Descrição do Estabelecimento</label>
             <textarea v-model="form.description" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea>
           </div>
@@ -170,11 +174,13 @@ import { isValidEmail } from '../utils/format'
     data() {
       return {
         userId: null,
+        companyId: null,
         sidebarOpen: window.innerWidth >= 768,
         slug: '',
         activeTab: 'perfil',
         form: {
           businessName: '',
+          companyName: '',
           description: '',
           areaAtuacao: '',
           phone: '',
@@ -246,7 +252,14 @@ import { isValidEmail } from '../utils/format'
         const { error } = await supabase
           .from('profiles')
           .upsert(updates, { onConflict: ['id'] })
-  
+
+        if (!error && this.companyId) {
+          await supabase
+            .from('companies')
+            .update({ name: this.form.companyName })
+            .eq('id', this.companyId)
+        }
+
         if (error) {
           alert('Erro ao salvar dados: ' + error.message)
         } else {
@@ -314,8 +327,10 @@ import { isValidEmail } from '../utils/format'
         .single()
   
       if (data) {
+        this.companyId = data.company_id || null
         this.form = {
           businessName: data.business_name || '',
+          companyName: '',
           description: data.description || '',
           areaAtuacao: data.area_atuacao || '',
           phone: data.phone || '',
@@ -328,6 +343,14 @@ import { isValidEmail } from '../utils/format'
           x: data.x || '',
           imageUrl: data.image_url || '',
           pixKey: data.pix_key || ''
+        }
+        if (this.companyId) {
+          const { data: company } = await supabase
+            .from('companies')
+            .select('name')
+            .eq('id', this.companyId)
+            .single()
+          if (company) this.form.companyName = company.name
         }
         this.agenda = {
           cancelLimitHours: data.cancel_limit_hours || 0,

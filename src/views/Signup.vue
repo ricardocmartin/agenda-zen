@@ -19,6 +19,10 @@
             <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Senha</label>
             <input v-model="password" type="password" id="password" placeholder="********" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="company">Empresa</label>
+            <input v-model="company" type="text" id="company" placeholder="Nome da empresa" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
         <button type="submit" class="btn w-full">Cadastrar</button>
       </form>
       <p class="mt-6 text-center text-sm text-gray-500">
@@ -42,7 +46,8 @@ export default {
     return {
       name: '',
       email: '',
-      password: ''
+      password: '',
+      company: ''
     }
   },
   methods: {
@@ -51,10 +56,26 @@ export default {
         alert('Informe o nome')
         return
       }
+      if (!this.company) {
+        alert('Informe a empresa')
+        return
+      }
       if (this.email && !isValidEmail(this.email)) {
         alert('E-mail inválido')
         return
       }
+
+      const { data: companyData, error: companyError } = await supabase
+        .from('companies')
+        .insert({ name: this.company })
+        .select('id')
+        .single()
+
+      if (companyError) {
+        alert('Erro ao criar empresa: ' + companyError.message)
+        return
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email: this.email,
         password: this.password,
@@ -66,6 +87,12 @@ export default {
       if (error) {
         alert('Erro ao cadastrar: ' + error.message)
       } else {
+        if (data?.user && companyData) {
+          await supabase.from('profiles').insert({
+            id: data.user.id,
+            company_id: companyData.id
+          })
+        }
         alert('Cadastro realizado! Verifique seu e-mail para ativar a conta.')
       }
     }
