@@ -16,8 +16,13 @@
           <input id="companyName" v-model="form.name" type="text" class="w-full mt-1 px-4 py-2 border rounded-md" />
         </div>
         <div>
-          <label for="phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-          <input id="phone" v-model="form.phone" type="text" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          <label class="block text-sm font-medium text-gray-700">Telefone</label>
+          <input
+            v-model="form.phone"
+            @input="form.phone = phoneMask(form.phone)"
+            type="text"
+            class="w-full mt-1 px-4 py-2 border rounded-md"
+          />
         </div>
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
@@ -39,6 +44,8 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
+import { phoneMask } from '../utils/phone'
+import { isValidEmail } from '../utils/format'
 
 export default {
   name: 'Empresa',
@@ -51,6 +58,7 @@ export default {
     }
   },
   methods: {
+    phoneMask,
     async fetchCompany() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
@@ -80,6 +88,10 @@ export default {
       }
     },
     async handleSave() {
+      if (this.form.email && !isValidEmail(this.form.email)) {
+        alert('E-mail inválido')
+        return
+      }
       if (!this.companyId) {
         const { data: company, error } = await supabase
           .from('companies')
