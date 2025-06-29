@@ -32,6 +32,7 @@ import PagamentoAgendamento from '../views/PagamentoAgendamento.vue'
 import Confirmacao from '../views/Confirmacao.vue'
 import LinkExpirado from '../views/LinkExpirado.vue'
 import Despesas from '../views/Despesas.vue'
+import Permissoes from '../views/Permissoes.vue'
 import { supabase } from '../supabase'
 
 
@@ -54,6 +55,7 @@ const routes = [
   { path: '/despesas', name: 'Despesas', component: Despesas },
   { path: '/templates', name: 'Templates', component: Templates },
   { path: '/usuarios', name: 'Usuarios', component: Usuarios },
+  { path: '/permissoes', name: 'Permissoes', component: Permissoes },
   { path: '/minha-assinatura', name: 'MinhaAssinatura', component: MinhaAssinatura },
   { path: '/assinatura-plus', name: 'PagamentoPlus', component: PagamentoPlus },
   { path: '/relatorio-em-aberto', name: 'RelatorioEmAberto', component: RelatorioEmAberto },
