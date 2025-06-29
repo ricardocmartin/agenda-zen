@@ -93,21 +93,21 @@ export default {
         return
       }
       if (!this.companyId) {
-        const { data: company, error } = await supabase
+        const newId = crypto.randomUUID()
+        const { error } = await supabase
           .from('companies')
           .insert({
+            id: newId,
             name: this.form.name,
             phone: this.form.phone,
             email: this.form.email,
             address: this.form.address
           })
-          .select('id')
-          .single()
         if (error) {
           alert('Erro ao salvar dados: ' + error.message)
           return
         }
-        this.companyId = company.id
+        this.companyId = newId
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
           await supabase

@@ -76,24 +76,23 @@ export default {
       if (error) {
         alert('Erro ao cadastrar: ' + error.message)
       } else {
-        if (data?.session) {
-          const { data: companyData, error: companyError } = await supabase
-            .from('companies')
-            .insert({ name: this.company })
-            .select('id')
-            .single()
+          if (data?.session) {
+            const companyId = crypto.randomUUID()
+            const { error: companyError } = await supabase
+              .from('companies')
+              .insert({ id: companyId, name: this.company })
 
-          if (companyError) {
-            alert('Erro ao criar empresa: ' + companyError.message)
-            return
-          }
+            if (companyError) {
+              alert('Erro ao criar empresa: ' + companyError.message)
+              return
+            }
 
-          await supabase.from('profiles').insert({
-            id: data.user.id,
-            company_id: companyData.id
-          })
-          alert('Cadastro realizado!')
-        } else {
+            await supabase.from('profiles').insert({
+              id: data.user.id,
+              company_id: companyId
+            })
+            alert('Cadastro realizado!')
+          } else {
           alert('Cadastro realizado! Verifique seu e-mail para ativar a conta e depois associe a empresa.')
         }
       }
