@@ -140,7 +140,10 @@ export default {
 
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: this.form.email,
-        password: this.form.password
+        password: this.form.password,
+        options: {
+          data: { company_id: profileData ? profileData.company_id : null }
+        }
       })
 
       if (currentSession) {
