@@ -12,13 +12,13 @@
       <HeaderUser title="Relatório de Agendamentos" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div :class="['grid gap-4 items-end', compactLayout ? 'grid-cols-7' : 'grid-cols-1 md:grid-cols-7']">
-          <div class="flex flex-wrap gap-2 md:col-span-2">
+        <div class="flex flex-wrap items-end gap-4">
+          <div class="flex flex-wrap gap-2">
             <button class="btn btn-sm" @click="setPeriodo('dia')">Dia</button>
             <button class="btn btn-sm" @click="setPeriodo('semana')">Semana</button>
             <button class="btn btn-sm" @click="setPeriodo('mes')">Mês</button>
           </div>
-          <div class="flex space-x-2 md:col-span-2">
+          <div class="flex space-x-2">
             <input type="date" v-model="filterStart" class="w-full border px-3 py-2 rounded" />
             <input type="date" v-model="filterEnd" class="w-full border px-3 py-2 rounded" />
           </div>
@@ -96,11 +96,6 @@ export default {
       canSeeClients: true,
       canSeeServices: true,
       userRole: null
-    }
-  },
-  computed: {
-    compactLayout() {
-      return this.userRole === 'user' || this.userRole === 'admin'
     }
   },
   methods: {
