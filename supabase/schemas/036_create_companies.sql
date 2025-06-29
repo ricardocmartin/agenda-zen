@@ -16,6 +16,6 @@ create policy "Company members can manage company" on companies
   for all using (
     exists (
       select 1 from profiles p
-      where p.id = auth.uid() and p.company_id = id
+      where p.id = auth.uid() and p.company_id = companies.id
     )
   );
