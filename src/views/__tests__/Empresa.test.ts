@@ -16,7 +16,12 @@ vi.mock('../../supabase', () => ({
 
 describe('Empresa view', () => {
   it('renders company name field', () => {
-    const { getByLabelText } = render(Empresa, { global: { stubs: ['router-link'] } })
+    const { getByLabelText } = render(Empresa, {
+      global: {
+        stubs: ['router-link'],
+        mocks: { $route: { params: {} } }
+      }
+    })
     expect(getByLabelText('Nome da Empresa')).toBeTruthy()
   })
 })
