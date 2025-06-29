@@ -13,7 +13,9 @@ vi.mock('../../supabase', () => ({
         return {
           select: vi.fn().mockReturnThis(),
           eq: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: { role }, error: null })
+          single: vi.fn().mockImplementation(() =>
+            Promise.resolve({ data: { role }, error: null })
+          )
         }
       }
       if (table === 'screen_permissions') {
