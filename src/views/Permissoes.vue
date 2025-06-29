@@ -121,6 +121,17 @@ export default {
       this.$router.push('/login')
       return
     }
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, role')
+      .eq('id', user.id)
+      .single()
+
+    if (data?.role === 'user') {
+      this.$router.push('/dashboard')
+      return
+    }
+
     this.userId = user.id
     await this.fetchUsers()
     await this.fetchPermissions()

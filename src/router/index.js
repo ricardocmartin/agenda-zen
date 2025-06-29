@@ -83,9 +83,14 @@ router.beforeEach(async (to, from, next) => {
   if (user) {
     const { data } = await supabase
       .from('profiles')
-      .select('onboarding_complete, company_id')
+      .select('onboarding_complete, company_id, role')
       .eq('id', user.id)
       .single()
+
+    if (to.path === '/permissoes' && data?.role === 'user') {
+      next('/dashboard')
+      return
+    }
 
     if (data && !data.onboarding_complete) {
       if (data.company_id) {

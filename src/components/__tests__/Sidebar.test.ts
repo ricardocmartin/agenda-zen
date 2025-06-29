@@ -6,7 +6,11 @@ import Sidebar from '../Sidebar.vue'
 
 vi.mock('../../supabase', () => ({
   supabase: {
-    from: () => ({ select: vi.fn().mockResolvedValue({ data: [], error: null }) }),
+    from: () => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn().mockResolvedValue({ data: { role: 'admin' }, error: null })
+    }),
     auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }), signOut: vi.fn() }
   }
 }))
