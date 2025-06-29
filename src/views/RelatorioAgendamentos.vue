@@ -12,7 +12,7 @@
       <HeaderUser title="Relatório de Agendamentos" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+        <div :class="['grid gap-4 items-end', compactLayout ? 'grid-cols-6' : 'grid-cols-1 md:grid-cols-6']">
           <div class="flex flex-wrap gap-2 md:col-span-2">
             <button class="btn btn-sm" @click="setPeriodo('dia')">Dia</button>
             <button class="btn btn-sm" @click="setPeriodo('semana')">Semana</button>
@@ -34,9 +34,9 @@
               <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
             </select>
           </div>
-          <div>
-            <button @click="fetchAppointments" class="btn w-full md:w-auto">Aplicar</button>
-          </div>
+        </div>
+        <div class="flex justify-end">
+          <button @click="fetchAppointments" class="btn">Aplicar</button>
         </div>
       </section>
 
@@ -94,7 +94,13 @@ export default {
       clientId: '',
       serviceId: '',
       canSeeClients: true,
-      canSeeServices: true
+      canSeeServices: true,
+      userRole: null
+    }
+  },
+  computed: {
+    compactLayout() {
+      return this.userRole === 'user' || this.userRole === 'admin'
     }
   },
   methods: {
@@ -163,6 +169,12 @@ export default {
       return
     }
     this.userId = user.id
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', this.userId)
+      .single()
+    this.userRole = profile ? profile.role : null
 
     const companyId = await getUserCompanyId(this.userId)
     this.userIds = companyId
