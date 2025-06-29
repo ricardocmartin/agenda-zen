@@ -116,7 +116,9 @@ export default {
         screen,
         can_view: this.form.canView
       }))
-      await supabase.from('screen_permissions').insert(inserts)
+      await supabase
+        .from('screen_permissions')
+        .upsert(inserts, { onConflict: ['profile_id', 'screen'] })
       this.form = { profileId: '', screens: [], canView: true }
       await this.fetchPermissions()
     },
