@@ -43,7 +43,7 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/onboarding', name: 'Onboarding', component: Onboarding },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/empresa', name: 'Empresa', component: Empresa },
+  { path: '/empresa/:id?', name: 'Empresa', component: Empresa },
   { path: '/configuracao', name: 'Configuracao', component: Configuracao },
   { path: '/clientes', name: 'Clientes', component: Clientes },
   { path: '/servicos', name: 'Servicos', component: Servicos },
