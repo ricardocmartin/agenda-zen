@@ -22,14 +22,14 @@
             <input type="date" v-model="filterStart" class="border px-3 py-2 rounded" />
             <input type="date" v-model="filterEnd" class="border px-3 py-2 rounded" />
           </div>
-          <div v-if="canSeeClients">
-            <select v-model="clientId" class="border px-3 py-2 rounded">
+          <div>
+            <select v-model="clientId" class="border px-3 py-2 rounded" :disabled="!canSeeClients">
               <option value="">Todos os clientes</option>
               <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
           </div>
-          <div v-if="canSeeServices">
-            <select v-model="serviceId" class="border px-3 py-2 rounded">
+          <div>
+            <select v-model="serviceId" class="border px-3 py-2 rounded" :disabled="!canSeeServices">
               <option value="">Todos os serviços</option>
               <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
             </select>
