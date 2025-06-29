@@ -22,7 +22,7 @@
             <input type="date" v-model="filterStart" class="border px-3 py-2 rounded" />
             <input type="date" v-model="filterEnd" class="border px-3 py-2 rounded" />
           </div>
-          <div>
+          <div v-if="canSeeClients">
             <select v-model="clientId" class="border px-3 py-2 rounded">
               <option value="">Todos os clientes</option>
               <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
@@ -67,6 +67,7 @@ import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
 import { formatDateBR } from '../utils/format'
 import { addHoursToTime } from '../utils/datetime'
+import { canView } from '../utils/permissions'
 
 export default {
   name: 'RelatorioAgendamentos',
@@ -80,7 +81,8 @@ export default {
       appointments: [],
       filterStart: '',
       filterEnd: '',
-      clientId: ''
+      clientId: '',
+      canSeeClients: true
     }
   },
   methods: {
@@ -128,7 +130,7 @@ export default {
         .neq('status', 'canceled')
         .neq('status', 'deleted')
 
-      if (this.clientId) {
+      if (this.canSeeClients && this.clientId) {
         query = query.eq('client_id', this.clientId)
       }
 
@@ -146,6 +148,8 @@ export default {
       return
     }
     this.userId = user.id
+
+    this.canSeeClients = await canView('Clientes')
 
     const { data: clientData } = await supabase
       .from('clients')

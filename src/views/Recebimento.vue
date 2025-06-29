@@ -13,14 +13,14 @@
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
-          <div>
+          <div v-if="canSeeClients">
             <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
             <select v-model="clientId" class="w-full px-4 py-2 border rounded-md">
               <option value="">Todos</option>
               <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
           </div>
-          <div>
+          <div v-if="canSeeServices">
             <label class="block text-sm font-medium text-gray-700 mb-1">Serviço</label>
             <select v-model="serviceId" class="w-full px-4 py-2 border rounded-md">
               <option value="">Todos</option>
@@ -100,6 +100,7 @@ import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
 import { formatDateBR } from '../utils/format'
 import { addHoursToTime } from '../utils/datetime'
+import { canView } from '../utils/permissions'
 
 export default {
   name: 'Recebimento',
@@ -116,7 +117,9 @@ export default {
       filterStart: '',
       groupBy: "none",
       filterEnd: '',
-      paidFilter: 'all'
+      paidFilter: 'all',
+      canSeeClients: true,
+      canSeeServices: true
     }
   },
   computed: {
@@ -182,8 +185,8 @@ export default {
         .gte('date', this.filterStart)
         .lte('date', this.filterEnd)
 
-      if (this.clientId) query = query.eq('client_id', this.clientId)
-      if (this.serviceId) query = query.eq('service_id', this.serviceId)
+      if (this.canSeeClients && this.clientId) query = query.eq('client_id', this.clientId)
+      if (this.canSeeServices && this.serviceId) query = query.eq('service_id', this.serviceId)
       if (this.paidFilter === 'paid') query = query.eq('paid', true)
       else if (this.paidFilter === 'open') query = query.eq('paid', false)
 
@@ -198,6 +201,9 @@ export default {
       return
     }
     this.userId = user.id
+
+    this.canSeeClients = await canView('Clientes')
+    this.canSeeServices = await canView('Servicos')
 
     const { data: clients } = await supabase.from('clients').select().eq('user_id', this.userId)
     if (clients) this.clients = clients
