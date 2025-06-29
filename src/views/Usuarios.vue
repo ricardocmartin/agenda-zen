@@ -132,7 +132,7 @@ export default {
       if (currentUser) {
         const { data } = await supabase
           .from('profiles')
-          .select('*')
+          .select('company_id')
           .eq('id', currentUser.id)
           .single()
         profileData = data
@@ -153,17 +153,7 @@ export default {
         if (signUpData?.user && profileData) {
           await supabase.from('profiles').insert({
             id: signUpData.user.id,
-            business_name: profileData.business_name,
-            description: profileData.description,
-            phone: profileData.phone,
-            whatsapp: profileData.whatsapp,
-            email: profileData.email,
-            address: profileData.address,
-            instagram: profileData.instagram,
-            facebook: profileData.facebook,
-            youtube: profileData.youtube,
-            x: profileData.x,
-            slug: profileData.slug
+            company_id: profileData.company_id
           })
         }
         this.successMessage = 'Usuário cadastrado! Verifique o e-mail para ativar a conta.'
@@ -227,7 +217,7 @@ export default {
     async fetchUsers() {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('slug')
+        .select('company_id')
         .eq('id', this.userId)
         .single()
 
@@ -235,7 +225,7 @@ export default {
         const { data } = await supabase
           .from('profiles')
           .select('id, email')
-          .eq('slug', profile.slug)
+          .eq('company_id', profile.company_id)
 
         this.users = data || []
       }
