@@ -59,6 +59,17 @@ export default {
   },
   methods: {
     phoneMask,
+    async fetchUserCompanyId() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('company_id')
+          .eq('id', user.id)
+          .single()
+        if (data) this.companyId = data.company_id
+      }
+    },
     async fetchCompany() {
       if (!this.companyId) return
       const { data: company, error: companyError } = await supabase
@@ -125,6 +136,9 @@ export default {
   },
   async mounted() {
     this.companyId = this.$route.params.id || null
+    if (!this.companyId) {
+      await this.fetchUserCompanyId()
+    }
     await this.fetchCompany()
   }
 }

@@ -219,6 +219,27 @@ import { isValidEmail } from '../utils/format'
     },
     methods: {
       phoneMask,
+      async fetchCompanyName() {
+        if (!this.companyId) {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user) {
+            const { data } = await supabase
+              .from('profiles')
+              .select('company_id')
+              .eq('id', user.id)
+              .single()
+            if (data) this.companyId = data.company_id
+          }
+        }
+        if (this.companyId) {
+          const { data: company } = await supabase
+            .from('companies')
+            .select('name')
+            .eq('id', this.companyId)
+            .single()
+          if (company) this.form.companyName = company.name
+        }
+      },
       updateSlug() {
         this.slug = this.form.businessName
           .toLowerCase()
@@ -258,6 +279,7 @@ import { isValidEmail } from '../utils/format'
             .from('companies')
             .update({ name: this.form.companyName })
             .eq('id', this.companyId)
+          await this.fetchCompanyName()
         }
 
         if (error) {
@@ -344,14 +366,7 @@ import { isValidEmail } from '../utils/format'
           imageUrl: data.image_url || '',
           pixKey: data.pix_key || ''
         }
-        if (this.companyId) {
-          const { data: company } = await supabase
-            .from('companies')
-            .select('name')
-            .eq('id', this.companyId)
-            .single()
-          if (company) this.form.companyName = company.name
-        }
+        await this.fetchCompanyName()
         this.agenda = {
           cancelLimitHours: data.cancel_limit_hours || 0,
           dailySchedule: {
