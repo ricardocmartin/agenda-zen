@@ -19,6 +19,12 @@
               <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
           </div>
+          <div v-if="canSeeServices">
+            <select v-model="serviceId" class="border px-3 py-2 rounded">
+              <option value="">Todos os serviços</option>
+              <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
+            </select>
+          </div>
           <button @click="generateReport" class="btn">Aplicar</button>
         </div>
       </section>
@@ -67,8 +73,10 @@ export default {
       services: [],
       appointments: [],
       clientId: '',
+      serviceId: '',
       rows: [],
-      canSeeClients: true
+      canSeeClients: true,
+      canSeeServices: true
     }
   },
   methods: {
@@ -98,6 +106,7 @@ export default {
       this.services
         .filter(s => s.is_package && s.session_count)
         .forEach(svc => {
+          if (this.serviceId && svc.id !== this.serviceId) return
           this.clients.forEach(cl => {
             if (this.clientId && cl.id !== this.clientId) return
             const key = `${cl.id}-${svc.id}`
@@ -118,6 +127,7 @@ export default {
         .eq('user_id', this.userId)
         .neq('status', 'deleted')
       if (this.canSeeClients && this.clientId) query = query.eq('client_id', this.clientId)
+      if (this.canSeeServices && this.serviceId) query = query.eq('service_id', this.serviceId)
       const { data } = await query
       this.appointments = data || []
     },
@@ -135,6 +145,7 @@ export default {
     this.userId = user.id
 
     this.canSeeClients = await canView('Clientes')
+    this.canSeeServices = await canView('Servicos')
 
     const { data: clientData } = await supabase
       .from('clients')
