@@ -43,8 +43,11 @@ describe('Sidebar', () => {
 
   it('hides section when no access', async () => {
     role = 'user'
-    const { findByText, queryByText } = render(Sidebar, { props: { isOpen: true }, global: { stubs: ['router-link'] } })
-    await findByText('Agenda Zen')
+    const { findAllByText, queryByText } = render(Sidebar, {
+      props: { isOpen: true },
+      global: { stubs: ['router-link'] }
+    })
+    await findAllByText('Agenda Zen')
     expect(queryByText('Cadastros')).toBeNull()
   })
 })
