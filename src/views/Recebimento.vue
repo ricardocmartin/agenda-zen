@@ -13,16 +13,16 @@
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
-          <div v-if="canSeeClients">
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
-            <select v-model="clientId" class="w-full px-4 py-2 border rounded-md">
+            <select v-model="clientId" class="w-full px-4 py-2 border rounded-md" :disabled="!canSeeClients">
               <option value="">Todos</option>
               <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
           </div>
-          <div v-if="canSeeServices">
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Serviço</label>
-            <select v-model="serviceId" class="w-full px-4 py-2 border rounded-md">
+            <select v-model="serviceId" class="w-full px-4 py-2 border rounded-md" :disabled="!canSeeServices">
               <option value="">Todos</option>
               <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
             </select>

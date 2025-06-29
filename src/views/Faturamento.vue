@@ -13,11 +13,11 @@
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
-          <div v-if="canSeeServices">
+          <div>
             <label class="block text-sm font-medium text-gray-700">Serviços</label>
             <div class="mt-1 space-y-1">
               <label v-for="s in services" :key="s.id" class="flex items-center space-x-2">
-                <input type="checkbox" :value="s.id" v-model="selectedServices" />
+                <input type="checkbox" :value="s.id" v-model="selectedServices" :disabled="!canSeeServices" />
                 <span>{{ s.name }}</span>
               </label>
             </div>
@@ -104,18 +104,13 @@ export default {
   },
   methods: {
     async fetchServices() {
-      if (!this.canSeeServices) {
-        this.services = []
-        this.selectedServices = []
-        return
-      }
       const { data } = await supabase
         .from('services')
         .select()
         .eq('user_id', this.userId)
         .eq('active', true)
       this.services = data || []
-      this.selectedServices = this.services.map(s => s.id)
+      this.selectedServices = this.canSeeServices ? this.services.map(s => s.id) : []
     },
     async fetchRevenue() {
       if (!this.filterStart || !this.filterEnd) return
