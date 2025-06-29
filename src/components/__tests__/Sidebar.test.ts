@@ -2,7 +2,6 @@
 // Verifica se o título do menu lateral é exibido
 import { render, waitFor } from '@testing-library/vue'
 import { describe, it, expect, vi } from 'vitest'
-import Sidebar from '../Sidebar.vue'
 
 let role = 'admin'
 
@@ -38,13 +37,15 @@ vi.mock('../../router', () => ({
 }))
 
 describe('Sidebar', () => {
-  it('renders brand title', () => {
+  it('renders brand title', async () => {
+    const Sidebar = (await import('../Sidebar.vue')).default
     const { getByText } = render(Sidebar, { props: { isOpen: true }, global: { stubs: ['router-link'] } })
     expect(getByText('Agenda Zen')).toBeTruthy()
   })
 
   it('hides section when no access', async () => {
     role = 'user'
+    const Sidebar = (await import('../Sidebar.vue')).default
     const { findAllByText, queryAllByText } = render(Sidebar, {
       props: { isOpen: true },
       global: { stubs: ['router-link'] }
