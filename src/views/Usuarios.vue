@@ -45,6 +45,7 @@
               <tr>
                 <th class="px-4 py-2 font-medium text-gray-700">ID</th>
                 <th class="px-4 py-2 font-medium text-gray-700">E-mail</th>
+                <th class="px-4 py-2 font-medium text-gray-700">Perfil</th>
                 <th class="px-4 py-2"></th>
               </tr>
             </thead>
@@ -52,12 +53,13 @@
               <tr v-for="u in filteredUsers" :key="u.id" class="border-b last:border-b-0">
                 <td class="px-4 py-2">{{ u.id }}</td>
                 <td class="px-4 py-2">{{ u.email }}</td>
+                <td class="px-4 py-2">{{ u.role }}</td>
                 <td class="px-4 py-2 text-right">
                   <button @click="openUserModal(u, 'view')" class="btn btn-sm">Visualizar</button>
                 </td>
               </tr>
               <tr v-if="filteredUsers.length === 0">
-                <td colspan="3" class="px-4 py-6 text-center text-gray-500">Nenhum usuário encontrado</td>
+                <td colspan="4" class="px-4 py-6 text-center text-gray-500">Nenhum usuário encontrado</td>
               </tr>
             </tbody>
           </table>
@@ -75,6 +77,10 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Senha</label>
             <input type="password" v-model="userForm.password" :disabled="isUserView" class="w-full mt-1 px-4 py-2 border rounded-md" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Perfil</label>
+            <input type="text" v-model="userForm.role" disabled class="w-full mt-1 px-4 py-2 border rounded-md" />
           </div>
           <div class="flex justify-end space-x-2">
             <button type="button" @click="handleUserClose" class="px-4 py-2 rounded border">Fechar</button>
@@ -112,7 +118,7 @@ export default {
       showUserModal: false,
       userModalMode: 'new',
       selectedUserId: null,
-      userForm: { email: '', password: '' }
+      userForm: { email: '', password: '', role: 'user' }
     }
   },
   methods: {
@@ -179,7 +185,8 @@ export default {
             id: signUpData.user.id,
             email: signUpData.user.email,
             company_id: profileData.company_id,
-            onboarding_complete: true
+            onboarding_complete: true,
+            role: 'user'
           }
           for (const field of sharedFields) {
             if (field !== 'company_id' && profileData[field] !== undefined) {
@@ -197,10 +204,10 @@ export default {
       this.userModalMode = mode
       if (user) {
         this.selectedUserId = user.id
-        this.userForm = { email: user.email, password: '' }
+        this.userForm = { email: user.email, password: '', role: user.role }
       } else {
         this.selectedUserId = null
-        this.userForm = { email: '', password: '' }
+        this.userForm = { email: '', password: '', role: 'user' }
       }
       this.showUserModal = true
     },
@@ -217,7 +224,7 @@ export default {
       this.showUserModal = false
       this.userModalMode = 'new'
       this.selectedUserId = null
-      this.userForm = { email: '', password: '' }
+      this.userForm = { email: '', password: '', role: 'user' }
     },
     enableUserEdit() {
       this.userModalMode = 'edit'
@@ -254,9 +261,9 @@ export default {
         .single()
 
       if (profile) {
-        let query = supabase
-          .from('profiles')
-          .select('id, email')
+      let query = supabase
+        .from('profiles')
+        .select('id, email, role')
 
         if (profile.company_id === null) {
           query = query.is('company_id', null)

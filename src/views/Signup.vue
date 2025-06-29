@@ -89,7 +89,8 @@ export default {
 
             await supabase.from('profiles').insert({
               id: data.user.id,
-              company_id: companyId
+              company_id: companyId,
+              role: 'admin'
             })
             alert('Cadastro realizado!')
           } else {
