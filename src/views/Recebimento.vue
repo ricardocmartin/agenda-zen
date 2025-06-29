@@ -12,7 +12,7 @@
       <HeaderUser title="Relatório de Recebimento" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+        <div :class="['grid gap-4 items-end', compactLayout ? 'grid-cols-6' : 'grid-cols-1 md:grid-cols-6']">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
             <select v-model="clientId" class="w-full px-4 py-2 border rounded-md" :disabled="!canSeeClients">
@@ -121,10 +121,14 @@ export default {
       filterEnd: '',
       paidFilter: 'all',
       canSeeClients: true,
-      canSeeServices: true
+      canSeeServices: true,
+      userRole: null
     }
   },
   computed: {
+    compactLayout() {
+      return this.userRole === 'user' || this.userRole === 'admin'
+    },
     displayRows() {
       if (this.groupBy === "none") {
         return this.appointments
@@ -203,6 +207,12 @@ export default {
       return
     }
     this.userId = user.id
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', this.userId)
+      .single()
+    this.userRole = profile ? profile.role : null
     const companyId = await getUserCompanyId(this.userId)
     this.userIds = companyId
       ? await getCompanyUserIds(companyId)
