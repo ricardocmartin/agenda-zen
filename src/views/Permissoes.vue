@@ -71,7 +71,7 @@
 import Sidebar from '../components/Sidebar.vue'
 import HeaderUser from '../components/HeaderUser.vue'
 import { supabase } from '../supabase'
-import { screenNames } from '../router'
+import { loggedScreenNames } from '../router'
 
 export default {
   name: 'Permissoes',
@@ -81,7 +81,7 @@ export default {
       sidebarOpen: window.innerWidth >= 768,
       users: [],
       permissions: [],
-      screens: screenNames,
+      screens: loggedScreenNames,
       form: { profileId: '', screen: '', canView: true },
       userId: null
     }

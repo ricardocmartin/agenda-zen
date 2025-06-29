@@ -115,5 +115,23 @@ router.afterEach((to) => {
 })
 
 export const screenNames = routes.map(r => r.name)
+export const loggedScreenNames = routes
+  .filter(r => ![
+    'Home',
+    'Signup',
+    'Login',
+    'Confirmacao',
+    'LinkExpirado',
+    'SearchProfiles',
+    'PublicPage',
+    'Planos',
+    'Contato',
+    'Faq',
+    'PoliticaDePrivacidade',
+    'TermosDeUso',
+    'PagamentoPlus',
+    'PagamentoAgendamento'
+  ].includes(r.name))
+  .map(r => r.name)
 
 export default router
