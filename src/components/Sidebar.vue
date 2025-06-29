@@ -187,6 +187,7 @@ export default {
   },
   methods: {
     canSee(name) {
+      if (this.userRole === null) return false
       if (this.userRole !== 'user') return true
       return this.allowedScreens.includes(name)
     },
