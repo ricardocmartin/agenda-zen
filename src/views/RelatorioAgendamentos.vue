@@ -12,29 +12,31 @@
       <HeaderUser title="Relatório de Agendamentos" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div class="flex flex-col md:flex-row md:items-end md:space-x-4 space-y-4 md:space-y-0">
-          <div class="flex flex-wrap gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+          <div class="flex flex-wrap gap-2 md:col-span-2">
             <button class="btn btn-sm" @click="setPeriodo('dia')">Dia</button>
             <button class="btn btn-sm" @click="setPeriodo('semana')">Semana</button>
             <button class="btn btn-sm" @click="setPeriodo('mes')">Mês</button>
           </div>
-          <div class="flex space-x-2">
-            <input type="date" v-model="filterStart" class="border px-3 py-2 rounded" />
-            <input type="date" v-model="filterEnd" class="border px-3 py-2 rounded" />
+          <div class="flex space-x-2 md:col-span-2">
+            <input type="date" v-model="filterStart" class="w-full border px-3 py-2 rounded" />
+            <input type="date" v-model="filterEnd" class="w-full border px-3 py-2 rounded" />
           </div>
           <div>
-            <select v-model="clientId" class="border px-3 py-2 rounded" :disabled="!canSeeClients">
+            <select v-model="clientId" class="w-full border px-3 py-2 rounded" :disabled="!canSeeClients">
               <option value="">Todos os clientes</option>
               <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
           </div>
           <div>
-            <select v-model="serviceId" class="border px-3 py-2 rounded" :disabled="!canSeeServices">
+            <select v-model="serviceId" class="w-full border px-3 py-2 rounded" :disabled="!canSeeServices">
               <option value="">Todos os serviços</option>
               <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
             </select>
           </div>
-          <button @click="fetchAppointments" class="btn">Aplicar</button>
+          <div>
+            <button @click="fetchAppointments" class="btn w-full md:w-auto">Aplicar</button>
+          </div>
         </div>
       </section>
 
