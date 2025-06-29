@@ -93,12 +93,14 @@ router.beforeEach(async (to, from, next) => {
       if (!cachedPermissions) {
         const { data: perms } = await supabase
           .from('screen_permissions')
-          .select('screen')
+          .select('screen, can_view')
           .eq('profile_id', user.id)
-          .eq('can_view', true)
-        cachedPermissions = perms ? perms.map(p => p.screen) : []
+        cachedPermissions = {}
+        if (perms) {
+          perms.forEach(p => { cachedPermissions[p.screen] = p.can_view })
+        }
       }
-      if (!cachedPermissions.includes(to.name) && loggedScreenNames.includes(to.name)) {
+      if (cachedPermissions[to.name] === false && loggedScreenNames.includes(to.name)) {
         next('/dashboard')
         return
       }
