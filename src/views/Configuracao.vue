@@ -46,8 +46,8 @@
             </p>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Nome da Empresa</label>
-            <input type="text" v-model="form.companyName" class="w-full mt-1 px-4 py-2 border rounded-md">
+            <label class="block text-sm font-medium text-gray-700" for="companyName">Nome da Empresa</label>
+            <input id="companyName" type="text" v-model="form.companyName" class="w-full mt-1 px-4 py-2 border rounded-md">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Descrição do Estabelecimento</label>
