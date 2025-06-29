@@ -45,6 +45,7 @@ describe('Sidebar', () => {
 
   it('hides section when no access', async () => {
     role = 'user'
+    vi.resetModules()
     const Sidebar = (await import('../Sidebar.vue')).default
     const { findAllByText, queryAllByText } = render(Sidebar, {
       props: { isOpen: true },
