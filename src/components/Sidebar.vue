@@ -169,6 +169,7 @@
   
 <script>
 import { supabase } from '../supabase'
+import { loggedScreenNames } from '../router'
 
 export default {
   name: 'Sidebar',
@@ -181,7 +182,7 @@ export default {
   data() {
     return {
       userRole: null,
-      allowedScreens: []
+      allowedScreens: loggedScreenNames
     }
   },
   methods: {
@@ -202,10 +203,12 @@ export default {
       if (this.userRole === 'user') {
         const { data: perms } = await supabase
           .from('screen_permissions')
-          .select('screen')
+          .select('screen, can_view')
           .eq('profile_id', user.id)
-          .eq('can_view', true)
-        this.allowedScreens = perms ? perms.map(p => p.screen) : []
+        const blocked = (perms || [])
+          .filter(p => p.can_view === false)
+          .map(p => p.screen)
+        this.allowedScreens = loggedScreenNames.filter(name => !blocked.includes(name))
       }
     }
   }

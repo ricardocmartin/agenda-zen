@@ -15,6 +15,10 @@ vi.mock('../../supabase', () => ({
   }
 }))
 
+vi.mock('../../router', () => ({
+  loggedScreenNames: []
+}))
+
 describe('Sidebar', () => {
   it('renders brand title', () => {
     const { getByText } = render(Sidebar, { props: { isOpen: true }, global: { stubs: ['router-link'] } })
