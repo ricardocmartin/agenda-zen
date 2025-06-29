@@ -78,15 +78,23 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const { data: { user } } = await supabase.auth.getUser()
-  if (user && to.path !== '/onboarding') {
+  if (user) {
     const { data } = await supabase
       .from('profiles')
-      .select('onboarding_complete')
+      .select('onboarding_complete, company_id')
       .eq('id', user.id)
       .single()
+
     if (data && !data.onboarding_complete) {
-      next('/onboarding')
-      return
+      if (data.company_id) {
+        if (!to.path.startsWith('/empresa')) {
+          next('/empresa')
+          return
+        }
+      } else if (to.path !== '/onboarding') {
+        next('/onboarding')
+        return
+      }
     }
   }
   next()
