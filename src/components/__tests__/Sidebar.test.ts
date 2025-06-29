@@ -1,6 +1,6 @@
 // Smoke test for Sidebar.vue
 // Verifica se o título do menu lateral é exibido
-import { render } from '@testing-library/vue'
+import { render, waitFor } from '@testing-library/vue'
 import { describe, it, expect, vi } from 'vitest'
 import Sidebar from '../Sidebar.vue'
 
@@ -48,6 +48,8 @@ describe('Sidebar', () => {
       global: { stubs: ['router-link'] }
     })
     await findAllByText('Agenda Zen')
-    expect(queryAllByText('Cadastros')).toHaveLength(0)
+    await waitFor(() => {
+      expect(queryAllByText('Cadastros')).toHaveLength(0)
+    })
   })
 })
