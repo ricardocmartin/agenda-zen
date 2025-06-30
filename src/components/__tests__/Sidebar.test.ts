@@ -1,36 +1,38 @@
 import { render, waitFor } from '@testing-library/vue'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 let role: string
 
-vi.mock('../../router', () => ({
-  loggedScreenNames: []
-}))
+function mockModules() {
+  vi.doMock('../../router', () => ({
+    loggedScreenNames: []
+  }))
 
-vi.mock('../../supabase', () => ({
-  supabase: {
-    from: (table: string) => {
-      if (table === 'profiles') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          single: vi.fn().mockImplementation(() => Promise.resolve({ data: { role }, error: null }))
+  vi.doMock('../../supabase', () => ({
+    supabase: {
+      from: (table: string) => {
+        if (table === 'profiles') {
+          return {
+            select: vi.fn().mockReturnThis(),
+            eq: vi.fn().mockReturnThis(),
+            single: vi.fn().mockImplementation(() => Promise.resolve({ data: { role }, error: null }))
+          }
         }
-      }
-      if (table === 'screen_permissions') {
-        return {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockResolvedValue({ data: [], error: null })
+        if (table === 'screen_permissions') {
+          return {
+            select: vi.fn().mockReturnThis(),
+            eq: vi.fn().mockResolvedValue({ data: [], error: null })
+          }
         }
+        return { select: vi.fn(), eq: vi.fn(), single: vi.fn() }
+      },
+      auth: {
+        getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }),
+        signOut: vi.fn()
       }
-      return { select: vi.fn(), eq: vi.fn(), single: vi.fn() }
-    },
-    auth: {
-      getUser: vi.fn().mockResolvedValue({ data: { user: { id: '1' } } }),
-      signOut: vi.fn()
     }
-  }
-}))
+  }))
+}
 
 async function renderSidebar() {
   const Sidebar = (await import('../Sidebar.vue')).default
@@ -45,6 +47,10 @@ async function renderSidebar() {
 }
 
 describe('Sidebar', () => {
+  beforeEach(() => {
+    vi.resetModules()
+    mockModules()
+  })
 
   it('renders brand title', async () => {
     role = 'admin'
