@@ -1,7 +1,7 @@
 <template>
   <header class="flex justify-between items-center mb-8">
     <h1 class="text-2xl font-semibold text-gray-800">{{ title }}</h1>
-    <div v-if="userName" class="relative">
+    <div v-if="userName && showAccountLinks" class="relative">
       <button @click="toggleMenu" class="flex items-center space-x-2 focus:outline-none">
         <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <circle cx="12" cy="8" r="4" stroke-width="2" />
@@ -14,9 +14,9 @@
       </button>
       <div v-if="showMenu" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md">
         <router-link to="/" class="block px-4 py-2 hover:bg-gray-100">Início</router-link>
-        <router-link to="/configuracao" class="block px-4 py-2 hover:bg-gray-100">Perfil/Site</router-link>
-        <router-link to="/usuarios" class="block px-4 py-2 hover:bg-gray-100">Usuários</router-link>
-        <router-link to="/minha-assinatura" class="block px-4 py-2 hover:bg-gray-100">Assinatura</router-link>
+        <router-link v-if="canConfiguracao" to="/configuracao" class="block px-4 py-2 hover:bg-gray-100">Perfil/Site</router-link>
+        <router-link v-if="canUsuarios" to="/usuarios" class="block px-4 py-2 hover:bg-gray-100">Usuários</router-link>
+        <router-link v-if="canMinhaAssinatura" to="/minha-assinatura" class="block px-4 py-2 hover:bg-gray-100">Assinatura</router-link>
         <button @click="handleLogout" class="w-full text-left px-4 py-2 hover:bg-gray-100">Sair</button>
       </div>
     </div>
@@ -25,6 +25,7 @@
 
 <script>
 import { supabase } from '../supabase'
+import { canView } from '../utils/permissions'
 
 export default {
   name: 'HeaderUser',
@@ -37,7 +38,15 @@ export default {
   data() {
     return {
       userName: null,
-      showMenu: false
+      showMenu: false,
+      canConfiguracao: false,
+      canUsuarios: false,
+      canMinhaAssinatura: false
+    }
+  },
+  computed: {
+    showAccountLinks() {
+      return this.canConfiguracao || this.canUsuarios || this.canMinhaAssinatura
     }
   },
   async mounted() {
@@ -47,6 +56,9 @@ export default {
     } else {
       const displayName = user.user_metadata?.display_name || user.user_metadata?.name
       this.userName = displayName && displayName.trim() !== '' ? displayName : user.email
+      this.canConfiguracao = await canView('Configuracao')
+      this.canUsuarios = await canView('Usuarios')
+      this.canMinhaAssinatura = await canView('MinhaAssinatura')
     }
   },
   methods: {
