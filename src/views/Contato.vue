@@ -1,7 +1,7 @@
 <template>
   <Navbar />
   <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-primary/10 px-4">
-    <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
+    <div class="bg-white p-6 md:p-10 rounded-2xl shadow-xl w-full max-w-lg">
       <div class="mb-8 text-center">
         <h2 class="text-3xl font-extrabold text-primary-dark">Fale conosco</h2>
         <p class="text-gray-500">Envie sua mensagem e entraremos em contato</p>

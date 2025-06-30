@@ -1,7 +1,7 @@
 <template>
   <Navbar />
-  <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
-    <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg text-center space-y-6">
+  <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-white px-4">
+    <div class="bg-white p-6 md:p-10 rounded-2xl shadow-xl w-full max-w-lg text-center space-y-6">
       <img src="/icons/error.svg" alt="Erro" class="w-16 h-16 mx-auto text-red-500" />
       <h1 class="text-2xl font-bold text-red-600">Link expirado ou inválido</h1>
       <p class="text-gray-700">Informe seu e-mail para receber um novo link de confirmação.</p>

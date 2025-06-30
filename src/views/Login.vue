@@ -1,7 +1,7 @@
 <template>
     <Navbar />
-    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-white px-4">
-      <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-white px-4">
+      <div class="bg-white p-6 md:p-10 rounded-2xl shadow-xl w-full max-w-lg">
         <div class="mb-8 text-center">
           <h2 class="text-3xl font-extrabold text-primary">Entrar</h2>
           <p class="text-gray-500">Acesse sua conta do Agenda Zen</p>
