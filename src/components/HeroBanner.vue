@@ -15,7 +15,7 @@
         </div>
         <div class="flex justify-center">
           <img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/WM9KMwAAAAASUVORK5CYII="
+            src="/hero-illustration.svg"
             alt="Profissional usando sistema de agendamento online"
             class="max-w-full h-auto"
           />
