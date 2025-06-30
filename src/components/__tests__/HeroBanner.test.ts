@@ -21,6 +21,6 @@ describe('HeroBanner', () => {
       }
     })
     expect(getByText(/agenda online que trabalha por você/i)).toBeTruthy()
-    expect(getByText('Comece grátis agora')).toBeTruthy()
+    expect(getByText('Crie sua agenda gratuita')).toBeTruthy()
   })
 })

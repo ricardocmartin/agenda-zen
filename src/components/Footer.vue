@@ -3,7 +3,7 @@
     <div class="container mx-auto px-8 py-10 grid gap-8 md:grid-cols-4">
       <div>
         <router-link to="/" class="text-xl font-semibold text-primary-dark block mb-2">Agenda Zen</router-link>
-        <p class="text-xs">Desenvolvido com ❤️ no Brasil</p>
+        <p class="text-xs">© 2025 Agenda Zen — Plataforma brasileira de agendamentos online</p>
       </div>
       <div>
         <h3 class="font-semibold mb-2">Links</h3>

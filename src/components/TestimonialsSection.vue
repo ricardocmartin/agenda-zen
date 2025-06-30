@@ -2,7 +2,7 @@
   <section class="py-20 px-8 bg-gray-50">
     <div class="container mx-auto text-center">
       <h2 class="text-3xl font-bold mb-12">O que dizem nossos clientes</h2>
-      <div class="max-w-5xl mx-auto grid gap-8 md:grid-cols-3">
+      <div class="max-w-5xl mx-auto grid gap-6 md:gap-8 md:grid-cols-3">
         <div
           v-for="t in testimonials"
           :key="t.name"
@@ -13,8 +13,7 @@
           </svg>
           <img :src="t.photo" alt="Foto de {{ t.name }}" class="w-16 h-16 rounded-full mb-4" />
           <p class="italic mb-2 text-gray-700">{{ t.text }}</p>
-          <p class="font-semibold text-primary">{{ t.name }}</p>
-          <p class="text-sm text-gray-500">{{ t.role }}</p>
+          <p class="font-semibold text-primary text-lg">{{ t.name }} — {{ t.role }}</p>
         </div>
       </div>
     </div>
