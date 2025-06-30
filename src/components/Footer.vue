@@ -5,6 +5,9 @@
       <a href="https://www.instagram.com/agendazen_" target="_blank" class="hover:underline">Instagram</a>
       <a href="https://www.facebook.com/agenda.zen" target="_blank" class="hover:underline">Facebook</a>
       <a href="https://x.com/agenda_zen" target="_blank" class="hover:underline">X</a>
+      <a href="https://wa.me/5531999999999" target="_blank" class="hover:underline inline-flex items-center">
+        <img src="/icons/whatsapp.svg" alt="WhatsApp" class="w-4 h-4 mr-1" />WhatsApp
+      </a>
     </div>
     <div class="flex flex-wrap justify-center space-x-2">
       <router-link to="/termos-de-uso" class="hover:underline">Termos de uso</router-link>
