@@ -9,7 +9,10 @@
           <ul class="text-sm text-gray-600 flex-1 space-y-1 mb-6 text-left">
             <li v-for="item in p.items" :key="item">- {{ item }}</li>
           </ul>
-          <router-link to="/cadastro" class="btn mt-auto">Teste Grátis</router-link>
+          <router-link to="/cadastro" class="btn mt-auto flex items-center justify-center space-x-2">
+            <img src="/icons/check.svg" alt="" class="w-5 h-5" />
+            <span>Teste grátis por 7 dias</span>
+          </router-link>
         </div>
       </div>
     </div>

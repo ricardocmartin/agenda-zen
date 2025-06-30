@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-screen">
     <section v-if="profile" class="bg-blue-600 text-white py-12">
       <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
-        <img :src="profile.image_url || '/hero-illustration.png'" alt="Banner" class="w-32 h-32 mx-auto rounded-full shadow-lg" />
+        <img :src="profile.image_url || '/hero-illustration.svg'" alt="Banner" class="w-32 h-32 mx-auto rounded-full shadow-lg" />
         <h1 class="text-4xl font-bold">{{ profile.business_name }}</h1>
         <p v-if="profile.area_atuacao" class="text-sm">{{ profile.area_atuacao }}</p>
         <p class="text-lg">{{ profile.description }}</p>
