@@ -11,12 +11,12 @@ export default {
       },
       colors: {
         primary: {
-          DEFAULT: '#6d28d9',
-          dark: '#5b21b6',
+          DEFAULT: '#8b5cf6',
+          dark: '#6d28d9',
         },
         secondary: {
-          DEFAULT: '#10b981',
-          dark: '#059669'
+          DEFAULT: '#64748b',
+          dark: '#475569'
         }
       },
     },

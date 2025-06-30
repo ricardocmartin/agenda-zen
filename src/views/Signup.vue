@@ -1,9 +1,9 @@
 <template>
   <Navbar />
-  <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
-    <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
+  <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-white px-4">
+    <div class="bg-white p-6 md:p-10 rounded-2xl shadow-xl w-full max-w-lg">
       <div class="mb-8 text-center">
-        <h2 class="text-3xl font-extrabold text-blue-700">Crie sua conta</h2>
+        <h2 class="text-3xl font-extrabold text-primary-dark">Crie sua conta</h2>
         <p class="text-gray-500">Comece agora a organizar seus atendimentos com praticidade</p>
       </div>
         <form @submit.prevent="handleSignup" class="space-y-5">
