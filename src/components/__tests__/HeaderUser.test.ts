@@ -14,6 +14,10 @@ vi.mock('../../supabase', () => ({
   }
 }))
 
+vi.mock('../../utils/permissions', () => ({
+  canView: vi.fn().mockResolvedValue(true)
+}))
+
 describe('HeaderUser', () => {
   it('renders title and user name', async () => {
     const routerMock = { push: vi.fn() }

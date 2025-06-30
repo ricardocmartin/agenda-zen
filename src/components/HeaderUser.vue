@@ -1,7 +1,7 @@
 <template>
   <header class="flex justify-between items-center mb-8">
     <h1 class="text-2xl font-semibold text-gray-800">{{ title }}</h1>
-    <div v-if="userName" class="relative">
+    <div v-if="userName && showAccountLinks" class="relative">
       <button @click="toggleMenu" class="flex items-center space-x-2 focus:outline-none">
         <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <circle cx="12" cy="8" r="4" stroke-width="2" />
