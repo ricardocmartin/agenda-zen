@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-gradient-to-r from-[#f7f5ff] to-[#e8e6fc] py-16 md:py-24">
+    <section class="bg-[#eff6ff] py-16 md:py-24">
       <div class="container max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div class="flex flex-col justify-center text-center md:text-left max-w-lg mx-auto md:mx-0">
           <h1 class="text-4xl md:text-5xl font-semibold text-gray-900 mb-4 md:mb-6">A sua agenda online que trabalha por você!</h1>
