@@ -12,7 +12,7 @@
       <HeaderUser title="Relatório de Agendamentos" />
 
       <section class="bg-white p-4 rounded-lg shadow space-y-4">
-        <div class="flex flex-col md:flex-row md:items-end md:space-x-4 space-y-4 md:space-y-0">
+        <div class="flex flex-wrap items-end gap-2">
           <div class="flex flex-wrap gap-2">
             <button class="btn btn-sm" @click="setPeriodo('dia')">Dia</button>
             <button class="btn btn-sm" @click="setPeriodo('semana')">Semana</button>
@@ -29,7 +29,7 @@
             </select>
           </div>
           <div>
-            <select v-model="serviceId" class="border px-3 py-2 rounded" :disabled="!canSeeServices">
+            <select v-model="serviceId" class="border px-3 py-2 rounded w-40" :disabled="!canSeeServices">
               <option value="">Todos os serviços</option>
               <option v-for="s in services" :key="s.id" :value="s.id">{{ s.name }}</option>
             </select>
