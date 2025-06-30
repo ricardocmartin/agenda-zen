@@ -20,7 +20,7 @@ describe('HeroBanner', () => {
         }
       }
     })
-    expect(getByText(/agenda digital simples/i)).toBeTruthy()
-    expect(getByText('Criar conta')).toBeTruthy()
+    expect(getByText(/agenda online que trabalha por você/i)).toBeTruthy()
+    expect(getByText('Comece grátis agora')).toBeTruthy()
   })
 })

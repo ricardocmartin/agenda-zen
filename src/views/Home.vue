@@ -2,7 +2,9 @@
   <Navbar />
   <HeroBanner />
   <FeaturesSection />
-  <AboutSection />
+  <TestimonialsSection />
+  <AudienceSection />
+  <PricingSection />
   <Footer />
 </template>
 
@@ -10,7 +12,9 @@
 import Navbar from '../components/Navbar.vue'
 import HeroBanner from '../components/HeroBanner.vue'
 import FeaturesSection from '../components/FeaturesSection.vue'
-import AboutSection from '../components/AboutSection.vue'
+import TestimonialsSection from '../components/TestimonialsSection.vue'
+import AudienceSection from '../components/AudienceSection.vue'
+import PricingSection from '../components/PricingSection.vue'
 import Footer from '../components/Footer.vue'
 
 export default {
@@ -19,7 +23,9 @@ export default {
     Navbar,
     HeroBanner,
     FeaturesSection,
-    AboutSection,
+    TestimonialsSection,
+    AudienceSection,
+    PricingSection,
     Footer
   }
 }
