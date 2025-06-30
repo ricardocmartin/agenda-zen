@@ -1,12 +1,12 @@
 <template>
-    <section class="text-center py-20 bg-gradient-to-b from-white via-indigo-50 to-white">
-      <div class="container mx-auto max-w-4xl px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
-          <div>
-            <h1 class="text-4xl font-bold text-primary mb-4">Sua agenda digital simples e profissional</h1>
-            <p class="text-gray-600 text-lg mb-6">Perfeita para psicólogos, terapeutas, dentistas, cabeleireiros e mais</p>
+    <section class="text-center py-24 bg-gradient-to-r from-primary to-primary-dark text-white">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
+          <div class="md:text-left">
+            <h1 class="text-5xl font-extrabold mb-6">Sua agenda digital simples e profissional</h1>
+            <p class="text-white/80 text-lg mb-8">Perfeita para psicólogos, terapeutas, dentistas, cabeleireiros e mais</p>
             <div class="space-x-4">
-                <router-link to="/login" class="bg-white border border-primary text-primary px-6 py-2 rounded hover:bg-indigo-50">Entrar</router-link>
+                <router-link to="/login" class="bg-white text-primary px-6 py-2 rounded font-semibold shadow hover:bg-gray-50">Entrar</router-link>
                 <router-link to="/cadastro" class="btn">Criar conta</router-link>
             </div>
           </div>

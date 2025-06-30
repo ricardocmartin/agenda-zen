@@ -1,12 +1,12 @@
 <template>
-    <section class="px-8 py-16">
-      <div class="container mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <section class="py-20 px-8 bg-white">
+      <div class="container mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div>
           <img src="/about-illustration.png" alt="Ilustração sobre agendamento" class="w-full h-auto mx-auto" />
         </div>
         <div>
-          <h2 class="text-2xl font-bold mb-4">O que é o Agenda Zen?</h2>
-          <p class="text-gray-700 text-lg">
+          <h2 class="text-3xl font-bold mb-6 text-primary-dark">O que é o Agenda Zen?</h2>
+          <p class="text-gray-700 text-lg leading-relaxed">
             O Agenda Zen é uma plataforma pensada para profissionais que trabalham com agendamentos. Criamos uma solução simples, bonita e eficiente para divulgar seus serviços, aceitar agendamentos online, enviar lembretes automáticos e receber pagamentos por Pix — tudo sem complicação.
           </p>
         </div>

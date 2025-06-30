@@ -1,9 +1,9 @@
 <template>
   <Navbar />
-  <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
+  <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-primary/10 px-4">
     <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
       <div class="mb-8 text-center">
-        <h2 class="text-3xl font-extrabold text-blue-700">Fale conosco</h2>
+        <h2 class="text-3xl font-extrabold text-primary-dark">Fale conosco</h2>
         <p class="text-gray-500">Envie sua mensagem e entraremos em contato</p>
       </div>
       <div class="mb-6 text-center">
@@ -20,15 +20,15 @@
       <form @submit.prevent="enviar" class="space-y-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1" for="nome">Nome</label>
-          <input v-model="nome" id="nome" type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input v-model="nome" id="nome" type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1" for="email">E-mail</label>
-          <input v-model="email" id="email" type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input v-model="email" id="email" type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1" for="mensagem">Mensagem</label>
-          <textarea v-model="mensagem" id="mensagem" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4"></textarea>
+          <textarea v-model="mensagem" id="mensagem" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" rows="4"></textarea>
         </div>
         <button type="submit" class="btn w-full">Enviar</button>
       </form>

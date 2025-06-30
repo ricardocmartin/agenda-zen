@@ -17,7 +17,7 @@
       <span>|</span>
       <router-link to="/politica-de-privacidade" class="hover:underline">Política de privacidade</router-link>
     </div>
-    <p>© 2025 Agenda Zen — Todos os direitos reservados</p>
+    <p>© {{ new Date().getFullYear() }} Agenda Zen — Todos os direitos reservados</p>
     </div>
   </footer>
 </template>
